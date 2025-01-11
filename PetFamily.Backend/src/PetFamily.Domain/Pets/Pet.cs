@@ -1,16 +1,17 @@
-using CSharpFunctionalExtensions;
 using PetFamily.Domain.AnimalSpecies;
+using PetFamily.Domain.Shared;
 using PetFamily.Domain.ValueObjects;
 
 namespace PetFamily.Domain.Pets;
 
-public class Pet : Entity
+public class Pet : Shared.Entity<PetId>
 {
-    private readonly List<AssistanceDetails> _assistanceDetails = [];
     
-    private Pet() { } // required by EF Core
+    private readonly List<AssistanceDetails> _assistanceDetails = [];
+    private Pet(PetId id) : base(id) { } // required by EF Core
 
     private Pet(
+        PetId petId,
         string name,
         Species species,
         Breed breed,
@@ -23,12 +24,10 @@ public class Pet : Entity
         bool isVaccinated,
         DateTime birthDate,
         PetStatus petStatus,
-        List<AssistanceDetails> assistanceDetails,
         string address,
         string phoneNumber
-        )
+        ) : base(petId)
     {
-        Id = Guid.NewGuid();
         Name = name;
         Species = species;
         Breed = breed;
@@ -46,7 +45,6 @@ public class Pet : Entity
         CreatedAt = DateTime.UtcNow;
     }
 
-    public Guid Id { get; private set; }
     public string Name { get; private set; }
     public Species Species { get; private set; }
     public Breed Breed { get; private set; }
@@ -59,14 +57,15 @@ public class Pet : Entity
     public bool IsVaccinated { get; private set; }
     public DateTime BirthDate { get; private set; }
     public PetStatus PetStatus { get; private set; }
-    
     public IReadOnlyList<AssistanceDetails> AssistanceDetails => _assistanceDetails;
     public string Address { get; private set; }
     public string PhoneNumber { get; private set; }
     public DateTime CreatedAt { get; private set; }
-    
+    public PetPhoto? PetPhoto { get; private set; }
+
     
     public static Result<Pet> Create(
+        PetId petId,
         string name,
         Species species,
         Breed breed,
@@ -79,24 +78,24 @@ public class Pet : Entity
         bool isVaccinated,
         DateTime birthDate,
         PetStatus petStatus,
-        List<AssistanceDetails> assistanceDetails,
         string address,
         string phoneNumber)
     {
 
         if (string.IsNullOrWhiteSpace(name))
-            return Result.Failure<Pet>("Name is required");
+            return "Name is required";
         
         if (species == null)
-            return Result.Failure<Pet>("Species is required");
+            return "Species is required";
 
         if (breed == null)
-            return Result.Failure<Pet>("Breed is required");
+            return "Breed is required";
 
         if (phoneNumber == null)
-            return Result.Failure<Pet>("Owner phone number is required");
+            return "Owner phone number is required";
 
         var pet = new Pet(
+            petId,
             name,
             species,
             breed,
@@ -109,10 +108,32 @@ public class Pet : Entity
             isVaccinated,
             birthDate,
             petStatus,
-            assistanceDetails,
             address,
             phoneNumber);
         
-        return Result.Success(pet);
+        return pet;
+    }
+    
+    public Result AddPhoto(string url, string fileName)
+    {
+        if (PetPhoto != null)
+            return "Photo already exists. Remove the existing photo to add a new one.";
+
+        var photoResult = PetPhoto.Create(url);
+        
+        if (photoResult.IsFailure)
+            return photoResult.Error;
+
+        PetPhoto = photoResult.Value;
+        return Result.Success();
+    }
+
+    public Result RemovePhoto()
+    {
+        if (PetPhoto == null)
+            return "No photo exists to remove.";
+
+        PetPhoto = null;
+        return Result.Success();
     }
 }

@@ -1,29 +1,30 @@
-using CSharpFunctionalExtensions;
+
+using PetFamily.Domain.Shared;
 
 namespace PetFamily.Domain.AnimalSpecies;
 
-public class Species
+public class Species : Shared.Entity<SpeciesId>
 {
-    private Species(string name)
+    private readonly List<Breed> _breeds = [];
+    
+    private Species(SpeciesId id, string name) : base(id)
     {
-        Id = Guid.NewGuid();
         Name = name;
-        Breeds = new List<Breed>();
     }
     
-    public Guid Id { get; private set; }
     public string Name { get; private set; } 
-    public List<Breed> Breeds { get; private set; }
-    // TODO: Make IReadOnlyList
+    public IReadOnlyList<Breed> Breed => _breeds;
     
-    public static Result<Species> Create(string name)
+    public static Result<Species> Create(SpeciesId id, string name)
     {
         if (string.IsNullOrWhiteSpace(name))
-            return Result.Failure<Species>("Species name should not be empty");
+            return "Species name should not be empty";
         
-        var species = new Species(name);
+        var species = new Species(id, name);
         
-        return Result.Success(species);
+        return species;
     }
+    
+    public void AddBreed(Breed breed) => _breeds.Add(breed);
 }
 

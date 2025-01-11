@@ -1,27 +1,25 @@
-using CSharpFunctionalExtensions;
+using PetFamily.Domain.Shared;
 
 namespace PetFamily.Domain.AnimalSpecies;
 
-public class Breed
+public class Breed : Shared.Entity<BreedId>
 {
     
-    private Breed(string name)
+    private Breed(BreedId id, string name) : base(id)
     {
-        Id = Guid.NewGuid();
         Name = name;
     }
     
-    public Guid Id { get; private set; }
     public string Name { get; private set; }
     
-    public static Result<Breed> Create(string name)
+    public static Result<Breed> Create(BreedId id, string name)
     {
         if (string.IsNullOrWhiteSpace(name))
-            return Result.Failure<Breed>("Breed name should not be empty");
+            return "Breed name should not be empty";
         
-        var breed = new Breed(name);
+        var breed = new Breed(id, name);
         
-        return Result.Success(breed);
+        return breed;
     }
 }
 

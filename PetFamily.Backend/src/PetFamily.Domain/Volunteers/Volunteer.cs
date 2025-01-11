@@ -1,26 +1,26 @@
-using CSharpFunctionalExtensions;
 using PetFamily.Domain.Pets;
+using PetFamily.Domain.Shared;
 using PetFamily.Domain.ValueObjects;
 
 namespace PetFamily.Domain.Volunteers;
 
-public class Volunteer : Entity
+public class Volunteer : Shared.Entity<VolunteerId>
 {
     private readonly List<SocialNetwork> _socialNetworks = [];
     private readonly List<AssistanceDetails> _assistanceDetails = [];
     private readonly List<Pet> _pets = [];
     
-    private Volunteer() { } // required by EF Core
+    private Volunteer(VolunteerId id) : base(id) { } // required by EF Core
 
     private Volunteer(
+        VolunteerId volunteerId,
         string fullName,
         string email,
         string description,
         int experienceYears,
         string phoneNumber
-    )
+    ) : base(volunteerId)
     {
-        Id = Guid.NewGuid();
         FullName = fullName;
         Email = email;
         Description = description;
@@ -29,7 +29,6 @@ public class Volunteer : Entity
         CreatedAt = DateTime.UtcNow;
     }
 
-    public Guid Id { get; private set; }
     public string FullName { get; private set; }
     public string Email { get; private set; }
     public string Description { get; private set; }
@@ -42,6 +41,7 @@ public class Volunteer : Entity
 
     
     public static Result<Volunteer> Create(
+        VolunteerId volunteerId,
         string fullName,
         string email,
         string description,
@@ -50,12 +50,13 @@ public class Volunteer : Entity
     )
     {
         if (string.IsNullOrWhiteSpace(fullName))
-            return Result.Failure<Volunteer>("Full name is required");
+            return "Full name is required";
         
         if (string.IsNullOrWhiteSpace(description))
-            return Result.Failure<Volunteer>("Description is required");
+            return "Description is required";
         
         var volunteer = new Volunteer(
+            volunteerId,
             fullName,
             email,
             description,
@@ -63,7 +64,7 @@ public class Volunteer : Entity
             phoneNumber
         );
         
-        return Result.Success(volunteer);
+        return volunteer;
     }
 
 }
