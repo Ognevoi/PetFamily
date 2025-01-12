@@ -1,7 +1,7 @@
 
 using PetFamily.Domain.Shared;
 
-namespace PetFamily.Domain.ValueObjects;
+namespace PetFamily.Domain.Volunteers.ValueObjects;
 
 public record SocialNetwork
 {

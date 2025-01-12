@@ -1,14 +1,15 @@
 using PetFamily.Domain.Shared;
 
-namespace PetFamily.Domain.ValueObjects;
+namespace PetFamily.Domain.Pets.ValueObjects;
 
 public record PetPhoto
 {
-    private PetPhoto(string url)
+    private PetPhoto(string url,  string fileName)
     {
         Url = url;
+        FileName = fileName;
     }
-    
+
     public string Url { get; }
     public string FileName { get; }
     
@@ -22,6 +23,6 @@ public record PetPhoto
         if (string.IsNullOrWhiteSpace(fileName))
             return "Photo file name could not be determined from the URL";
 
-        return new PetPhoto(url);
+        return new PetPhoto(url, fileName);
     }
 }

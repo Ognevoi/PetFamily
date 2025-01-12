@@ -1,8 +1,9 @@
-using PetFamily.Domain.Pets;
+using PetFamily.Domain.Pets.Entities;
 using PetFamily.Domain.Shared;
 using PetFamily.Domain.ValueObjects;
+using PetFamily.Domain.Volunteers.ValueObjects;
 
-namespace PetFamily.Domain.Volunteers;
+namespace PetFamily.Domain.Volunteers.Entities;
 
 public class Volunteer : Shared.Entity<VolunteerId>
 {
@@ -15,10 +16,10 @@ public class Volunteer : Shared.Entity<VolunteerId>
     private Volunteer(
         VolunteerId volunteerId,
         string fullName,
-        string email,
+        Email email,
         string description,
         int experienceYears,
-        string phoneNumber
+        PhoneNumber phoneNumber
     ) : base(volunteerId)
     {
         FullName = fullName;
@@ -30,10 +31,10 @@ public class Volunteer : Shared.Entity<VolunteerId>
     }
 
     public string FullName { get; private set; }
-    public string Email { get; private set; }
+    public Email Email { get; private set; }
     public string Description { get; private set; }
     public int ExperienceYears { get; private set; }
-    public string PhoneNumber { get; private set; }
+    public PhoneNumber PhoneNumber { get; private set; }
     public IReadOnlyList<SocialNetwork> SocialNetworks => _socialNetworks;
     public IReadOnlyList<AssistanceDetails> AssistanceDetails => _assistanceDetails;
     public IReadOnlyList<Pet> Pets => _pets;
@@ -43,10 +44,10 @@ public class Volunteer : Shared.Entity<VolunteerId>
     public static Result<Volunteer> Create(
         VolunteerId volunteerId,
         string fullName,
-        string email,
+        Email email,
         string description,
         int experienceYears,
-        string phoneNumber
+        PhoneNumber phoneNumber
     )
     {
         if (string.IsNullOrWhiteSpace(fullName))

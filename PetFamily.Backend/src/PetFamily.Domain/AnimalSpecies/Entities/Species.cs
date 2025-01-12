@@ -1,7 +1,8 @@
 
+using PetFamily.Domain.AnimalSpecies.Value_Objects;
 using PetFamily.Domain.Shared;
 
-namespace PetFamily.Domain.AnimalSpecies;
+namespace PetFamily.Domain.AnimalSpecies.Entities;
 
 public class Species : Shared.Entity<SpeciesId>
 {

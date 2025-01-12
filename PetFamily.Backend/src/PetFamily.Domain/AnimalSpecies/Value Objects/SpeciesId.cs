@@ -1,4 +1,4 @@
-namespace PetFamily.Domain.AnimalSpecies;
+namespace PetFamily.Domain.AnimalSpecies.Value_Objects;
 
 public class SpeciesId 
 {

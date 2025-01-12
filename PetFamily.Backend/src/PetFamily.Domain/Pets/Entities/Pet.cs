@@ -1,8 +1,11 @@
-using PetFamily.Domain.AnimalSpecies;
+using PetFamily.Domain.AnimalSpecies.Entities;
+using PetFamily.Domain.Pets.Enums;
+using PetFamily.Domain.Pets.ValueObjects;
 using PetFamily.Domain.Shared;
 using PetFamily.Domain.ValueObjects;
+using PetFamily.Domain.Volunteers.ValueObjects;
 
-namespace PetFamily.Domain.Pets;
+namespace PetFamily.Domain.Pets.Entities;
 
 public class Pet : Shared.Entity<PetId>
 {
@@ -24,8 +27,8 @@ public class Pet : Shared.Entity<PetId>
         bool isVaccinated,
         DateTime birthDate,
         PetStatus petStatus,
-        string address,
-        string phoneNumber
+        Address address,
+        PhoneNumber phoneNumber
         ) : base(petId)
     {
         Name = name;
@@ -58,8 +61,8 @@ public class Pet : Shared.Entity<PetId>
     public DateTime BirthDate { get; private set; }
     public PetStatus PetStatus { get; private set; }
     public IReadOnlyList<AssistanceDetails> AssistanceDetails => _assistanceDetails;
-    public string Address { get; private set; }
-    public string PhoneNumber { get; private set; }
+    public Address Address { get; private set; }
+    public PhoneNumber PhoneNumber { get; private set; }
     public DateTime CreatedAt { get; private set; }
     public PetPhoto? PetPhoto { get; private set; }
 
@@ -78,21 +81,12 @@ public class Pet : Shared.Entity<PetId>
         bool isVaccinated,
         DateTime birthDate,
         PetStatus petStatus,
-        string address,
-        string phoneNumber)
+        Address address,
+        PhoneNumber phoneNumber)
     {
 
         if (string.IsNullOrWhiteSpace(name))
             return "Name is required";
-        
-        if (species == null)
-            return "Species is required";
-
-        if (breed == null)
-            return "Breed is required";
-
-        if (phoneNumber == null)
-            return "Owner phone number is required";
 
         var pet = new Pet(
             petId,

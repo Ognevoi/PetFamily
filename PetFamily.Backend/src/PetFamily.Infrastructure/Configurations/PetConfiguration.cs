@@ -1,7 +1,11 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PetFamily.Domain.AnimalSpecies;
+using PetFamily.Domain.AnimalSpecies.Entities;
 using PetFamily.Domain.Pets;
+using PetFamily.Domain.Pets.Entities;
+using PetFamily.Domain.Pets.Enums;
+using PetFamily.Domain.Pets.ValueObjects;
 using PetFamily.Domain.Shared;
 
 namespace PetFamily.Infrastructure.Configurations;
@@ -78,13 +82,28 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
                 .HasMaxLength(Constants.MAX_LONG_TEXT_LENGTH);
         });
 
-        builder.Property(p => p.Address)
-            .IsRequired()
-            .HasMaxLength(Constants.MAX_MEDIUM_TEXT_LENGTH);
+        builder.OwnsOne(p => p.Address, a =>
+        {
+            a.Property(ad => ad.Street)
+                .IsRequired()
+                .HasMaxLength(Constants.MAX_MEDIUM_TEXT_LENGTH);
+            a.Property(ad => ad.City)
+                .IsRequired()
+                .HasMaxLength(Constants.MAX_VERY_LOW_TEXT_LENGTH);
+            a.Property(ad => ad.State)
+                .IsRequired()
+                .HasMaxLength(Constants.MAX_VERY_LOW_TEXT_LENGTH);
+            a.Property(ad => ad.ZipCode)
+                .IsRequired()
+                .HasMaxLength(Constants.MAX_VERY_LOW_TEXT_LENGTH);
+        });
 
-        builder.Property(p => p.PhoneNumber)
-            .IsRequired()
-            .HasMaxLength(Constants.MAX_VERY_LOW_TEXT_LENGTH);
+        builder.OwnsOne(p => p.PhoneNumber, pn =>
+        {
+            pn.Property(p => p.Value)
+                .IsRequired()
+                .HasMaxLength(Constants.MAX_VERY_LOW_TEXT_LENGTH);
+        });
 
         builder.Property(p => p.CreatedAt)
             .HasDefaultValueSql("CURRENT_TIMESTAMP")
@@ -97,6 +116,10 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
             pp.Property(pp => pp.Url)
                 .IsRequired()
                 .HasMaxLength(Constants.MAX_MEDIUM_TEXT_LENGTH);
+            
+            pp.Property(pp => pp.FileName)
+                .IsRequired()
+                .HasMaxLength(Constants.MAX_LOW_TEXT_LENGTH);
         });
             
     }

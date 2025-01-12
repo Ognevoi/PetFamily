@@ -6,4 +6,13 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <Compile Remove="AnimalSpecies\Breed.cs" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Remove="AnimalSpecies\BreedId.cs" />
+      <Compile Remove="Volunteers\VolunteerId.cs" />
+    </ItemGroup>
+
 </Project>

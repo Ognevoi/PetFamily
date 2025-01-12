@@ -2,6 +2,8 @@ using PetFamily.Domain.Volunteers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PetFamily.Domain.Shared;
+using PetFamily.Domain.Volunteers.Entities;
+using PetFamily.Domain.Volunteers.ValueObjects;
 
 namespace PetFamily.Infrastructure.Configurations;
 
@@ -23,9 +25,12 @@ public class VolunteerConfiguration : IEntityTypeConfiguration<Volunteer>
             .IsRequired()
             .HasMaxLength(Constants.MAX_VERY_LOW_TEXT_LENGTH);
         
-        builder.Property(v => v.Email)
-            .IsRequired()
-            .HasMaxLength(Constants.MAX_VERY_LOW_TEXT_LENGTH);
+        builder.OwnsOne(v => v.Email, e =>
+        {
+            e.Property(em => em.Value)
+                .IsRequired()
+                .HasMaxLength(Constants.MAX_VERY_LOW_TEXT_LENGTH);
+        });
         
         builder.Property(v => v.Description)
             .IsRequired()
@@ -35,9 +40,12 @@ public class VolunteerConfiguration : IEntityTypeConfiguration<Volunteer>
             .IsRequired()
             .HasMaxLength(Constants.MAX_VERY_LOW_TEXT_LENGTH);
         
-        builder.Property(v => v.PhoneNumber)
-            .IsRequired()
-            .HasMaxLength(Constants.MAX_VERY_LOW_TEXT_LENGTH);
+        builder.OwnsOne(v => v.PhoneNumber, pn =>
+        {
+            pn.Property(p => p.Value)
+                .IsRequired()
+                .HasMaxLength(Constants.MAX_VERY_LOW_TEXT_LENGTH);
+        });
         
         builder.OwnsMany(v => v.SocialNetworks, s =>
         {
