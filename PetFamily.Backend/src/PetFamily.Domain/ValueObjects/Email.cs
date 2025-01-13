@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using PetFamily.Domain.Shared;
 
 namespace PetFamily.Domain.ValueObjects;
@@ -28,14 +29,11 @@ public record Email
 
     private static bool IsValidEmail(string email)
     {
-        try
-        {
-            var addr = new System.Net.Mail.MailAddress(email);
-            return addr.Address == email;
-        }
-        catch
-        {
+        if (string.IsNullOrWhiteSpace(email))
             return false;
-        }
+
+        string emailPattern = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
+
+        return Regex.IsMatch(email, emailPattern, RegexOptions.IgnoreCase);
     }
 }
