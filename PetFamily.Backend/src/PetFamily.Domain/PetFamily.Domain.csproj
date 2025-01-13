@@ -7,7 +7,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="CSharpFunctionalExtensions" Version="3.4.3" />
+      <Compile Remove="AnimalSpecies\Breed.cs" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Remove="AnimalSpecies\BreedId.cs" />
+      <Compile Remove="Volunteers\VolunteerId.cs" />
     </ItemGroup>
 
 </Project>
