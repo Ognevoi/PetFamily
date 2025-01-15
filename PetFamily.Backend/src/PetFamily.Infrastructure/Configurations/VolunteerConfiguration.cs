@@ -47,36 +47,44 @@ public class VolunteerConfiguration : IEntityTypeConfiguration<Volunteer>
                 .HasMaxLength(Constants.MAX_VERY_LOW_TEXT_LENGTH);
         });
         
-        builder.OwnsMany(v => v.SocialNetworks, s =>
+        builder.OwnsOne(v => v.SocialNetworksList, sb =>
         {
-            s.WithOwner().HasForeignKey("volunteer_id");
-            s.Property(sn => sn.Name)
-                .IsRequired()
-                .HasMaxLength(Constants.MAX_VERY_LOW_TEXT_LENGTH);
-            s.Property(sn => sn.Url)
-                .IsRequired()
-                .HasMaxLength(Constants.MAX_VERY_LOW_TEXT_LENGTH);
+            sb.ToJson();
+
+            sb.OwnsMany(s => s.SocialNetworks, sn =>
+            {
+                sn.Property(s => s.Name)
+                    .IsRequired()
+                    .HasMaxLength(Constants.MAX_VERY_LOW_TEXT_LENGTH);
+                sn.Property(s => s.Url)
+                    .IsRequired()
+                    .HasMaxLength(Constants.MAX_VERY_LOW_TEXT_LENGTH);
+            });
         });
             
-        builder.OwnsMany(v => v.AssistanceDetails, a =>
+        builder.OwnsOne(v => v.AssistanceDetailsList, ab =>
         {
-            a.WithOwner()
-                .HasForeignKey("volunteer_id");
-            a.Property(ad => ad.Name)
-                .IsRequired()
-                .HasMaxLength(Constants.MAX_LOW_TEXT_LENGTH);
-            a.Property(ad => ad.Description)
-                .IsRequired()
-                .HasMaxLength(Constants.MAX_LONG_TEXT_LENGTH);
+            ab.ToJson();
+
+            ab.OwnsMany(a => a.AssistanceDetails, ad =>
+            {
+                ad.Property(a => a.Name)
+                    .IsRequired()
+                    .HasMaxLength(Constants.MAX_VERY_LOW_TEXT_LENGTH);
+                ad.Property(a => a.Description)
+                    .IsRequired()
+                    .HasMaxLength(Constants.MAX_MEDIUM_TEXT_LENGTH);
+            }
+                );
         });
 
         builder.HasMany(v => v.Pets)
             .WithOne()
-            .HasForeignKey("volunteer_id");
+            .HasForeignKey("volunteer_id")
+            .IsRequired(false);
         
         builder.Property(p => p.CreatedAt)
             .HasDefaultValueSql("CURRENT_TIMESTAMP")
             .IsRequired();
-
     }
 }

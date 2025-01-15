@@ -8,6 +8,9 @@
 
     <ItemGroup>
       <Compile Remove="AnimalSpecies\Breed.cs" />
+      <Compile Remove="ValueObjects\Address.cs" />
+      <Compile Remove="ValueObjects\Email.cs" />
+      <Compile Remove="Pets\ValueObjects\PetPhoto.cs" />
     </ItemGroup>
 
     <ItemGroup>

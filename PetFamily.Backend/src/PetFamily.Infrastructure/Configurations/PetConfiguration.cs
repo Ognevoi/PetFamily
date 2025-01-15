@@ -1,12 +1,10 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using PetFamily.Domain.AnimalSpecies;
 using PetFamily.Domain.AnimalSpecies.Entities;
-using PetFamily.Domain.Pets;
-using PetFamily.Domain.Pets.Entities;
-using PetFamily.Domain.Pets.Enums;
-using PetFamily.Domain.Pets.ValueObjects;
 using PetFamily.Domain.Shared;
+using PetFamily.Domain.Volunteers.Entities;
+using PetFamily.Domain.Volunteers.Enums;
+using PetFamily.Domain.Volunteers.ValueObjects;
 
 namespace PetFamily.Infrastructure.Configurations;
 
@@ -31,20 +29,20 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
             .WithMany()
             .HasForeignKey("species_id")
             .IsRequired()
-            .OnDelete(DeleteBehavior.Restrict);
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasOne(p => p.Breed)
             .WithMany() 
             .HasForeignKey("breed_id")
             .IsRequired()
-            .OnDelete(DeleteBehavior.Restrict);
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder.Property(p => p.Description)
-            .IsRequired()
+            .IsRequired(false)
             .HasMaxLength(Constants.MAX_LOW_TEXT_LENGTH);
 
         builder.Property(p => p.Color)
-            .IsRequired()
+            .IsRequired(false)
             .HasMaxLength(Constants.MAX_LOW_TEXT_LENGTH);
 
         builder.Property(p => p.HealthInfo)
@@ -52,75 +50,85 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
             .HasMaxLength(Constants.MAX_MEDIUM_TEXT_LENGTH);
 
         builder.Property(p => p.Weight)
-            .IsRequired();
+            .IsRequired(false);
 
         builder.Property(p => p.Height)
-            .IsRequired();
+            .IsRequired(false);
 
         builder.Property(p => p.IsSterilized);
 
         builder.Property(p => p.IsVaccinated);
 
         builder.Property(p => p.BirthDate)
-            .IsRequired();
+            .IsRequired(false);
 
         builder.Property(p => p.PetStatus)
             .HasConversion(
                 status => status.ToString(),
                 value => Enum.Parse<PetStatus>(value))
             .IsRequired();
-
-        builder.OwnsMany(p => p.AssistanceDetails, a =>
+        
+        builder.OwnsOne(p => p.AssistanceDetails, ab => 
         {
-            a.WithOwner()
-                .HasForeignKey("pet_id");
-            a.Property(ad => ad.Name)
-                .IsRequired()
-                .HasMaxLength(Constants.MAX_LOW_TEXT_LENGTH);
-            a.Property(ad => ad.Description)
-                .IsRequired()
-                .HasMaxLength(Constants.MAX_LONG_TEXT_LENGTH);
-        });
+            ab.ToJson();
 
-        builder.OwnsOne(p => p.Address, a =>
+            ab.OwnsMany(a => a.AssistanceDetails, ad =>
+                {
+                    ad.Property(a => a.Name)
+                        .IsRequired()
+                        .HasMaxLength(Constants.MAX_VERY_LOW_TEXT_LENGTH)
+                        .HasColumnName("assistance_details_name");
+                    ad.Property(a => a.Description)
+                        .IsRequired()
+                        .HasMaxLength(Constants.MAX_MEDIUM_TEXT_LENGTH)
+                        .HasColumnName("assistance_details_description");
+                }
+            );
+        });
+        
+        builder.ComplexProperty(p => p.Address, a =>
         {
             a.Property(ad => ad.Street)
                 .IsRequired()
-                .HasMaxLength(Constants.MAX_MEDIUM_TEXT_LENGTH);
+                .HasMaxLength(Constants.MAX_MEDIUM_TEXT_LENGTH)
+                .HasColumnName("street");
             a.Property(ad => ad.City)
                 .IsRequired()
-                .HasMaxLength(Constants.MAX_VERY_LOW_TEXT_LENGTH);
+                .HasMaxLength(Constants.MAX_VERY_LOW_TEXT_LENGTH)
+                .HasColumnName("city");
             a.Property(ad => ad.State)
                 .IsRequired()
-                .HasMaxLength(Constants.MAX_VERY_LOW_TEXT_LENGTH);
+                .HasMaxLength(Constants.MAX_VERY_LOW_TEXT_LENGTH)
+                .HasColumnName("state");
             a.Property(ad => ad.ZipCode)
                 .IsRequired()
-                .HasMaxLength(Constants.MAX_VERY_LOW_TEXT_LENGTH);
+                .HasMaxLength(Constants.MAX_VERY_LOW_TEXT_LENGTH)
+                .HasColumnName("zip_code");
         });
-
-        builder.OwnsOne(p => p.PhoneNumber, pn =>
+        
+        builder.OwnsOne(p => p.PhoneNumber, pnb =>
         {
-            pn.Property(p => p.Value)
+            pnb.Property(pn => pn.Value)
                 .IsRequired()
-                .HasMaxLength(Constants.MAX_VERY_LOW_TEXT_LENGTH);
+                .HasMaxLength(Constants.MAX_VERY_LOW_TEXT_LENGTH)
+                .HasColumnName("phone_number");
         });
 
         builder.Property(p => p.CreatedAt)
             .HasDefaultValueSql("CURRENT_TIMESTAMP")
             .IsRequired();
         
-        builder.OwnsOne(p => p.PetPhoto, pp =>
+        builder.OwnsOne(p => p.PetPhoto, ppb =>
         {
-            pp.ToJson();
+            ppb.ToJson();
             
-            pp.Property(pp => pp.Url)
+            ppb.Property(pp => pp.Url)
                 .IsRequired()
                 .HasMaxLength(Constants.MAX_MEDIUM_TEXT_LENGTH);
             
-            pp.Property(pp => pp.FileName)
+            ppb.Property(pp => pp.FileName)
                 .IsRequired()
                 .HasMaxLength(Constants.MAX_LOW_TEXT_LENGTH);
         });
-            
     }
 }

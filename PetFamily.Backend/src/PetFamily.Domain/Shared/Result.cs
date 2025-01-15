@@ -44,5 +44,6 @@ public class Result<TValue> : Result
     
     public static implicit operator Result<TValue>(string error) => new(default!, false, error);
     
-} 
- 
+    
+    
+}
