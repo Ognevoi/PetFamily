@@ -64,32 +64,22 @@ public class Volunteer : Shared.Entity<VolunteerId>
         return volunteer;
     }
     
-    // TODO: review this code later for correctness.
-    public Result AddSocialNetwork(string name, string url)
+    // TODO: review this code later for correctness
+    public void CreateSocialNetworks(string name, string url)
     {
         var result = SocialNetwork.Create(name, url);
 
-        if (result.IsFailure)
-            return result;
-
-        SocialNetworkList.AddSocialNetwork(result.Value);
-
-        return Result.Success();
+        SocialNetworksList = new SocialNetworkList(new List<SocialNetwork> { result.Value });
     }
     
-    // TODO: review this code later for correctness.
-    public Result AddAssistanceDetails(string name, string description)
+    // TODO: review this code later for correctness
+    public void CreateAssistanceDetails(string name, string description)
     {
-        var result = ValueObjects.AssistanceDetails.Create(name, description);
+        var result = AssistanceDetails.Create(name, description);
         
-        if (result.IsFailure)
-            return result;
-
-        AssistanceDetailsList.AddAssistanceDetails(result.Value);
-
-        return Result.Success();
+        AssistanceDetailsList = new AssistanceDetailsList(new List<AssistanceDetails> { result.Value });
     }
-
+    
 }
     
 
