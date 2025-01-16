@@ -1,14 +1,10 @@
-using PetFamily.Domain.Pets.Entities;
 using PetFamily.Domain.Shared;
-using PetFamily.Domain.ValueObjects;
 using PetFamily.Domain.Volunteers.ValueObjects;
 
 namespace PetFamily.Domain.Volunteers.Entities;
 
 public class Volunteer : Shared.Entity<VolunteerId>
 {
-    private readonly List<SocialNetwork> _socialNetworks = [];
-    private readonly List<AssistanceDetails> _assistanceDetails = [];
     private readonly List<Pet> _pets = [];
     
     private Volunteer(VolunteerId id) : base(id) { } // required by EF Core
@@ -35,8 +31,8 @@ public class Volunteer : Shared.Entity<VolunteerId>
     public string Description { get; private set; }
     public int ExperienceYears { get; private set; }
     public PhoneNumber PhoneNumber { get; private set; }
-    public IReadOnlyList<SocialNetwork> SocialNetworks => _socialNetworks;
-    public IReadOnlyList<AssistanceDetails> AssistanceDetails => _assistanceDetails;
+    public SocialNetworkList? SocialNetworksList { get; private set; }
+    public AssistanceDetailsList? AssistanceDetailsList { get; private set; }
     public IReadOnlyList<Pet> Pets => _pets;
     public DateTime CreatedAt { get; private set; }
 
@@ -67,7 +63,23 @@ public class Volunteer : Shared.Entity<VolunteerId>
         
         return volunteer;
     }
+    
+    // TODO: review this code later for correctness
+    public void CreateSocialNetworks(string name, string url)
+    {
+        var result = SocialNetwork.Create(name, url);
 
+        SocialNetworksList = new SocialNetworkList(new List<SocialNetwork> { result.Value });
+    }
+    
+    // TODO: review this code later for correctness
+    public void CreateAssistanceDetails(string name, string description)
+    {
+        var result = AssistanceDetails.Create(name, description);
+        
+        AssistanceDetailsList = new AssistanceDetailsList(new List<AssistanceDetails> { result.Value });
+    }
+    
 }
     
 

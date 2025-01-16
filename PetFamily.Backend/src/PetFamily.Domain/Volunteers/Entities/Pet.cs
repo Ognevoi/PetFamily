@@ -1,16 +1,13 @@
+using System.ComponentModel.DataAnnotations.Schema;
 using PetFamily.Domain.AnimalSpecies.Entities;
-using PetFamily.Domain.Pets.Enums;
-using PetFamily.Domain.Pets.ValueObjects;
 using PetFamily.Domain.Shared;
-using PetFamily.Domain.ValueObjects;
+using PetFamily.Domain.Volunteers.Enums;
 using PetFamily.Domain.Volunteers.ValueObjects;
 
-namespace PetFamily.Domain.Pets.Entities;
+namespace PetFamily.Domain.Volunteers.Entities;
 
 public class Pet : Shared.Entity<PetId>
 {
-    
-    private readonly List<AssistanceDetails> _assistanceDetails = [];
     private Pet(PetId id) : base(id) { } // required by EF Core
 
     private Pet(
@@ -26,9 +23,7 @@ public class Pet : Shared.Entity<PetId>
         bool isSterilized,
         bool isVaccinated,
         DateTime birthDate,
-        PetStatus petStatus,
-        Address address,
-        PhoneNumber phoneNumber
+        PetStatus petStatus
         ) : base(petId)
     {
         Name = name;
@@ -43,24 +38,22 @@ public class Pet : Shared.Entity<PetId>
         IsVaccinated = isVaccinated;
         BirthDate = birthDate;
         PetStatus = petStatus;
-        Address = address;
-        PhoneNumber = phoneNumber;
         CreatedAt = DateTime.UtcNow;
     }
 
     public string Name { get; private set; }
     public Species Species { get; private set; }
     public Breed Breed { get; private set; }
-    public string Description { get; private set; }
+    public string? Description { get; private set; }
     public string Color { get; private set; }
     public string HealthInfo { get; private set; }
-    public decimal Weight { get; private set; }
-    public decimal Height { get; private set; }
+    public decimal? Weight { get; private set; }
+    public decimal? Height { get; private set; }
     public bool IsSterilized { get; private set; }
     public bool IsVaccinated { get; private set; }
-    public DateTime BirthDate { get; private set; }
+    public DateTime? BirthDate { get; private set; }
     public PetStatus PetStatus { get; private set; }
-    public IReadOnlyList<AssistanceDetails> AssistanceDetails => _assistanceDetails;
+    public AssistanceDetailsList? AssistanceDetails { get; private set; }
     public Address Address { get; private set; }
     public PhoneNumber PhoneNumber { get; private set; }
     public DateTime CreatedAt { get; private set; }
@@ -72,7 +65,7 @@ public class Pet : Shared.Entity<PetId>
         string name,
         Species species,
         Breed breed,
-        string description,
+        string? description,
         string color,
         string healthInfo,
         decimal weight,
@@ -80,9 +73,7 @@ public class Pet : Shared.Entity<PetId>
         bool isSterilized,
         bool isVaccinated,
         DateTime birthDate,
-        PetStatus petStatus,
-        Address address,
-        PhoneNumber phoneNumber)
+        PetStatus petStatus)
     {
 
         if (string.IsNullOrWhiteSpace(name))
@@ -101,9 +92,7 @@ public class Pet : Shared.Entity<PetId>
             isSterilized,
             isVaccinated,
             birthDate,
-            petStatus,
-            address,
-            phoneNumber);
+            petStatus);
         
         return pet;
     }
