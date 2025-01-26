@@ -1,6 +1,5 @@
-
+using CSharpFunctionalExtensions;
 using PetFamily.Domain.AnimalSpecies.Value_Objects;
-using PetFamily.Domain.Shared;
 
 namespace PetFamily.Domain.AnimalSpecies.Entities;
 
@@ -19,7 +18,7 @@ public class Species : Shared.Entity<SpeciesId>
     public static Result<Species> Create(SpeciesId id, string name)
     {
         if (string.IsNullOrWhiteSpace(name))
-            return "Species name should not be empty";
+            return Result.Failure<Species>("Species name should not be empty");
         
         var species = new Species(id, name);
         
@@ -28,4 +27,3 @@ public class Species : Shared.Entity<SpeciesId>
     
     public void AddBreed(Breed breed) => _breeds.Add(breed);
 }
-

@@ -1,3 +1,4 @@
+using CSharpFunctionalExtensions;
 using PetFamily.Domain.Shared;
 
 namespace PetFamily.Domain.Volunteers.ValueObjects;
@@ -13,13 +14,13 @@ public record AssistanceDetails
     public string Name { get; }
     public string Description { get; }
     
-    public static Result<AssistanceDetails> Create(string name, string description)
+    public static Result<AssistanceDetails, Error> Create(string name, string description)
     {
         if (string.IsNullOrWhiteSpace(name))
-            return "Assistance name should not be empty";
+            return Errors.General.ValueIsRequired("Assistance Name");
         
         if (string.IsNullOrWhiteSpace(description))
-            return "Assistance description should not be empty";
+            return Errors.General.ValueIsRequired("Assistance Description");
         
         var assistanceDetails = new AssistanceDetails(name, description);
         

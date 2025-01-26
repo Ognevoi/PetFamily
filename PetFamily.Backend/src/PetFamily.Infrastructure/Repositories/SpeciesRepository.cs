@@ -1,3 +1,4 @@
+using CSharpFunctionalExtensions;
 using Microsoft.EntityFrameworkCore;
 using PetFamily.Domain.AnimalSpecies.Entities;
 using PetFamily.Domain.Shared;
@@ -21,14 +22,14 @@ public class SpeciesRepository
         return species.Id;
     }
 
-    public async Task<Result<Species>> GetById(Guid speciesId)
+    public async Task<Result<Species, Error>> GetById(Guid speciesId)
     {
         var species = await dbContext.Species
             .Include(s => s.Breed)
             .FirstOrDefaultAsync(s => s.Id == speciesId);
 
         if (species == null)
-            return "Species not found";
+            return Errors.General.NotFound(speciesId);
 
         return species;
     }

@@ -18,4 +18,8 @@
       <Compile Remove="Volunteers\VolunteerId.cs" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="CSharpFunctionalExtensions" Version="3.4.3" />
+    </ItemGroup>
+
 </Project>

@@ -1,9 +1,10 @@
+using CSharpFunctionalExtensions;
 using PetFamily.Domain.Shared;
 using PetFamily.Domain.Volunteers.ValueObjects;
 
 namespace PetFamily.Domain.Volunteers.Entities;
 
-public class Volunteer : Shared.Entity<VolunteerId>
+    public class Volunteer : Shared.Entity<VolunteerId>
 {
     private readonly List<Pet> _pets = [];
     
@@ -37,20 +38,20 @@ public class Volunteer : Shared.Entity<VolunteerId>
     public DateTime CreatedAt { get; private set; }
 
     
-    public static Result<Volunteer> Create(
+    public static Result<Volunteer, Error> Create(
         VolunteerId volunteerId,
         string fullName,
         Email email,
         string description,
         int experienceYears,
         PhoneNumber phoneNumber
-    )
+        )
     {
         if (string.IsNullOrWhiteSpace(fullName))
-            return "Full name is required";
+            return Errors.General.ValueIsRequired("Full name");
         
         if (string.IsNullOrWhiteSpace(description))
-            return "Description is required";
+            return Errors.General.ValueIsRequired("Description");
         
         var volunteer = new Volunteer(
             volunteerId,
@@ -64,23 +65,13 @@ public class Volunteer : Shared.Entity<VolunteerId>
         return volunteer;
     }
     
-    // TODO: review this code later for correctness
-    public void CreateSocialNetworks(string name, string url)
+    public void CreateSocialNetworks(IEnumerable<SocialNetwork> socialNetworks)
     {
-        var result = SocialNetwork.Create(name, url);
+        SocialNetworksList = new SocialNetworkList(socialNetworks.ToList());
+    }
 
-        SocialNetworksList = new SocialNetworkList(new List<SocialNetwork> { result.Value });
-    }
-    
-    // TODO: review this code later for correctness
-    public void CreateAssistanceDetails(string name, string description)
+    public void CreateAssistanceDetails(IEnumerable<AssistanceDetails> assistanceDetails)
     {
-        var result = AssistanceDetails.Create(name, description);
-        
-        AssistanceDetailsList = new AssistanceDetailsList(new List<AssistanceDetails> { result.Value });
+        AssistanceDetailsList = new AssistanceDetailsList(assistanceDetails.ToList());
     }
-    
 }
-    
-
-    

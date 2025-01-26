@@ -1,3 +1,4 @@
+using CSharpFunctionalExtensions;
 using PetFamily.Domain.Shared;
 
 namespace PetFamily.Domain.Volunteers.ValueObjects;
@@ -13,15 +14,15 @@ public record PetPhoto
     public string Url { get; }
     public string FileName { get; }
     
-    public static Result<PetPhoto> Create(string url)
+    public static Result<PetPhoto, Error> Create(string url)
     {
         if (string.IsNullOrWhiteSpace(url))
-            return "Photo URL is required";
+            return Errors.General.ValueIsRequired("Photo URL");
         
         string fileName = Path.GetFileName(new Uri(url).AbsolutePath);
 
         if (string.IsNullOrWhiteSpace(fileName))
-            return "Photo file name could not be determined from the URL";
+            return Errors.General.ValueIsRequired("Photo File Name");
 
         return new PetPhoto(url, fileName);
     }

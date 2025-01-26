@@ -4,8 +4,14 @@ public record AssistanceDetailsList
 {
     public IReadOnlyList<AssistanceDetails> AssistanceDetails { get; }
     
-    public AssistanceDetailsList(List<AssistanceDetails> assistanceDetails)
+    // required by EF Core
+    private AssistanceDetailsList()
     {
-        AssistanceDetails = assistanceDetails;
+        AssistanceDetails = new List<AssistanceDetails>();
+    }
+    
+    public AssistanceDetailsList(IEnumerable<AssistanceDetails> assistanceDetails)
+    {
+        AssistanceDetails = assistanceDetails.ToList();
     }
 }

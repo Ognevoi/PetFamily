@@ -1,4 +1,5 @@
 using System.Text.RegularExpressions;
+using CSharpFunctionalExtensions;
 using PetFamily.Domain.Shared;
 
 namespace PetFamily.Domain.Volunteers.ValueObjects;
@@ -12,17 +13,13 @@ public record Email
 
     public string Value { get; }
 
-    public static Result<Email> Create(string email)
+    public static Result<Email, Error> Create(string email)
     {
         if (string.IsNullOrWhiteSpace(email))
-        {
-            return "Email cannot be empty";
-        }
-
+            return Errors.General.ValueIsRequired("Email");
+        
         if (!IsValidEmail(email))
-        {
-            return "Email is invalid";
-        }
+            return Errors.General.ValueIsInvalid("Email");
 
         return new Email(email);
     }

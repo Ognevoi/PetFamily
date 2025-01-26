@@ -1,4 +1,4 @@
-using System.ComponentModel.DataAnnotations.Schema;
+using CSharpFunctionalExtensions;
 using PetFamily.Domain.AnimalSpecies.Entities;
 using PetFamily.Domain.Shared;
 using PetFamily.Domain.Volunteers.Enums;
@@ -77,7 +77,7 @@ public class Pet : Shared.Entity<PetId>
     {
 
         if (string.IsNullOrWhiteSpace(name))
-            return "Name is required";
+            return Result.Failure<Pet>("Name is required");
 
         var pet = new Pet(
             petId,
@@ -97,10 +97,10 @@ public class Pet : Shared.Entity<PetId>
         return pet;
     }
     
-    public Result AddPhoto(string url, string fileName)
+    public Result<PetPhoto, Error> AddPhoto(string url, string fileName)
     {
         if (PetPhoto != null)
-            return "Photo already exists. Remove the existing photo to add a new one.";
+            return Errors.General.ValueAlreadyExists("Photo");
 
         var photoResult = PetPhoto.Create(url);
         
@@ -108,15 +108,17 @@ public class Pet : Shared.Entity<PetId>
             return photoResult.Error;
 
         PetPhoto = photoResult.Value;
-        return Result.Success();
+        
+        return PetPhoto;
     }
 
-    public Result RemovePhoto()
+    public Result<PetPhoto, Error> RemovePhoto()
     {
         if (PetPhoto == null)
-            return "No photo exists to remove.";
+            return Errors.General.NotFound();
 
         PetPhoto = null;
-        return Result.Success();
+        
+        return PetPhoto;
     }
 }
