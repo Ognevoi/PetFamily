@@ -1,3 +1,4 @@
+using CSharpFunctionalExtensions;
 using PetFamily.Domain.Shared;
 
 namespace PetFamily.Domain.Volunteers.ValueObjects;
@@ -17,19 +18,19 @@ public record Address
     public string State { get; }
     public string ZipCode { get; }
 
-    public static Result<Address> Create(string street, string city, string state, string zipCode)
+    public static Result<Address, Error> Create(string street, string city, string state, string zipCode)
     {
         if (string.IsNullOrWhiteSpace(street))
-            return "Street should not be empty";
+            return Errors.General.ValueIsRequired("Street");
 
         if (string.IsNullOrWhiteSpace(city))
-            return "City should not be empty";
+            return Errors.General.ValueIsRequired("City");
 
         if (string.IsNullOrWhiteSpace(state))
-            return "State should not be empty";
+            return Errors.General.ValueIsRequired("State");
 
         if (string.IsNullOrWhiteSpace(zipCode))
-            return "Zip code should not be empty";
+            return Errors.General.ValueIsRequired("ZipCode");
 
         var address = new Address(street, city, state, zipCode);
 

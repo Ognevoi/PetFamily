@@ -4,9 +4,15 @@ public record SocialNetworkList
 {
     public IReadOnlyList<SocialNetwork> SocialNetworks { get; }
     
-    public SocialNetworkList(List<SocialNetwork> socialNetworks)
+    // required by EF Core
+    private SocialNetworkList()
     {
-        SocialNetworks = socialNetworks;
+        SocialNetworks = new List<SocialNetwork>();
+    }
+    
+    public SocialNetworkList(IEnumerable<SocialNetwork> socialNetworks)
+    {
+        SocialNetworks = socialNetworks.ToList();
     }
     
 }
