@@ -1,10 +1,10 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using PetFamily.Domain.AnimalSpecies.Entities;
+using PetFamily.Domain.PetManagement.Entities;
+using PetFamily.Domain.PetManagement.Enums;
+using PetFamily.Domain.PetManagement.ValueObjects;
 using PetFamily.Domain.Shared;
-using PetFamily.Domain.Volunteers.Entities;
-using PetFamily.Domain.Volunteers.Enums;
-using PetFamily.Domain.Volunteers.ValueObjects;
+using PetFamily.Domain.SpeciesManagement.AggregateRoot;
 
 namespace PetFamily.Infrastructure.Configurations;
 
@@ -21,9 +21,13 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
                 id => id.Value,
                 value => PetId.Create(value));
 
-        builder.Property(p => p.Name)
-            .IsRequired()
-            .HasMaxLength(Constants.MAX_VERY_LOW_TEXT_LENGTH);
+        builder.OwnsOne(p => p.Name, nb =>
+        {
+            nb.Property(n => n.Value)
+                .IsRequired()
+                .HasMaxLength(Constants.MAX_VERY_LOW_TEXT_LENGTH)
+                .HasColumnName("name");
+        });
 
         builder.HasOne<Species>()
             .WithMany()
@@ -37,27 +41,57 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
             .IsRequired()
             .OnDelete(DeleteBehavior.Cascade);
 
-        builder.Property(p => p.Description)
-            .IsRequired(false)
-            .HasMaxLength(Constants.MAX_LOW_TEXT_LENGTH);
+        builder.OwnsOne(p => p.Description, db =>
+        {
+            db.Property(d => d.Value)
+                .IsRequired()
+                .HasMaxLength(Constants.MAX_MEDIUM_TEXT_LENGTH)
+                .HasColumnName("description");
+        });
 
-        builder.Property(p => p.Color)
-            .IsRequired(false)
-            .HasMaxLength(Constants.MAX_LOW_TEXT_LENGTH);
+        builder.OwnsOne(p => p.Color, cb =>
+        {
+            cb.Property(c => c.Value)
+                .IsRequired()
+                .HasMaxLength(Constants.MAX_VERY_LOW_TEXT_LENGTH)
+                .HasColumnName("color");
+        });
 
-        builder.Property(p => p.HealthInfo)
-            .IsRequired()
-            .HasMaxLength(Constants.MAX_MEDIUM_TEXT_LENGTH);
+        builder.OwnsOne(p => p.HealthInfo, hb =>
+        {
+            hb.Property(h => h.Value)
+                .IsRequired()
+                .HasMaxLength(Constants.MAX_LOW_TEXT_LENGTH)
+                .HasColumnName("health_info");
+        });
 
-        builder.Property(p => p.Weight)
-            .IsRequired(false);
+        builder.OwnsOne(p => p.Weight, wb =>
+        {
+            wb.Property(w => w.Value)
+                .IsRequired()
+                .HasColumnName("weight");
+        });
 
-        builder.Property(p => p.Height)
-            .IsRequired(false);
+        builder.OwnsOne(p => p.Height, hb =>
+        {
+            hb.Property(h => h.Value)
+                .IsRequired()
+                .HasColumnName("height");
+        });
 
-        builder.Property(p => p.IsSterilized);
+        builder.OwnsOne(p => p.IsSterilized, sb =>
+        {
+            sb.Property(s => s.Value)
+                .IsRequired()
+                .HasColumnName("is_sterilized");
+        });
 
-        builder.Property(p => p.IsVaccinated);
+        builder.OwnsOne(p => p.IsVaccinated, vb =>
+        {
+            vb.Property(v => v.Value)
+                .IsRequired()
+                .HasColumnName("is_vaccinated");
+        });
 
         builder.Property(p => p.BirthDate)
             .IsRequired(false);

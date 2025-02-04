@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using PetFamily.API.Extensions;
 using PetFamily.Application.Volunteers.CreateVolunteer;
-using PetFamily.Application.Volunteers.DTO;
 
 
 namespace PetFamily.API.Controllers;
@@ -10,29 +9,15 @@ namespace PetFamily.API.Controllers;
 [Route("[controller]")]
 public class VolunteerController : ControllerBase
 {
-    
     [HttpPost]
-    public async Task<ActionResult<Guid>> Create(
+    public async Task<ActionResult> Create(
         [FromServices] CreateVolunteerHandler handler,
-        CreateVolunteerRequest request,
+        [FromBody] CreateVolunteerRequest request,
         CancellationToken cancellationToken)
     {
+        
+        var result = await handler.Handle(request, cancellationToken);
 
-        var command = new CreateVolunteerCommand(
-            FullName: request.FullName,
-            Email: request.Email,
-            Description: request.Description,
-            ExperienceYears: request.ExperienceYears,
-            PhoneNumber: request.PhoneNumber,
-            SocialNetworks: request.SocialNetworks.Select(sn => new SocialNetworkDto(sn.Name, sn.Url)),
-            AssistanceDetails: request.AssistanceDetails.Select(ad => new AssistanceDetailsDto(ad.Name, ad.Description))
-            );
-        
-        var result = await handler.Handle(command, cancellationToken);
-        
-        if (result.IsFailure)
-            return result.Error.ToResponse();
-        
-        return Ok(result.Value);
+        return result.IsFailure ? result.Error.ToResponse() : Ok(result.Value);
     }
 }

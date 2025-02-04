@@ -1,5 +1,8 @@
+using PetFamily.API;
+using PetFamily.API.Validation;
 using PetFamily.Application;
 using PetFamily.Infrastructure;
+using SharpGrip.FluentValidation.AutoValidation.Mvc.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,7 +10,16 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddInfrastructure().AddApplication();
+builder.Services
+    .AddInfrastructure()
+    .AddApplication()
+    .AddApi();
+
+builder.Services.AddFluentValidationAutoValidation(configuration =>
+{
+    configuration.OverrideDefaultResultFactoryWith<CustomResultFactory>();
+});
+
 
 var app = builder.Build();
 

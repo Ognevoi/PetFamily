@@ -1,3 +1,5 @@
+using FluentValidation;
+
 namespace PetFamily.Application.Volunteers.DTO;
 
 public record AssistanceDetailsDto
@@ -12,4 +14,11 @@ public record AssistanceDetailsDto
     }
 }
 
-
+public class AssistanceDetailsDtoValidator: AbstractValidator<AssistanceDetailsDto>
+{
+    public AssistanceDetailsDtoValidator()
+    {
+        RuleFor(x => x.Name).NotEmpty();
+        RuleFor(x => x.Description).NotEmpty();
+    }
+}

@@ -1,3 +1,5 @@
+using FluentValidation;
+
 namespace PetFamily.Application.Volunteers.DTO;
 
 public record SocialNetworkDto
@@ -12,4 +14,12 @@ public record SocialNetworkDto
     }
 }
 
+public class SocialNetworkDtoValidator: AbstractValidator<SocialNetworkDto>
+{
+    public SocialNetworkDtoValidator()
+    {
+        RuleFor(x => x.Name).NotEmpty();
+        RuleFor(x => x.Url).NotEmpty();
+    }
+}
 
