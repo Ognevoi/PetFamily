@@ -15,12 +15,6 @@ builder.Services
     .AddApplication()
     .AddApi();
 
-builder.Services.AddFluentValidationAutoValidation(configuration =>
-{
-    configuration.OverrideDefaultResultFactoryWith<CustomResultFactory>();
-});
-
-
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
