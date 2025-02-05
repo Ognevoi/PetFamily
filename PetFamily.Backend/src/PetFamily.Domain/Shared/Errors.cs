@@ -27,5 +27,12 @@ public static class Errors
             var label= name ?? "value";
             return Error.Validation("value.already.exists", $"{label} already exists"); 
         }
+        
+        public static Error ValueIsTooLong(string? name = null, int? maxLength = null)
+        {
+            var label= name ?? "value";
+            var length = maxLength == null ? "" : $" with max length {maxLength}";
+            return Error.Validation("value.is.too.long", $"{label} is too long{length}"); 
+        }
     }
 }
