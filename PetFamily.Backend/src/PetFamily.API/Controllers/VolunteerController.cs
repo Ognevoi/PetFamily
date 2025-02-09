@@ -15,7 +15,6 @@ public class VolunteerController : ControllerBase
         [FromBody] CreateVolunteerRequest request,
         CancellationToken cancellationToken)
     {
-        
         var result = await handler.Handle(request, cancellationToken);
 
         return result.IsFailure ? result.Error.ToResponse() : Ok(result.Value);

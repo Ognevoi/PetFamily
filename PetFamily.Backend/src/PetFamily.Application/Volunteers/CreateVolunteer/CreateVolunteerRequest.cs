@@ -1,6 +1,6 @@
 using PetFamily.Application.Volunteers.DTO;
 
-namespace PetFamily.API.Controllers;
+namespace PetFamily.Application.Volunteers.CreateVolunteer;
 
 public record CreateVolunteerRequest(
     FullNameDto FullName,
