@@ -1,10 +1,9 @@
 using PetFamily.Application.Volunteers.DTO;
 
-namespace PetFamily.API.Controllers;
+namespace PetFamily.Application.Volunteers.CreateVolunteer;
 
 public record CreateVolunteerRequest(
-    string FirstName,
-    string LastName,
+    FullNameDto FullName,
     string Email,
     string Description,
     int ExperienceYears,

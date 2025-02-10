@@ -1,5 +1,5 @@
 using CSharpFunctionalExtensions;
-using PetFamily.API.Controllers;
+using Microsoft.Extensions.Logging;
 using PetFamily.Domain.PetManagement.AggregateRoot;
 using PetFamily.Domain.PetManagement.ValueObjects;
 using PetFamily.Domain.Shared;
@@ -9,18 +9,21 @@ namespace PetFamily.Application.Volunteers.CreateVolunteer;
 public class CreateVolunteerHandler
 {
     private readonly IVolunteersRepository _volunteersRepository;
+    private readonly ILogger<CreateVolunteerHandler> _logger;
 
     public CreateVolunteerHandler(
-        IVolunteersRepository volunteersRepository)
+        IVolunteersRepository volunteersRepository,
+        ILogger<CreateVolunteerHandler> logger)
     {
         _volunteersRepository = volunteersRepository;
+        _logger = logger;
     }
     
     public async Task<Result<Guid, Error>> Handle(
         CreateVolunteerRequest request,
         CancellationToken cancellationToken = default)
     {
-        var fullNameResult = FullName.Create(request.FirstName, request.LastName).Value;
+        var fullNameResult = FullName.Create(request.FullName.FirstName, request.FullName.LastName).Value;
         
         var emailResult = Email.Create(request.Email).Value;
 
@@ -33,7 +36,7 @@ public class CreateVolunteerHandler
         var volunteer = await _volunteersRepository.GetByEmail(emailResult);
         
         if (volunteer.IsSuccess)
-            return Errors.General.ValueAlreadyExists("Email");
+            return Errors.General.ValueAlreadyExists(nameof(Email));
         
         var volunteerId = VolunteerId.NewVolunteerId();
         
@@ -53,6 +56,8 @@ public class CreateVolunteerHandler
         volunteerToCreate.Value.CreateAssistanceDetails(assistanceDetailsResult);
         
         await _volunteersRepository.Add(volunteerToCreate.Value, cancellationToken);
+        
+        _logger.LogInformation("Volunteer with id {VolunteerId} created", volunteerToCreate.Value.Id);
 
         return (Guid)volunteerToCreate.Value.Id;
     }

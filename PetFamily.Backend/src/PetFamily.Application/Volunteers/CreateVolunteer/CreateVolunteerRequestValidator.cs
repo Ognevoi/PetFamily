@@ -1,5 +1,4 @@
 using FluentValidation;
-using PetFamily.API.Controllers;
 using PetFamily.Application.Validation;
 using PetFamily.Domain.PetManagement.ValueObjects;
 
@@ -9,8 +8,7 @@ public class CreateVolunteerRequestValidator: AbstractValidator<CreateVolunteerR
 {
     public CreateVolunteerRequestValidator()
     {
-        RuleFor(c => new { c.FirstName, c.LastName })
-            .MustBeValueObject(f => FullName.Create(f.FirstName, f.LastName ));
+        RuleFor(c => c.FullName).MustBeValueObject(f => FullName.Create(f.FirstName, f.LastName ));
         RuleFor(c => c.Email).MustBeValueObject(Email.Create);
         RuleFor(c => c.Description).MustBeValueObject(Description.Create);
         RuleFor(c => c.ExperienceYears).MustBeValueObject(ExperienceYears.Create);
