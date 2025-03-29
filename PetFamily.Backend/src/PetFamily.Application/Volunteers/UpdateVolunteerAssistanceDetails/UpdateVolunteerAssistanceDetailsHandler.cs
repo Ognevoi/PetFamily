@@ -34,12 +34,12 @@ public class UpdateVolunteerAssistanceDetailsHandler
 
         var result = await _volunteersRepository.Save(volunteerResult.Value, cancellationToken);
 
-        // _logger.LogInformation(
-        //     "Update volunteer assistance details: " +
-        //     "volunteer id: {VolunteerId}, " +
-        //     "assistance details: {AssistanceDetails}",
-        //     volunteerResult.Value.Id,
-        //     string.Join(", ", volunteerResult.Value.AssistanceDetails.Select(sn => sn.Name)));
+        _logger.LogInformation(
+            "Update volunteer assistance details: " +
+            "volunteer id: {VolunteerId}, " +
+            "assistance details: {AssistanceDetails}",
+            volunteerResult.Value.Id,
+            string.Join(", ", request.Dto.AssistanceDetails.Select(sn => sn.Name)));
 
         return result;
     }

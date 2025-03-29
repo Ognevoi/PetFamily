@@ -33,12 +33,12 @@ public class UpdateVolunteerSocialNetworksHandler
         
         var result = await _volunteersRepository.Save(volunteerResult.Value, cancellationToken);
         
-        // _logger.LogInformation(
-        //     "Update volunteer social networks: " +
-        //     "volunteer id: {VolunteerId}, " +
-        //     "social networks: {SocialNetworks}",
-        //     volunteerResult.Value.Id,
-        //     string.Join(", ", volunteerResult.Value.SocialNetworks.Select(sn => $"{sn.Name}: {sn.Url}").ToArray()));
+        _logger.LogInformation(
+            "Update volunteer social networks: " +
+            "volunteer id: {VolunteerId}, " +
+            "social networks: {SocialNetworks}",
+            volunteerResult.Value.Id,
+            string.Join(", ", request.Dto.SocialNetworks.Select(sn => $"{sn.Name}: {sn.Url}").ToArray()));
         
         return result;
     }
