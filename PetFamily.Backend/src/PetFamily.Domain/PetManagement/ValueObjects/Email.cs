@@ -16,10 +16,10 @@ public record Email
     public static Result<Email, Error> Create(string email)
     {
         if (string.IsNullOrWhiteSpace(email))
-            return Errors.General.ValueIsRequired("Email");
+            return Errors.General.ValueIsRequired(nameof(Email));
         
         if (!IsValidEmail(email))
-            return Errors.General.ValueIsInvalid("Email");
+            return Errors.General.ValueIsInvalid(nameof(Email));
 
         return new Email(email);
     }

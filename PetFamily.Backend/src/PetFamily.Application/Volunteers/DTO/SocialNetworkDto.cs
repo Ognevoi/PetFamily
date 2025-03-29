@@ -1,4 +1,6 @@
 using FluentValidation;
+using PetFamily.Application.Validation;
+using PetFamily.Domain.Shared;
 
 namespace PetFamily.Application.Volunteers.DTO;
 
@@ -6,7 +8,7 @@ public record SocialNetworkDto
 {
     public string Name { get; }
     public string Url { get; }
-    
+
     public SocialNetworkDto(string name, string url)
     {
         Name = name;
@@ -14,12 +16,11 @@ public record SocialNetworkDto
     }
 }
 
-public class SocialNetworkDtoValidator: AbstractValidator<SocialNetworkDto>
+public class SocialNetworkDtoValidator : AbstractValidator<SocialNetworkDto>
 {
     public SocialNetworkDtoValidator()
     {
-        RuleFor(x => x.Name).NotEmpty();
-        RuleFor(x => x.Url).NotEmpty();
+        RuleFor(x => x.Name).NotEmpty().WithError(Errors.General.ValueIsRequired());
+        RuleFor(x => x.Url).NotEmpty().WithError(Errors.General.ValueIsRequired());
     }
 }
-

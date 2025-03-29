@@ -1,15 +1,15 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PetFamily.Domain.Shared;
-using PetFamily.Domain.SpeciesManagement.AggregateRoot;
-using PetFamily.Domain.SpeciesManagement.Value_Objects;
+using PetFamily.Domain.SpecieManagement.AggregateRoot;
+using PetFamily.Domain.SpecieManagement.Value_Objects;
 
 
 namespace PetFamily.Infrastructure.Configurations;
 
-public class SpeciesConfiguration : IEntityTypeConfiguration<Species>
+public class SpecieConfiguration : IEntityTypeConfiguration<Specie>
 {
-    public void Configure(EntityTypeBuilder<Species> builder)
+    public void Configure(EntityTypeBuilder<Specie> builder)
     {
         builder.ToTable("species");
 
@@ -18,7 +18,7 @@ public class SpeciesConfiguration : IEntityTypeConfiguration<Species>
         builder.Property(s => s.Id)
             .HasConversion(
                 id => id.Value,
-                value => SpeciesId.Create(value));
+                value => SpecieId.Create(value));
 
         builder.Property(s => s.Name)
             .IsRequired()
@@ -26,8 +26,8 @@ public class SpeciesConfiguration : IEntityTypeConfiguration<Species>
         
         builder.HasMany(s => s.Breed)
             .WithOne()
-            .HasForeignKey("species_id")
+            .HasForeignKey("specie_id")
             .IsRequired()
-            .OnDelete(DeleteBehavior.Restrict);
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

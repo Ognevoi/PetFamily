@@ -32,15 +32,17 @@ public class VolunteerConfiguration : IEntityTypeConfiguration<Volunteer>
                 .HasColumnName("last_name");
         });
         
-        builder.OwnsOne(v => v.Email, e =>
-        {
-            e.Property(em => em.Value)
-                .IsRequired()
-                .HasMaxLength(Constants.MAX_VERY_LOW_TEXT_LENGTH)
-                .HasColumnName("email");
-        });
+        builder.ComplexProperty(
+            v => v.Email,
+            pb =>
+            {
+                pb.Property(p => p.Value)
+                    .IsRequired()
+                    .HasMaxLength(Constants.MAX_VERY_LOW_TEXT_LENGTH)
+                    .HasColumnName("email");
+            });
         
-        builder.OwnsOne(v => v.Description, d =>
+        builder.ComplexProperty(v => v.Description, d =>
         {
             d.Property(de => de.Value)
                 .IsRequired()
@@ -48,14 +50,14 @@ public class VolunteerConfiguration : IEntityTypeConfiguration<Volunteer>
                 .HasColumnName("description");
         });
         
-        builder.OwnsOne(v => v.ExperienceYears, ey =>
+        builder.ComplexProperty(v => v.ExperienceYears, ey =>
         {
             ey.Property(e => e.Value)
                 .IsRequired()
                 .HasColumnName("experience_years");
         });
         
-        builder.OwnsOne(v => v.PhoneNumber, pn =>
+        builder.ComplexProperty(v => v.PhoneNumber, pn =>
         {
             pn.Property(p => p.Value)
                 .IsRequired()
@@ -83,24 +85,32 @@ public class VolunteerConfiguration : IEntityTypeConfiguration<Volunteer>
             ab.ToJson("assistance_details");
 
             ab.OwnsMany(a => a.AssistanceDetails, ad =>
-            {
-                ad.Property(a => a.Name)
-                    .IsRequired()
-                    .HasMaxLength(Constants.MAX_VERY_LOW_TEXT_LENGTH);
-                ad.Property(a => a.Description)
-                    .IsRequired()
-                    .HasMaxLength(Constants.MAX_MEDIUM_TEXT_LENGTH);
-            }
-                );
+                {
+                    ad.Property(a => a.Name)
+                        .IsRequired()
+                        .HasMaxLength(Constants.MAX_VERY_LOW_TEXT_LENGTH);
+                    ad.Property(a => a.Description)
+                        .IsRequired()
+                        .HasMaxLength(Constants.MAX_MEDIUM_TEXT_LENGTH);
+                }
+            );
         });
-
+        
         builder.HasMany(v => v.Pets)
-            .WithOne()
+            .WithOne(p => p.Volunteer)
             .HasForeignKey("volunteer_id")
             .IsRequired(false);
         
         builder.Property(p => p.CreatedAt)
             .HasDefaultValueSql("CURRENT_TIMESTAMP")
             .IsRequired();
+        
+        builder.Property(v => v.IsDeleted)
+            .IsRequired()
+            .HasColumnName("is_deleted");
+
+        builder.Property(v => v.DeletedAt)
+            .IsRequired()
+            .HasColumnName("deleted_at");
     }
 }

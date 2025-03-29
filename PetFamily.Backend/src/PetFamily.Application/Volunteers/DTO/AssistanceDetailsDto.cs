@@ -1,4 +1,6 @@
 using FluentValidation;
+using PetFamily.Application.Validation;
+using PetFamily.Domain.Shared;
 
 namespace PetFamily.Application.Volunteers.DTO;
 
@@ -18,7 +20,7 @@ public class AssistanceDetailsDtoValidator: AbstractValidator<AssistanceDetailsD
 {
     public AssistanceDetailsDtoValidator()
     {
-        RuleFor(x => x.Name).NotEmpty();
-        RuleFor(x => x.Description).NotEmpty();
+        RuleFor(x => x.Name).NotEmpty().WithError(Errors.General.ValueIsRequired());
+        RuleFor(x => x.Description).NotEmpty().WithError(Errors.General.ValueIsRequired());
     }
 }

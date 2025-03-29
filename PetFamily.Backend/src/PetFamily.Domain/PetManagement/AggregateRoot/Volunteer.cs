@@ -5,11 +5,11 @@ using PetFamily.Domain.Shared;
 
 namespace PetFamily.Domain.PetManagement.AggregateRoot;
 
-    public class Volunteer : Shared.Entity<VolunteerId>
+public class Volunteer : SoftDeletableEntity<VolunteerId>
 {
     private readonly List<Pet> _pets = [];
     
-    private Volunteer(VolunteerId id) : base(id) { } // required by EF Core
+    private Volunteer() { } // required by EF Core
 
     private Volunteer(
         VolunteerId volunteerId,
@@ -17,9 +17,9 @@ namespace PetFamily.Domain.PetManagement.AggregateRoot;
         Email email,
         Description description,
         ExperienceYears experienceYears,
-        PhoneNumber phoneNumber
-    ) : base(volunteerId)
+        PhoneNumber phoneNumber)
     {
+        Id = volunteerId;
         FullName = fullName;
         Email = email;
         Description = description;
@@ -35,7 +35,7 @@ namespace PetFamily.Domain.PetManagement.AggregateRoot;
     public PhoneNumber PhoneNumber { get; private set; }
     public SocialNetworkList? SocialNetworksList { get; private set; }
     public AssistanceDetailsList? AssistanceDetailsList { get; private set; }
-    public IReadOnlyList<Pet> Pets => _pets;
+    public List<Pet> Pets => _pets;
     public DateTime CreatedAt { get; private set; }
 
     
@@ -59,14 +59,66 @@ namespace PetFamily.Domain.PetManagement.AggregateRoot;
         
         return volunteer;
     }
+
+    public void Update(
+        FullName fullName,
+        Email email,
+        Description description,
+        ExperienceYears experienceYears,
+        PhoneNumber phoneNumber
+    )
+    {   
+        FullName = fullName;
+        Email = email;
+        Description = description;
+        ExperienceYears = experienceYears;
+        PhoneNumber = phoneNumber;
+    }
     
-    public void CreateSocialNetworks(IEnumerable<SocialNetwork> socialNetworks)
+    public override void SoftDelete()
     {
+        base.SoftDelete();
+
+        foreach (var pet in _pets)
+        {
+            pet.SoftDelete();
+        }
+    }
+    
+    public override void Restore()
+    {
+        base.Restore();
+        
+        foreach (var pet in _pets)
+        {
+            pet.Restore();
+        }
+    }
+    
+    public void CreateSocialNetworks(IEnumerable<SocialNetwork> socialNetworks) =>
         SocialNetworksList = new SocialNetworkList(socialNetworks.ToList());
+        
+    public void UpdateSocialNetworks(IEnumerable<SocialNetwork> socialNetworks) =>
+        SocialNetworksList = new SocialNetworkList(socialNetworks.ToList());
+    
+    public void CreateAssistanceDetails(IEnumerable<AssistanceDetails> assistanceDetails) =>
+        AssistanceDetailsList = new AssistanceDetailsList(assistanceDetails.ToList());
+    
+    public void UpdateAssistanceDetails(IEnumerable<AssistanceDetails> assistanceDetails) =>
+        AssistanceDetailsList = new AssistanceDetailsList(assistanceDetails.ToList());
+
+    public void AddPet(Pet pet)
+    {
+        _pets.Add(pet);
+    }
+    
+    public Result<Pet, Error> GetPetById(PetId petId)
+    {
+        var pet = _pets.FirstOrDefault(p => p.Id == petId);
+        if (pet == null)
+            return Errors.General.NotFound(petId);
+
+        return pet;
     }
 
-    public void CreateAssistanceDetails(IEnumerable<AssistanceDetails> assistanceDetails)
-    {
-        AssistanceDetailsList = new AssistanceDetailsList(assistanceDetails.ToList());
-    }
 }

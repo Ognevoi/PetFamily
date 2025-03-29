@@ -1,18 +1,20 @@
+using System.Text.Json.Serialization;
+
 namespace PetFamily.Domain.PetManagement.ValueObjects;
 
-public record SocialNetworkList
+public class SocialNetworkList
 {
-    public IReadOnlyList<SocialNetwork> SocialNetworks { get; }
+    public List<SocialNetwork> SocialNetworks { get; private set; }
     
-    // required by EF Core
     private SocialNetworkList()
     {
         SocialNetworks = new List<SocialNetwork>();
     }
-    
-    public SocialNetworkList(IEnumerable<SocialNetwork> socialNetworks)
+
+    [JsonConstructor]
+    public SocialNetworkList(List<SocialNetwork> socialNetworks)
     {
-        SocialNetworks = socialNetworks.ToList();
+        SocialNetworks = socialNetworks ?? new List<SocialNetwork>();
     }
     
 }
