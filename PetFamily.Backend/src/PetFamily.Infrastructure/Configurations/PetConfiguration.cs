@@ -4,7 +4,7 @@ using PetFamily.Domain.PetManagement.Entities;
 using PetFamily.Domain.PetManagement.Enums;
 using PetFamily.Domain.PetManagement.ValueObjects;
 using PetFamily.Domain.Shared;
-using PetFamily.Domain.SpeciesManagement.AggregateRoot;
+using PetFamily.Infrastructure.Extentions;
 
 namespace PetFamily.Infrastructure.Configurations;
 
@@ -20,6 +20,11 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
             .HasConversion(
                 id => id.Value,
                 value => PetId.Create(value));
+        
+        builder.HasOne(p => p.Volunteer)
+            .WithMany(v => v.Pets)
+            .HasForeignKey("volunteer_id")
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder.OwnsOne(p => p.Name, nb =>
         {
@@ -28,18 +33,6 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
                 .HasMaxLength(Constants.MAX_VERY_LOW_TEXT_LENGTH)
                 .HasColumnName("name");
         });
-
-        builder.HasOne<Species>()
-            .WithMany()
-            .HasForeignKey("species_id")
-            .IsRequired()
-            .OnDelete(DeleteBehavior.Cascade);
-
-        builder.HasOne(p => p.Breed)
-            .WithMany() 
-            .HasForeignKey("breed_id")
-            .IsRequired()
-            .OnDelete(DeleteBehavior.Cascade);
 
         builder.OwnsOne(p => p.Description, db =>
         {
@@ -143,7 +136,7 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
         builder.OwnsOne(p => p.PhoneNumber, pnb =>
         {
             pnb.Property(pn => pn.Value)
-                .IsRequired()
+                .IsRequired(false)
                 .HasMaxLength(Constants.MAX_VERY_LOW_TEXT_LENGTH)
                 .HasColumnName("phone_number");
         });
@@ -152,17 +145,9 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
             .HasDefaultValueSql("CURRENT_TIMESTAMP")
             .IsRequired();
         
-        builder.OwnsOne(p => p.PetPhoto, ppb =>
-        {
-            ppb.ToJson();
-            
-            ppb.Property(pp => pp.Url)
-                .IsRequired()
-                .HasMaxLength(Constants.MAX_MEDIUM_TEXT_LENGTH);
-            
-            ppb.Property(pp => pp.FileName)
-                .IsRequired()
-                .HasMaxLength(Constants.MAX_LOW_TEXT_LENGTH);
-        });
+        builder.Property(p => p.Photos)
+            .JsonValueObjectCollectionConversion()
+            .IsRequired()
+            .HasColumnName("photos");
     }
 }

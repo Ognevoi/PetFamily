@@ -22,6 +22,8 @@ public record Error
     public static Error Failure(string code, string message) => new(code, message, ErrorType.Failure);
     
     public static Error Conflict(string code, string message) => new(code, message, ErrorType.Conflict);
+    
+    public static Error Unexpected(string code, string message) => new(code, message, ErrorType.Unexpected);
 
     public string Serialize()
     {
@@ -40,7 +42,8 @@ public record Error
     
         return new Error(parts[0], parts[1], type);
     }
-
+    
+    public ErrorList ToErrorList() => new([this]);
 }
 
 public enum ErrorType
@@ -48,5 +51,6 @@ public enum ErrorType
     Validation,
     NotFound,
     Failure,
-    Conflict
+    Conflict,
+    Unexpected
 }

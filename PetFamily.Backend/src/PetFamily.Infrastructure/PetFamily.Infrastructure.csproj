@@ -4,6 +4,7 @@
         <TargetFramework>net9.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <UserSecretsId>280c792a-ddb9-4ce8-92cf-b80cda7dc10c</UserSecretsId>
     </PropertyGroup>
 
     <ItemGroup>
@@ -13,10 +14,12 @@
     <ItemGroup>
       <PackageReference Include="EntityFrameworkCore.NamingConventions" Version="8.0.0" />
       <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="9.0.0" />
+      <PackageReference Include="Minio.AspNetCore" Version="6.0.1" />
       <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.2" />
     </ItemGroup>
 
     <ItemGroup>
+      <Folder Include="Database\" />
       <Folder Include="Migrations\" />
     </ItemGroup>
 

@@ -1,36 +1,55 @@
 using CSharpFunctionalExtensions;
 using Microsoft.EntityFrameworkCore;
+using PetFamily.Application.Species;
 using PetFamily.Domain.Shared;
-using PetFamily.Domain.SpeciesManagement.AggregateRoot;
+using PetFamily.Domain.SpecieManagement.AggregateRoot;
+using PetFamily.Domain.SpecieManagement.Value_Objects;
 
 namespace PetFamily.Infrastructure.Repositories;
 
-public class SpeciesRepository
+public class SpeciesRepository : ISpeciesRepository
 {
-    private readonly ApplicationDbContext dbContext;
+    private readonly ApplicationDbContext _dbContext;
 
     public SpeciesRepository(ApplicationDbContext dbContext)
     {
-        this.dbContext = dbContext;
+        _dbContext = dbContext;
     }
 
-    public async Task<Guid> Add(Species species, CancellationToken cancellationToken = default)
+    public async Task<Guid> Add(Specie specie, CancellationToken cancellationToken = default)
     {
-        await dbContext.Species.AddAsync(species, cancellationToken);
-        await dbContext.SaveChangesAsync(cancellationToken);
+        await _dbContext.Species.AddAsync(specie, cancellationToken);
+        await _dbContext.SaveChangesAsync(cancellationToken);
 
-        return species.Id;
+        return specie.Id;
+    }
+    
+    public async Task<Guid> Save(Specie specie, CancellationToken cancellationToken = default)
+    {
+        _dbContext.Species.Attach(specie);    
+        await _dbContext.SaveChangesAsync(cancellationToken);
+
+        return specie.Id;
+    }
+    
+    public async Task<Guid> Delete(Specie specie, CancellationToken cancellationToken = default)
+    {
+        _dbContext.Species.Remove(specie);
+        
+        await _dbContext.SaveChangesAsync(cancellationToken);
+
+        return specie.Id;
     }
 
-    public async Task<Result<Species, Error>> GetById(Guid speciesId)
+    public async Task<Result<Specie, Error>> GetById(SpecieId specieId, CancellationToken cancellationToken = default)
     {
-        var species = await dbContext.Species
+        var specie = await _dbContext.Species
             .Include(s => s.Breed)
-            .FirstOrDefaultAsync(s => s.Id == speciesId);
-
-        if (species == null)
-            return Errors.General.NotFound(speciesId);
-
-        return species;
+            .FirstOrDefaultAsync(s => s.Id == specieId, cancellationToken);
+    
+        if (specie == null)
+            return Errors.General.NotFound(specieId);
+    
+        return specie;
     }
 }

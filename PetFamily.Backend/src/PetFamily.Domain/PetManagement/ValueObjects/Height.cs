@@ -15,7 +15,7 @@ public record Height
     public static Result<Height, Error> Create(double height)
     {
         if (height <= 0)
-            return Errors.General.ValueIsInvalid("Height");
+            return Errors.General.ValueIsInvalid(nameof(Height));
 
         return new Height(height);
     }

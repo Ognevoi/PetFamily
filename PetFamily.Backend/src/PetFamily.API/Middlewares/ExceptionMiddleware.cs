@@ -23,7 +23,7 @@ public class ExceptionMiddleware
         {
             _logger.LogError(e, e.Message);
             
-            var responseError = new ResponseError("servet.internal", e.Message, null);
+            var responseError = new ResponseError("server.internal", e.Message, null);
             var envelope = Envelope.Error([responseError]);
             
             context.Response.ContentType = "application/json";

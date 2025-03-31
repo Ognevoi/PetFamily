@@ -34,5 +34,21 @@ public static class Errors
             var length = maxLength == null ? "" : $" with max length {maxLength}";
             return Error.Validation("value.is.too.long", $"{label} is too long{length}"); 
         }
+        
+        public static Error UploadFailure(string message)
+        {
+            return Error.Unexpected("upload.failure", message);
+        }
+        
+        public static Error DeleteFileFailure(string message)
+        {
+            return Error.Unexpected("delete.file.failure", message);
+        }
+        
+        public static Error NoFileForProcessing()
+        {
+            return Error.Validation("no.file.for.processing", "No file for processing");
+        }
+
     }
 }

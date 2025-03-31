@@ -1,21 +1,28 @@
-using CSharpFunctionalExtensions;
+using PetFamily.Domain.PetManagement.AggregateRoot;
 using PetFamily.Domain.PetManagement.Enums;
 using PetFamily.Domain.PetManagement.ValueObjects;
 using PetFamily.Domain.Shared;
-using PetFamily.Domain.SpeciesManagement.AggregateRoot;
-using PetFamily.Domain.SpeciesManagement.Entities;
+using PetFamily.Domain.SpecieManagement.AggregateRoot;
+using PetFamily.Domain.SpecieManagement.Entities;
 
 namespace PetFamily.Domain.PetManagement.Entities;
 
-public class Pet : Shared.Entity<PetId>
+public class Pet : SoftDeletableEntity<PetId>
 {
-    private Pet(PetId id) : base(id) { } // required by EF Core
+    private readonly List<Photo> _photos = [];
 
-    private Pet(
+    public Volunteer Volunteer { get; private set; } = null!;
+
+    private Pet()
+    {
+    } // required by EF Core
+
+    public Pet(
         PetId petId,
         PetName name,
-        Species species,
+        Specie specie,
         Breed breed,
+        Address address,
         Description? description,
         PetColor color,
         PetHealthInfo healthInfo,
@@ -25,11 +32,13 @@ public class Pet : Shared.Entity<PetId>
         IsVaccinated isVaccinated,
         DateTime birthDate,
         PetStatus petStatus
-        ) : base(petId)
+    )
     {
+        Id = petId;
         Name = name;
-        Species = species;
+        Specie = specie;
         Breed = breed;
+        Address = address;
         Description = description;
         Color = color;
         HealthInfo = healthInfo;
@@ -43,7 +52,7 @@ public class Pet : Shared.Entity<PetId>
     }
 
     public PetName Name { get; private set; }
-    public Species Species { get; private set; }
+    public Specie Specie { get; private set; }
     public Breed Breed { get; private set; }
     public Description? Description { get; private set; }
     public PetColor Color { get; private set; }
@@ -56,66 +65,20 @@ public class Pet : Shared.Entity<PetId>
     public PetStatus PetStatus { get; private set; }
     public AssistanceDetailsList? AssistanceDetails { get; private set; }
     public Address Address { get; private set; }
-    public PhoneNumber PhoneNumber { get; private set; }
+    public PhoneNumber? PhoneNumber { get; private set; }
     public DateTime CreatedAt { get; private set; }
-    public PetPhoto? PetPhoto { get; private set; }
+    public IReadOnlyList<Photo> Photos => _photos;
 
-    
-    public static Result<Pet> Create(
-        PetId petId,
-        PetName name,
-        Species species,
-        Breed breed,
-        Description? description,
-        PetColor color,
-        PetHealthInfo healthInfo,
-        Weight weight,
-        Height height,
-        IsSterilized isSterilized,
-        IsVaccinated isVaccinated,
-        DateTime birthDate,
-        PetStatus petStatus)
+    public void AddPhotos(List<Photo> photos)
     {
-        var pet = new Pet(
-            petId,
-            name,
-            species,
-            breed,
-            description,
-            color,
-            healthInfo,
-            weight,
-            height,
-            isSterilized,
-            isVaccinated,
-            birthDate,
-            petStatus);
-        
-        return pet;
-    }
-    
-    public Result<PetPhoto, Error> AddPhoto(string url, string fileName)
-    {
-        if (PetPhoto != null)
-            return Errors.General.ValueAlreadyExists("Photo");
-
-        var photoResult = PetPhoto.Create(url);
-        
-        if (photoResult.IsFailure)
-            return photoResult.Error;
-
-        PetPhoto = photoResult.Value;
-        
-        return PetPhoto;
+        _photos.AddRange(photos);
     }
 
-    public Result<PetPhoto, Error> RemovePhoto()
+    public void RemovePhotos(List<Photo> photos)
     {
-        if (PetPhoto == null)
-            return Errors.General.NotFound();
-
-        PetPhoto = null;
-        
-        return PetPhoto;
+        foreach (var photo in photos)
+        {
+            _photos.Remove(photo);
+        }
     }
 }

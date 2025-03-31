@@ -1,17 +1,20 @@
+using System.Text.Json.Serialization;
+
 namespace PetFamily.Domain.PetManagement.ValueObjects;
 
-public record AssistanceDetailsList
+public class AssistanceDetailsList
 {
-    public IReadOnlyList<AssistanceDetails> AssistanceDetails { get; }
-    
-    // required by EF Core
+    public List<AssistanceDetails> AssistanceDetails { get; private set; }
+
     private AssistanceDetailsList()
     {
         AssistanceDetails = new List<AssistanceDetails>();
     }
-    
-    public AssistanceDetailsList(IEnumerable<AssistanceDetails> assistanceDetails)
+
+    [JsonConstructor]
+    public AssistanceDetailsList(List<AssistanceDetails> assistanceDetails)
     {
-        AssistanceDetails = assistanceDetails.ToList();
+        AssistanceDetails = assistanceDetails ?? new List<AssistanceDetails>();
     }
+
 }

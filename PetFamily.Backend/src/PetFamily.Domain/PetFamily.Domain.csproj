@@ -7,14 +7,14 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Compile Remove="AnimalSpecies\Breed.cs" />
-      <Compile Remove="ValueObjects\Address.cs" />
+      <Compile Remove="AnimalSpecie\Breed.cs" />
+      <Compile Remove="ValueObject\Address.cs" />
       <Compile Remove="ValueObjects\Email.cs" />
       <Compile Remove="Pets\ValueObjects\PetPhoto.cs" />
     </ItemGroup>
 
     <ItemGroup>
-      <Compile Remove="AnimalSpecies\BreedId.cs" />
+      <Compile Remove="AnimalSpecie\BreedId.cs" />
       <Compile Remove="Volunteers\VolunteerId.cs" />
     </ItemGroup>
 
