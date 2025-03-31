@@ -27,20 +27,17 @@ public static class Inject
         services.AddScoped<UpdateVolunteerHandler>();
         services.AddScoped<UpdateVolunteerSocialNetworksHandler>();
         services.AddScoped<UpdateVolunteerAssistanceDetailsHandler>();
-        services.AddScoped<DeleteVolunteerHandler>();
+        services.AddScoped<HardDeleteVolunteerHandler>();
+        services.AddScoped<SoftDeleteVolunteerHandler>();
         services.AddScoped<RestoreVolunteerHandler>();
         services.AddScoped<UploadPetPhotosHandler>();
         services.AddScoped<DeletePetPhotosHandler>();
         services.AddScoped<GetPetPhotosHandler>();
         services.AddScoped<AddPetHandler>();
-            
         services.AddScoped<CreateSpecieHandler>();
         services.AddScoped<AddBreedHandler>();
-        // services.AddScoped<UpdateSpecieHandler>();
         services.AddScoped<DeleteSpecieHandler>();
         services.AddScoped<DeleteBreedHandler>();
-        // services.AddScoped<RestoreSpecieHandler>();
-        
         return services;
     }
 }

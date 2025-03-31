@@ -90,16 +90,33 @@ public class VolunteerController : ControllerBase
         return result.IsFailure ? result.Error.ToResponse() : Ok(result.Value);
     }
 
-    [HttpDelete("{id:guid}")]
-    public async Task<ActionResult> Delete(
+    [HttpDelete("{id:guid}/soft")]
+    public async Task<ActionResult> SoftDelete(
         [FromRoute] Guid id,
-        [FromQuery] bool isSoftDelete,
-        [FromServices] DeleteVolunteerHandler handler,
+        [FromServices] SoftDeleteVolunteerHandler handler,
         [FromServices] IValidator<DeleteVolunteerRequest> validator,
         CancellationToken cancellationToken)
     {
-        var request = new DeleteVolunteerRequest(id, isSoftDelete);
+        var request = new DeleteVolunteerRequest(id);
+        
+        var validationResult = await validator.ValidateAsync(request, cancellationToken);
+        if (!validationResult.IsValid)
+            return validationResult.ToValidationErrorResponse();
 
+        var result = await handler.Handle(request, cancellationToken);
+
+        return result.IsFailure ? result.Error.ToResponse() : Ok(result.Value);
+    }
+    
+    [HttpDelete("{id:guid}/hard")]
+    public async Task<ActionResult> HardDelete(
+        [FromRoute] Guid id,
+        [FromServices] HardDeleteVolunteerHandler handler,
+        [FromServices] IValidator<DeleteVolunteerRequest> validator,
+        CancellationToken cancellationToken)
+    {
+        var request = new DeleteVolunteerRequest(id);
+        
         var validationResult = await validator.ValidateAsync(request, cancellationToken);
         if (!validationResult.IsValid)
             return validationResult.ToValidationErrorResponse();

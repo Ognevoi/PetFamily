@@ -20,6 +20,11 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
             .HasConversion(
                 id => id.Value,
                 value => PetId.Create(value));
+        
+        builder.HasOne(p => p.Volunteer)
+            .WithMany(v => v.Pets)
+            .HasForeignKey("volunteer_id")
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder.OwnsOne(p => p.Name, nb =>
         {

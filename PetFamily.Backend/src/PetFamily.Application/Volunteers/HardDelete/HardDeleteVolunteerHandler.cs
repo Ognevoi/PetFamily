@@ -4,14 +4,14 @@ using PetFamily.Domain.Shared;
 
 namespace PetFamily.Application.Volunteers.Delete;
 
-public class DeleteVolunteerHandler
+public class HardDeleteVolunteerHandler
 {
     private readonly IVolunteersRepository _volunteersRepository;
-    private readonly ILogger<DeleteVolunteerHandler> _logger;
+    private readonly ILogger<HardDeleteVolunteerHandler> _logger;
 
-    public DeleteVolunteerHandler(
+    public HardDeleteVolunteerHandler(
         IVolunteersRepository volunteersRepository,
-        ILogger<DeleteVolunteerHandler> logger
+        ILogger<HardDeleteVolunteerHandler> logger
         )
     {
         _volunteersRepository = volunteersRepository;
@@ -26,15 +26,13 @@ public class DeleteVolunteerHandler
         if (volunteerResult.IsFailure)
             return volunteerResult.Error;
         
-        if (request.IsSoftDelete)
-            volunteerResult.Value.SoftDelete();
-        else
-            await _volunteersRepository.Delete(volunteerResult.Value, cancellationToken);
+        await _volunteersRepository.Delete(volunteerResult.Value, cancellationToken);
         
         await _volunteersRepository.Save(volunteerResult.Value, cancellationToken);
         
-        _logger.LogInformation("Delete volunteer with id: {VolunteerId}", volunteerResult.Value.Id);
+        _logger.LogInformation("Volunteer with id: {VolunteerId} was HARD deleted", volunteerResult.Value.Id);
 
         return volunteerResult.Value.Id.Value;
     }
+    
 }

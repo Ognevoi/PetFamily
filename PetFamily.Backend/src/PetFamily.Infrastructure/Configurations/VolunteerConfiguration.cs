@@ -96,11 +96,6 @@ public class VolunteerConfiguration : IEntityTypeConfiguration<Volunteer>
             );
         });
         
-        builder.HasMany(v => v.Pets)
-            .WithOne(p => p.Volunteer)
-            .HasForeignKey("volunteer_id")
-            .IsRequired(false);
-        
         builder.Property(p => p.CreatedAt)
             .HasDefaultValueSql("CURRENT_TIMESTAMP")
             .IsRequired();
