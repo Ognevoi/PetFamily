@@ -27,7 +27,6 @@ public class MinioProvider : IFilesProvider
         CancellationToken cancellationToken = default)
     {
         var ensureMakeBucketResult = await EnsureMakeBucket(bucketName, cancellationToken);
-        
         if (ensureMakeBucketResult.IsFailure)
             return ensureMakeBucketResult.Error.ToErrorList();
 

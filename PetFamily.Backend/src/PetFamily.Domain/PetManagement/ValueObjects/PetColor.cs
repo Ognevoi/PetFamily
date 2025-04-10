@@ -3,7 +3,7 @@ using PetFamily.Domain.Shared;
 
 namespace PetFamily.Domain.PetManagement.ValueObjects;
 
-public record PetColor
+public class PetColor : ValueObject
 {
     private PetColor(string value)
     {
@@ -20,5 +20,10 @@ public record PetColor
         var petColorValue = new PetColor(petColor);
 
         return petColorValue;
+    }
+
+    protected override IEnumerable<object> GetEqualityComponents()
+    {
+        yield return Value;
     }
 }

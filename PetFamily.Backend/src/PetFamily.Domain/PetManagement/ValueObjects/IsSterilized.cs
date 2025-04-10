@@ -3,7 +3,7 @@ using PetFamily.Domain.Shared;
 
 namespace PetFamily.Domain.PetManagement.ValueObjects;
 
-public record IsSterilized
+public class IsSterilized : ValueObject
 {
     private IsSterilized(bool value)
     {
@@ -15,5 +15,10 @@ public record IsSterilized
     public static Result<IsSterilized, Error> Create(bool isSterilized)
     {
         return new IsSterilized(isSterilized);
+    }
+
+    protected override IEnumerable<object> GetEqualityComponents()
+    {
+        yield return Value;
     }
 }

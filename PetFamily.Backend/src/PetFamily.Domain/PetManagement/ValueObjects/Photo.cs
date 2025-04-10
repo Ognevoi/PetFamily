@@ -4,7 +4,7 @@ using PetFamily.Domain.Shared;
 
 namespace PetFamily.Domain.PetManagement.ValueObjects;
 
-public record Photo
+public class Photo : ValueObject
 {
     private const int MAX_FILE_NAME_LENGTH = 200;
 
@@ -31,5 +31,10 @@ public record Photo
             return Errors.General.ValueIsInvalid("Photo");
 
         return new Photo(fileName);
+    }
+
+    protected override IEnumerable<object> GetEqualityComponents()
+    {
+        yield return FileName;
     }
 }

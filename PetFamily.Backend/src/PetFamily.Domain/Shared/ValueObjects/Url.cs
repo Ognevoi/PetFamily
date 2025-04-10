@@ -2,7 +2,7 @@ using CSharpFunctionalExtensions;
 
 namespace PetFamily.Domain.Shared.ValueObjects;
 
-public record Url
+public class Url : ValueObject
 {
     private Url(string value)
     {
@@ -22,5 +22,10 @@ public record Url
         var url = new Url(value);
 
         return url;
+    }
+
+    protected override IEnumerable<object> GetEqualityComponents()
+    {
+        yield return Value;
     }
 }

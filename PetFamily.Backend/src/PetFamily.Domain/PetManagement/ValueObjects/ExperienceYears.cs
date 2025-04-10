@@ -3,7 +3,7 @@ using PetFamily.Domain.Shared;
 
 namespace PetFamily.Domain.PetManagement.ValueObjects;
 
-public record ExperienceYears
+public class ExperienceYears : ValueObject
 {
     private ExperienceYears(int value)
     {
@@ -18,5 +18,10 @@ public record ExperienceYears
             return Errors.General.ValueIsInvalid("Experience years");
 
         return new ExperienceYears(experienceYears);
+    }
+
+    protected override IEnumerable<object> GetEqualityComponents()
+    {
+        yield return Value;
     }
 }

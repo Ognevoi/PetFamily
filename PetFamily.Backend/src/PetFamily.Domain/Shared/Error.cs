@@ -32,15 +32,13 @@ public record Error
     
     public static Error Deserialize(string serialized)
     {
-        var parts = serialized.Split(SEPARATOR);
-        
-        if(parts.Length < 3)
-            throw new ArgumentException("Serialized error is invalid");
-        
-        if(Enum.TryParse<ErrorType>(parts[2], out var type) == false)
-            throw new ArgumentException("Serialized error type is invalid");
-    
-        return new Error(parts[0], parts[1], type);
+        var parts = serialized?.Split(SEPARATOR);
+        if (parts == null || parts.Length < 3)
+            return Failure("Deserialization", "Invalid format");
+
+        return Enum.TryParse(parts[2], out ErrorType type)
+            ? new Error(parts[0], parts[1], type)
+            : Failure("Deserialization", "Unrecognized error type");
     }
     
     public ErrorList ToErrorList() => new([this]);

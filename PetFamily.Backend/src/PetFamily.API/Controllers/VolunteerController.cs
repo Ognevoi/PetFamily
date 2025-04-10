@@ -2,17 +2,20 @@ using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using PetFamily.API.Extensions;
 using PetFamily.API.Processors;
-using PetFamily.Application.Volunteers;
-using PetFamily.Application.Volunteers.AddPet;
-using PetFamily.Application.Volunteers.Create;
-using PetFamily.Application.Volunteers.Delete;
-using PetFamily.Application.Volunteers.DeletePetPhoto;
-using PetFamily.Application.Volunteers.GetPetPhoto;
-using PetFamily.Application.Volunteers.Restore;
-using PetFamily.Application.Volunteers.Update;
-using PetFamily.Application.Volunteers.UpdateVolunteerAssistanceDetails;
-using PetFamily.Application.Volunteers.UpdateVolunteerSocialNetworks;
-using PetFamily.Application.Volunteers.UploadPetPhoto;
+using PetFamily.Application.Features.Volunteers;
+using PetFamily.Application.Features.Volunteers.AddPet;
+using PetFamily.Application.Features.Volunteers.Create;
+using PetFamily.Application.Features.Volunteers.DeletePetPhoto;
+using PetFamily.Application.Features.Volunteers.GetPetPhoto;
+using PetFamily.Application.Features.Volunteers.HardDelete;
+using PetFamily.Application.Features.Volunteers.HardDeletePet;
+using PetFamily.Application.Features.Volunteers.Restore;
+using PetFamily.Application.Features.Volunteers.SoftDelete;
+using PetFamily.Application.Features.Volunteers.Update;
+using PetFamily.Application.Features.Volunteers.UpdatePetPosition;
+using PetFamily.Application.Features.Volunteers.UpdateVolunteerAssistanceDetails;
+using PetFamily.Application.Features.Volunteers.UpdateVolunteerSocialNetworks;
+using PetFamily.Application.Features.Volunteers.UploadPetPhoto;
 using PetFamily.Domain.Shared;
 
 
@@ -153,6 +156,45 @@ public class VolunteerController : ControllerBase
         CancellationToken cancellationToken)
     {
         var request = new AddPetRequest(volunteerId, requestDto);
+
+        var validationResult = await validator.ValidateAsync(request, cancellationToken);
+        if (!validationResult.IsValid)
+            return validationResult.ToValidationErrorResponse();
+
+        var result = await handler.Handle(request, cancellationToken);
+
+        return result.IsFailure ? result.Error.ToResponse() : Ok(result.Value);
+    }
+    
+    [HttpDelete("{volunteerId:guid}/pet/{petId:guid}/hard")]
+    public async Task<ActionResult> HardDeletePet(
+        [FromRoute] Guid volunteerId,
+        [FromRoute] Guid petId,
+        [FromServices] HardDeletePetHandler handler,
+        [FromServices] IValidator<DeletePetRequest> validator,
+        CancellationToken cancellationToken)
+    {
+        var request = new DeletePetRequest(volunteerId, petId);
+
+        var validationResult = await validator.ValidateAsync(request, cancellationToken);
+        if (!validationResult.IsValid)
+            return validationResult.ToValidationErrorResponse();
+
+        var result = await handler.Handle(request, cancellationToken);
+
+        return result.IsFailure ? result.Error.ToResponse() : Ok(result.Value);
+    }
+    
+    [HttpPatch("{volunteerId:guid}/pet/{petId:guid}/position")]
+    public async Task<ActionResult> UpdatePetPosition(
+        [FromRoute] Guid volunteerId,
+        [FromRoute] Guid petId,
+        [FromBody] UpdatePetPositionDto dto,
+        [FromServices] UpdatePetPositionHandler handler,
+        [FromServices] IValidator<UpdatePetPositionRequest> validator,
+        CancellationToken cancellationToken)
+    {
+        var request = new UpdatePetPositionRequest(volunteerId, petId, dto);
 
         var validationResult = await validator.ValidateAsync(request, cancellationToken);
         if (!validationResult.IsValid)

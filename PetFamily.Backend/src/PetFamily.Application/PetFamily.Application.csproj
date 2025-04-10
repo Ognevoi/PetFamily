@@ -29,4 +29,8 @@
       <Compile Remove="Volunteers\CreateVolunteer\CreateVolunteerRequest.cs" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Features\" />
+    </ItemGroup>
+
 </Project>

@@ -1,6 +1,8 @@
+using CSharpFunctionalExtensions;
+
 namespace PetFamily.Domain.SpecieManagement.Value_Objects;
 
-public record BreedId
+public class BreedId : ValueObject
 {
     private BreedId(Guid value)
     {
@@ -19,5 +21,10 @@ public record BreedId
         ArgumentNullException.ThrowIfNull(breedId);
 
         return breedId.Value;
+    }
+
+    protected override IEnumerable<object> GetEqualityComponents()
+    {
+        yield return Value;
     }
 }

@@ -3,7 +3,7 @@ using PetFamily.Domain.Shared;
 
 namespace PetFamily.Domain.PetManagement.ValueObjects;
 
-public record SocialNetwork
+public class SocialNetwork : ValueObject
 {
     private SocialNetwork(string name, string url)
     {
@@ -24,5 +24,11 @@ public record SocialNetwork
         var socialNetwork = new SocialNetwork(name, url);
         
         return socialNetwork;
+    }
+
+    protected override IEnumerable<object> GetEqualityComponents()
+    {
+        yield return Name;
+        yield return Url;
     }
 }

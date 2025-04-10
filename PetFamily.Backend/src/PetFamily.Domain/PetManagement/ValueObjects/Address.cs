@@ -3,7 +3,7 @@ using PetFamily.Domain.Shared;
 
 namespace PetFamily.Domain.PetManagement.ValueObjects;
 
-public record Address
+public class Address : ValueObject
 {
     private Address(string street, string city, string state, string zipCode)
     {
@@ -35,5 +35,13 @@ public record Address
         var address = new Address(street, city, state, zipCode);
 
         return address;
+    }
+
+    protected override IEnumerable<object> GetEqualityComponents()
+    {
+        yield return Street;
+        yield return City;
+        yield return State;
+        yield return ZipCode;
     }
 }
