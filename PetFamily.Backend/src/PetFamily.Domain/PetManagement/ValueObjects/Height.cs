@@ -3,7 +3,7 @@ using PetFamily.Domain.Shared;
 
 namespace PetFamily.Domain.PetManagement.ValueObjects;
 
-public record Height
+public class Height : ValueObject
 {
     private Height(double value)
     {
@@ -18,5 +18,10 @@ public record Height
             return Errors.General.ValueIsInvalid(nameof(Height));
 
         return new Height(height);
+    }
+
+    protected override IEnumerable<object> GetEqualityComponents()
+    {
+        yield return Value;
     }
 }

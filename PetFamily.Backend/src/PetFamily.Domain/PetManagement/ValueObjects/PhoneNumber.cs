@@ -4,7 +4,7 @@ using PetFamily.Domain.Shared;
 
 namespace PetFamily.Domain.PetManagement.ValueObjects;
 
-public record PhoneNumber
+public class PhoneNumber : ValueObject
 {
     private PhoneNumber(string value)
     {
@@ -25,5 +25,10 @@ public record PhoneNumber
         }
 
         return new PhoneNumber(phoneNumber);
+    }
+
+    protected override IEnumerable<object> GetEqualityComponents()
+    {
+        yield return Value;
     }
 }

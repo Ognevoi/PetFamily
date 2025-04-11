@@ -3,7 +3,7 @@ using PetFamily.Domain.Shared;
 
 namespace PetFamily.Domain.PetManagement.ValueObjects;
 
-public record IsVaccinated
+public class IsVaccinated : ValueObject
 {
     private IsVaccinated(bool value)
     {
@@ -15,5 +15,10 @@ public record IsVaccinated
     public static Result<IsVaccinated, Error> Create(bool isVaccinated)
     {
         return new IsVaccinated(isVaccinated);
+    }
+
+    protected override IEnumerable<object> GetEqualityComponents()
+    {
+        yield return Value;
     }
 }

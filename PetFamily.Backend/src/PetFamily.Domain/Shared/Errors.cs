@@ -49,6 +49,18 @@ public static class Errors
         {
             return Error.Validation("no.file.for.processing", "No file for processing");
         }
+        
+        public static Error FileSizeLimitExceeded(int maxSize)
+        {
+            return Error.Validation("file.size.limit.exceeded", $"File size limit exceeded. Max size is {maxSize} MB");
+        }
+        
+        public static Error InvalidType(string? name = null, string? expectedType = null)
+        {
+            var label = name ?? "value";
+            var typeInfo = expectedType == null ? "" : $" Expected type: {expectedType}.";
+            return Error.Validation("value.invalid.type", $"{label} has an invalid type.{typeInfo}");
+        }
 
     }
 }

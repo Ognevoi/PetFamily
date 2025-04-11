@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using PetFamily.API.Extensions;
-using PetFamily.Application.Species.AddBreed;
-using PetFamily.Application.Species.CreateSpecie;
-using PetFamily.Application.Species.DeleteBreed;
-using PetFamily.Application.Species.DeleteSpecie;
+using PetFamily.Application.Features.Species.AddBreed;
+using PetFamily.Application.Features.Species.CreateSpecie;
+using PetFamily.Application.Features.Species.DeleteBreed;
+using PetFamily.Application.Features.Species.DeleteSpecie;
 
 
 namespace PetFamily.API.Controllers;

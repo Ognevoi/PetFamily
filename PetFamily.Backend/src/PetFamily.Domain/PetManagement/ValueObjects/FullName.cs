@@ -3,7 +3,7 @@ using PetFamily.Domain.Shared;
 
 namespace PetFamily.Domain.PetManagement.ValueObjects;
 
-public record FullName
+public class FullName : ValueObject
 {
     private FullName(string firstName, string lastName)
     {
@@ -31,5 +31,11 @@ public record FullName
         var fullName = new FullName(firstName, lastName);
 
         return fullName;
+    }
+
+    protected override IEnumerable<object> GetEqualityComponents()
+    {
+        yield return FirstName;
+        yield return LastName;
     }
 }

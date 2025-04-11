@@ -3,7 +3,7 @@ using PetFamily.Domain.Shared;
 
 namespace PetFamily.Domain.PetManagement.ValueObjects;
 
-public record AssistanceDetails
+public class AssistanceDetails : ValueObject
 {
     private AssistanceDetails(string name, string description)
     {
@@ -25,5 +25,11 @@ public record AssistanceDetails
         var assistanceDetails = new AssistanceDetails(name, description);
         
         return assistanceDetails;
+    }
+
+    protected override IEnumerable<object> GetEqualityComponents()
+    {
+        yield return Name;
+        yield return Description;
     }
 }

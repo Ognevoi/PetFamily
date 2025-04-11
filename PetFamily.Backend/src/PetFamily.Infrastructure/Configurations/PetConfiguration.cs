@@ -149,5 +149,12 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
             .JsonValueObjectCollectionConversion()
             .IsRequired()
             .HasColumnName("photos");
+        
+        builder.ComplexProperty(p => p.Position, sb =>
+        {
+            sb.Property(s => s.Value)
+                .IsRequired()
+                .HasColumnName("serial_number");
+        }); 
     }
 }

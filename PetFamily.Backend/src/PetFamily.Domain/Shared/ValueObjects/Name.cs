@@ -2,7 +2,7 @@ using CSharpFunctionalExtensions;
 
 namespace PetFamily.Domain.Shared.ValueObjects;
 
-public record Name
+public class Name : ValueObject
 {
     private Name(string value)
     {
@@ -19,5 +19,10 @@ public record Name
         var name = new Name(value);
 
         return name;
+    }
+
+    protected override IEnumerable<object> GetEqualityComponents()
+    { 
+        yield return Value;
     }
 }

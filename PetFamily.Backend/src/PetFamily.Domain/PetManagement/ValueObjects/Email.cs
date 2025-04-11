@@ -4,7 +4,7 @@ using PetFamily.Domain.Shared;
 
 namespace PetFamily.Domain.PetManagement.ValueObjects;
 
-public record Email
+public class Email : ValueObject
 {
     private Email(string value)
     {
@@ -32,5 +32,10 @@ public record Email
         string emailPattern = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
 
         return Regex.IsMatch(email, emailPattern, RegexOptions.IgnoreCase);
+    }
+
+    protected override IEnumerable<object> GetEqualityComponents()
+    {
+        yield return Value;
     }
 }

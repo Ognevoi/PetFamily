@@ -1,19 +1,22 @@
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
-using PetFamily.Application.Species.AddBreed;
-using PetFamily.Application.Species.CreateSpecie;
-using PetFamily.Application.Species.DeleteBreed;
-using PetFamily.Application.Species.DeleteSpecie;
-using PetFamily.Application.Volunteers.AddPet;
-using PetFamily.Application.Volunteers.Create;
-using PetFamily.Application.Volunteers.Delete;
-using PetFamily.Application.Volunteers.DeletePetPhoto;
-using PetFamily.Application.Volunteers.GetPetPhoto;
-using PetFamily.Application.Volunteers.Restore;
-using PetFamily.Application.Volunteers.Update;
-using PetFamily.Application.Volunteers.UpdateVolunteerAssistanceDetails;
-using PetFamily.Application.Volunteers.UpdateVolunteerSocialNetworks;
-using PetFamily.Application.Volunteers.UploadPetPhoto;
+using PetFamily.Application.Features.Species.AddBreed;
+using PetFamily.Application.Features.Species.CreateSpecie;
+using PetFamily.Application.Features.Species.DeleteBreed;
+using PetFamily.Application.Features.Species.DeleteSpecie;
+using PetFamily.Application.Features.Volunteers.AddPet;
+using PetFamily.Application.Features.Volunteers.Create;
+using PetFamily.Application.Features.Volunteers.DeletePetPhoto;
+using PetFamily.Application.Features.Volunteers.GetPetPhoto;
+using PetFamily.Application.Features.Volunteers.HardDelete;
+using PetFamily.Application.Features.Volunteers.HardDeletePet;
+using PetFamily.Application.Features.Volunteers.Restore;
+using PetFamily.Application.Features.Volunteers.SoftDelete;
+using PetFamily.Application.Features.Volunteers.Update;
+using PetFamily.Application.Features.Volunteers.UpdatePetPosition;
+using PetFamily.Application.Features.Volunteers.UpdateVolunteerAssistanceDetails;
+using PetFamily.Application.Features.Volunteers.UpdateVolunteerSocialNetworks;
+using PetFamily.Application.Features.Volunteers.UploadPetPhoto;
 
 namespace PetFamily.Application;
 
@@ -30,6 +33,8 @@ public static class Inject
         services.AddScoped<HardDeleteVolunteerHandler>();
         services.AddScoped<SoftDeleteVolunteerHandler>();
         services.AddScoped<RestoreVolunteerHandler>();
+        services.AddScoped<HardDeletePetHandler>();
+        services.AddScoped<UpdatePetPositionHandler>();
         services.AddScoped<UploadPetPhotosHandler>();
         services.AddScoped<DeletePetPhotosHandler>();
         services.AddScoped<GetPetPhotosHandler>();

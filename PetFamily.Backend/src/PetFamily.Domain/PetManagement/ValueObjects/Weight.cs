@@ -3,7 +3,7 @@ using PetFamily.Domain.Shared;
 
 namespace PetFamily.Domain.PetManagement.ValueObjects;
 
-public record Weight
+public class Weight : ValueObject
 {
     private Weight(double value)
     {
@@ -18,5 +18,10 @@ public record Weight
             return Errors.General.ValueIsInvalid("Weight");
 
         return new Weight(weight);
+    }
+
+    protected override IEnumerable<object> GetEqualityComponents()
+    {
+        yield return Value;
     }
 }
