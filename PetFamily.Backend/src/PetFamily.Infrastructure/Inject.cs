@@ -4,7 +4,10 @@ using Minio;
 using PetFamily.Application.Database;
 using PetFamily.Application.Features.Species;
 using PetFamily.Application.Features.Volunteers;
+using PetFamily.Application.Messaging;
 using PetFamily.Application.Providers;
+using PetFamily.Infrastructure.BackgroundServices;
+using PetFamily.Infrastructure.MessageQueues;
 using PetFamily.Infrastructure.Options;
 using PetFamily.Infrastructure.Providers;
 using PetFamily.Infrastructure.Repositories;
@@ -23,7 +26,9 @@ public static class Inject
         services.AddScoped<ISpeciesRepository, SpeciesRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddMinio(configuration);
-
+        services.AddHostedService<FilesCleanerBackgroundService>();
+        services.AddSingleton<IFileCleanerQueue, FileCleanerQueue>();
+        
         return services;    
     }
         

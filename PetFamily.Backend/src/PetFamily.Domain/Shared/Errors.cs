@@ -35,14 +35,14 @@ public static class Errors
             return Error.Validation("value.is.too.long", $"{label} is too long{length}"); 
         }
         
-        public static Error UploadFailure(string message)
+        public static Error UploadFailure(string? message)
         {
-            return Error.Unexpected("upload.failure", message);
+            return Error.Unexpected("upload.failure", message ?? "Upload failure");
         }
         
-        public static Error DeleteFileFailure(string message)
+        public static Error DeleteFileFailure(string? message)
         {
-            return Error.Unexpected("delete.file.failure", message);
+            return Error.Unexpected("delete.file.failure", message ?? "Delete file failure");
         }
         
         public static Error NoFileForProcessing()

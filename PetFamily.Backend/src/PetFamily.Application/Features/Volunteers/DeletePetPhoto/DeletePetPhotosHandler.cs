@@ -10,8 +10,6 @@ namespace PetFamily.Application.Features.Volunteers.DeletePetPhoto;
 
 public class DeletePetPhotosHandler
 {
-    private const string BUCKET_NAME = "photos";
-
     private readonly IVolunteersRepository _volunteersRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IFilesProvider _filesProvider;
@@ -42,16 +40,13 @@ public class DeletePetPhotosHandler
         if (petResult.IsFailure)
             return Errors.General.NotFound(request.PetId);
 
-        // var photosToDelete = request.PhotosName.Select(
-        //         x => new FileData(x.Content, FileNameHelpers.GetRandomizedFileName(x.FileName)));
-
         var deleteResult = await _filesProvider.DeleteFiles(
             request.PhotoNames,
-            BUCKET_NAME,
+            Constants.BUCKET_NAME,
             cancellationToken);
 
-        // if (deleteResult.IsFailure)
-        //     return deleteResult.Error.ToList()
+        if (deleteResult.IsFailure)
+            return Errors.General.DeleteFileFailure(deleteResult.Error.ToString());
 
         List<Photo> photos = [];
         foreach (var photoName in request.PhotoNames)

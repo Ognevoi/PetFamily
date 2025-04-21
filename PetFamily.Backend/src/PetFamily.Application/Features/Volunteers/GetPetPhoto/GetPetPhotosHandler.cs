@@ -7,8 +7,6 @@ namespace PetFamily.Application.Features.Volunteers.GetPetPhoto;
 
 public class GetPetPhotosHandler
 {
-    private const string BUCKET_NAME = "photos";
-
     private readonly IVolunteersRepository _volunteersRepository;
     private readonly IFilesProvider _filesProvider;
     private readonly ILogger<GetPetPhotosHandler> _logger;
@@ -40,7 +38,7 @@ public class GetPetPhotosHandler
 
         var getResult = await _filesProvider.GetFileLink(
             photosToGet,
-            BUCKET_NAME,
+            Constants.BUCKET_NAME,
             cancellationToken);
 
         _logger.LogInformation("Photos for pet with id {PetId} retrieved", request.PetId);

@@ -81,7 +81,7 @@ public class MinioProvider : IFilesProvider
                 deleteErrors.Add(fileExistsResult.Error);
                 continue;
             }
-            else if (!fileExistsResult.Value)
+            if (!fileExistsResult.Value)
             {
                 continue;
             }
@@ -148,7 +148,7 @@ public class MinioProvider : IFilesProvider
 
         return Result.Success<IEnumerable<string>, ErrorList>(links);
     }
-    
+        
     private async Task<Result<bool, Error>> IsFileExists(
         string objectName,
         string bucketName,
