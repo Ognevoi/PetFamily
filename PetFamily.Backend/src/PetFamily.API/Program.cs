@@ -27,7 +27,7 @@ builder.Services.AddSerilog();
 
 builder.Services
     .AddInfrastructure(builder.Configuration)
-    .AddApplication()
+    .AddVolunteersApplication()
     .AddApi();
 
 var app = builder.Build();

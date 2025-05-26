@@ -7,23 +7,23 @@ using PetFamily.Domain.Shared;
 namespace PetFamily.Application.Features.Volunteers.AddPet;
 
 
-public class AddPetRequestValidator : AbstractValidator<AddPetRequest>
+public class AddPetCommandValidator : AbstractValidator<AddPetCommand>
 {
-    public AddPetRequestValidator()
+    public AddPetCommandValidator()
     {
-        RuleFor(c => c.Dto.Name).MustBeValueObject(PetName.Create);
+        RuleFor(c => c.Name).MustBeValueObject(PetName.Create);
         RuleFor(c => c.VolunteerId).NotEmpty().WithError(Errors.General.ValueIsRequired());
-        RuleFor(c => c.Dto.SpecieId).NotEmpty().WithError(Errors.General.ValueIsRequired());
-        RuleFor(c => c.Dto.BreedId).NotEmpty().WithError(Errors.General.ValueIsRequired());
-        RuleFor(c => c.Dto.Description).MustBeValueObject(Description.Create);
-        RuleFor(c => c.Dto.PetColor).MustBeValueObject(PetColor.Create);
-        RuleFor(c => c.Dto.PetHealth).MustBeValueObject(PetHealthInfo.Create);
-        RuleFor(c => c.Dto.Weight).MustBeValueObject(Weight.Create);
-        RuleFor(c => c.Dto.Height).MustBeValueObject(Height.Create);
-        RuleFor(c => c.Dto.Address).SetValidator(new AddressDtoValidator());
-        RuleFor(c => c.Dto.BirthDate).NotEmpty().WithError(Errors.General.ValueIsRequired());
-        RuleFor(c => c.Dto.PetStatus).NotEmpty().WithError(Errors.General.ValueIsRequired());
-        RuleFor(c => c.Dto.IsSterilized).MustBeValueObject(IsSterilized.Create);
-        RuleFor(c => c.Dto.IsVaccinated).MustBeValueObject(IsVaccinated.Create);
+        RuleFor(c => c.SpecieId).NotEmpty().WithError(Errors.General.ValueIsRequired());
+        RuleFor(c => c.BreedId).NotEmpty().WithError(Errors.General.ValueIsRequired());
+        RuleFor(c => c.Description).MustBeValueObject(Description.Create);
+        RuleFor(c => c.PetColor).MustBeValueObject(PetColor.Create);
+        RuleFor(c => c.PetHealth).MustBeValueObject(PetHealthInfo.Create);
+        RuleFor(c => c.Weight).MustBeValueObject(Weight.Create);
+        RuleFor(c => c.Height).MustBeValueObject(Height.Create);
+        RuleFor(c => c.Address).SetValidator(new AddressDtoValidator());
+        RuleFor(c => c.BirthDate).NotEmpty().WithError(Errors.General.ValueIsRequired());
+        RuleFor(c => c.PetStatus).NotEmpty().WithError(Errors.General.ValueIsRequired());
+        RuleFor(c => c.IsSterilized).MustBeValueObject(IsSterilized.Create);
+        RuleFor(c => c.IsVaccinated).MustBeValueObject(IsVaccinated.Create);
     }
 }

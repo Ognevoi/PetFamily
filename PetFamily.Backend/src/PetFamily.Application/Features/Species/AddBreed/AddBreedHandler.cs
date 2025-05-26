@@ -1,6 +1,7 @@
 using CSharpFunctionalExtensions;
 using Microsoft.Extensions.Logging;
 using PetFamily.Application.Features.Species.CreateSpecie;
+using PetFamily.Application.Interfaces;
 using PetFamily.Domain.Shared;
 using PetFamily.Domain.Shared.ValueObjects;
 using PetFamily.Domain.SpecieManagement.Entities;
@@ -8,30 +9,21 @@ using PetFamily.Domain.SpecieManagement.Value_Objects;
 
 namespace PetFamily.Application.Features.Species.AddBreed;
 
-public class AddBreedHandler
+public class AddBreedHandler(
+    ISpeciesRepository specieRepository,
+    ILogger<CreateSpecieHandler> logger)
+    : ICommandHandler<Guid, AddBreedCommand>
 {
-    private readonly ISpeciesRepository _specieRepository;
-    private readonly ILogger<CreateSpecieHandler> _logger;
-
-    public AddBreedHandler(
-        ISpeciesRepository specieRepository,
-        ILogger<CreateSpecieHandler> logger
-        )
-    {
-        _specieRepository = specieRepository;
-        _logger = logger;
-    }
-
-    public async Task<Result<Guid, Error>> Handle(
-        AddBreedRequest request,
+    public async Task<Result<Guid, ErrorList>> HandleAsync(
+        AddBreedCommand command,
         CancellationToken cancellationToken = default)
     {
-        var specieResult = await _specieRepository.GetById(request.SpecieId, cancellationToken);
+        var specieResult = await specieRepository.GetById(command.SpecieId, cancellationToken);
         
         if (specieResult.IsFailure)
-            return specieResult.Error;
+            return specieResult.Error.ToErrorList();
         
-        var nameResult = Name.Create(request.Dto.Name).Value;
+        var nameResult = Name.Create(command.Name).Value;
         
         var breedId = BreedId.NewBreedId();
 
@@ -39,9 +31,9 @@ public class AddBreedHandler
         
         specieResult.Value.AddBreed(breedToCreate);
         
-        var result = await _specieRepository.Save(specieResult.Value, cancellationToken);
+        var result = await specieRepository.Save(specieResult.Value, cancellationToken);
 
-        _logger.LogInformation("Create breed with id: {BreedId}", breedToCreate.Id);
+        logger.LogInformation("Create breed with id: {BreedId}", breedToCreate.Id);
 
         return result;
     }

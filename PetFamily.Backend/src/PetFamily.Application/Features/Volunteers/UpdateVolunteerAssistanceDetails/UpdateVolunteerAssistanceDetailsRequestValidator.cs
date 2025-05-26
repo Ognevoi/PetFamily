@@ -4,9 +4,9 @@ using PetFamily.Domain.Shared;
 
 namespace PetFamily.Application.Features.Volunteers.UpdateVolunteerAssistanceDetails;
 
-public class UpdateVolunteerAssistanceDetailsRequestValidator : AbstractValidator<UpdateVolunteerAssistanceDetailsRequest>
+public class UpdateVolunteerAssistanceDetailsCommandValidator : AbstractValidator<UpdateVolunteerAssistanceDetailsCommand>
 {
-    public UpdateVolunteerAssistanceDetailsRequestValidator()
+    public UpdateVolunteerAssistanceDetailsCommandValidator()
     {
         RuleFor(x => x.VolunteerId).NotEmpty().WithError(Errors.General.ValueIsRequired());
         // TODO: Fix "Serialized error is invalid" when AssistanceDetails values are empty

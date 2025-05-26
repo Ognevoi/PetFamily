@@ -1,9 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
+using PetFamily.API.DTO.Requests.Specie;
 using PetFamily.API.Extensions;
 using PetFamily.Application.Features.Species.AddBreed;
 using PetFamily.Application.Features.Species.CreateSpecie;
 using PetFamily.Application.Features.Species.DeleteBreed;
 using PetFamily.Application.Features.Species.DeleteSpecie;
+using DeleteSpecieRequest = PetFamily.API.DTO.Requests.Specie.DeleteSpecieRequest;
 
 
 namespace PetFamily.API.Controllers;
@@ -18,7 +20,9 @@ public class SpecieController : ControllerBase
         [FromBody] CreateSpecieRequest request,
         CancellationToken cancellationToken)
     {
-        var result = await handler.Handle(request, cancellationToken);
+        var command = request.ToCommand();
+        
+        var result = await handler.HandleAsync(command, cancellationToken);
 
         return result.IsFailure ? result.Error.ToResponse() : Ok(result.Value);
     }
@@ -29,7 +33,9 @@ public class SpecieController : ControllerBase
         [FromBody] DeleteSpecieRequest request,
         CancellationToken cancellationToken)
     {
-        var result = await handler.Handle(request, cancellationToken);
+        var command = request.ToCommand();
+        
+        var result = await handler.HandleAsync(command, cancellationToken);
 
         return result.IsFailure ? result.Error.ToResponse() : Ok(result.Value);
     }
@@ -37,12 +43,13 @@ public class SpecieController : ControllerBase
     [HttpPost("{id:guid}/breed")]
     public async Task<IActionResult> AddBreed(
         [FromRoute] Guid id,
-        [FromBody] AddBreedDto dto,
+        [FromBody] AddBreedRequest request,
         [FromServices] AddBreedHandler addBreedHandler,
         CancellationToken cancellationToken)
     {
-        var request = new AddBreedRequest(id, dto);
-        var result = await addBreedHandler.Handle(request, cancellationToken);
+        var command = request.ToCommand(id);
+        
+        var result = await addBreedHandler.HandleAsync(command, cancellationToken);
 
         return result.IsFailure ? result.Error.ToResponse() : Ok(result.Value);
     }
@@ -54,8 +61,9 @@ public class SpecieController : ControllerBase
         [FromServices] DeleteBreedHandler deleteBreedHandler,
         CancellationToken cancellationToken)
     {
-        var request = new DeleteBreedRequest(id, breedId);
-        var result = await deleteBreedHandler.Handle(request, cancellationToken);
+        var command = new DeleteBreedRequest().ToCommand(id, breedId);
+        
+        var result = await deleteBreedHandler.HandleAsync(command, cancellationToken);
 
         return result.IsFailure ? result.Error.ToResponse() : Ok(result.Value);
     }

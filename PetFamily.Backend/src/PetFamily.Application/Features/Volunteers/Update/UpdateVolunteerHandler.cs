@@ -1,36 +1,36 @@
 using CSharpFunctionalExtensions;
+using FluentValidation;
 using Microsoft.Extensions.Logging;
+using PetFamily.Application.Extentions;
+using PetFamily.Application.Interfaces;
 using PetFamily.Domain.PetManagement.ValueObjects;
 using PetFamily.Domain.Shared;
 
 namespace PetFamily.Application.Features.Volunteers.Update;
 
-public class UpdateVolunteerHandler
+public class UpdateVolunteerHandler(
+    IVolunteersRepository volunteersRepository,
+    ILogger<UpdateVolunteerHandler> logger,
+    IValidator<UpdateVolunteerCommand> validator)
+    : ICommandHandler<Guid, UpdateVolunteerCommand>
 {
-    private readonly IVolunteersRepository _volunteersRepository;
-    private readonly ILogger<UpdateVolunteerHandler> _logger;
-
-    public UpdateVolunteerHandler(
-        IVolunteersRepository volunteersRepository,
-        ILogger<UpdateVolunteerHandler> logger)
-    {
-        _volunteersRepository = volunteersRepository;
-        _logger = logger;
-    }
-    
-    public async Task<Result<Guid, Error>> Handle(
-        UpdateVolunteerRequest request,
+    public async Task<Result<Guid, ErrorList>> HandleAsync(
+        UpdateVolunteerCommand command,
         CancellationToken cancellationToken = default)
     {
-        var volunteerResult = await _volunteersRepository.GetById(request.VolunteerId, cancellationToken);
-        if (volunteerResult.IsFailure)
-            return volunteerResult.Error;
+        var validationResult = await validator.ValidateAsync(command, cancellationToken);
+        if (!validationResult.IsValid)
+            return validationResult.ToErrorList();
         
-        var fullNameResult = FullName.Create(request.Dto.FullName.FirstName,request.Dto.FullName.LastName).Value;
-        var emailResult = Email.Create(request.Dto.Email).Value;
-        var descriptionResult = Description.Create(request.Dto.Description).Value;
-        var experienceYearsResult = ExperienceYears.Create(request.Dto.ExperienceYears).Value;
-        var phoneNumberResult = PhoneNumber.Create(request.Dto.PhoneNumber).Value;
+        var volunteerResult = await volunteersRepository.GetById(command.VolunteerId, cancellationToken);
+        if (volunteerResult.IsFailure)
+            return volunteerResult.Error.ToErrorList();
+                
+        var fullNameResult = FullName.Create(command.FullName.FirstName,command.FullName.LastName).Value;
+        var emailResult = Email.Create(command.Email).Value;
+        var descriptionResult = Description.Create(command.Description).Value;
+        var experienceYearsResult = ExperienceYears.Create(command.ExperienceYears).Value;
+        var phoneNumberResult = PhoneNumber.Create(command.PhoneNumber).Value;
         
         volunteerResult.Value.Update(
             fullNameResult,
@@ -40,9 +40,9 @@ public class UpdateVolunteerHandler
             phoneNumberResult
         );
         
-        var result = await _volunteersRepository.Save(volunteerResult.Value, cancellationToken);
+        var result = await volunteersRepository.Save(volunteerResult.Value, cancellationToken);
         
-        _logger.LogInformation(
+        logger.LogInformation(
             "Update volunteer: " +
             "first name: {FirstName}, " +
             "last name: {LastName}, " +

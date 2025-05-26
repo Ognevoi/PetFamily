@@ -1,49 +1,49 @@
 using CSharpFunctionalExtensions;
+using FluentValidation;
 using Microsoft.Extensions.Logging;
+using PetFamily.Application.Extentions;
 using PetFamily.Application.Features.Volunteers.Update;
+using PetFamily.Application.Interfaces;
 using PetFamily.Domain.PetManagement.ValueObjects;
 using PetFamily.Domain.Shared;
 
 namespace PetFamily.Application.Features.Volunteers.UpdatePetPosition;
 
-public class UpdatePetPositionHandler
+public class UpdatePetPositionHandler(
+    IVolunteersRepository volunteersRepository,
+    IValidator<UpdatePetPositionCommand> validator,
+    ILogger<UpdateVolunteerHandler> logger)
+    : ICommandHandler<Guid, UpdatePetPositionCommand>
 {
-    private readonly IVolunteersRepository _volunteersRepository;
-    private readonly ILogger<UpdateVolunteerHandler> _logger;
-
-    public UpdatePetPositionHandler(
-        IVolunteersRepository volunteersRepository,
-        ILogger<UpdateVolunteerHandler> logger)
-    {
-        _volunteersRepository = volunteersRepository;
-        _logger = logger;
-    }
-    
-    public async Task<Result<Guid, Error>> Handle(
-        UpdatePetPositionRequest request,
+    public async Task<Result<Guid, ErrorList>> HandleAsync(
+        UpdatePetPositionCommand command,
         CancellationToken cancellationToken = default)
     {
-        var volunteerResult = await _volunteersRepository.GetById(request.VolunteerId, cancellationToken);
-        if (volunteerResult.IsFailure)
-            return volunteerResult.Error;
+        var validationResult = await validator.ValidateAsync(command, cancellationToken);
+        if (!validationResult.IsValid)
+            return validationResult.ToErrorList();
         
-        var pet = volunteerResult.Value.Pets.FirstOrDefault(p => p.Id == request.PetId);
+        var volunteerResult = await volunteersRepository.GetById(command.VolunteerId, cancellationToken);
+        if (volunteerResult.IsFailure)
+            return volunteerResult.Error.ToErrorList();
+        
+        var pet = volunteerResult.Value.Pets.FirstOrDefault(p => p.Id == command.PetId);
         if (pet == null)
-            return Errors.General.NotFound(request.PetId);
+            return Errors.General.NotFound(command.PetId).ToErrorList();
 
-        var newPositionResult = Position.Create(request.Dto.NewPosition);
+        var newPositionResult = Position.Create(command.NewPosition);
         if (newPositionResult.IsFailure)
-            return newPositionResult.Error;
+            return newPositionResult.Error.ToErrorList();
 
         volunteerResult.Value.MovePet(pet, newPositionResult.Value);
         if (volunteerResult.IsFailure)
-            return volunteerResult.Error;
+            return volunteerResult.Error.ToErrorList();
 
-        var result = await _volunteersRepository.Save(volunteerResult.Value, cancellationToken);
+        var result = await volunteersRepository.Save(volunteerResult.Value, cancellationToken);
         
-        _logger.LogInformation(
+        logger.LogInformation(
             "Pet with id: {PetId} was moved to position: {Position} from volunteer with id: {VolunteerId}",
-            request.PetId, request.Dto.NewPosition, volunteerResult.Value.Id);
+            command.PetId, command.NewPosition, volunteerResult.Value.Id);
 
         return result;
     }
