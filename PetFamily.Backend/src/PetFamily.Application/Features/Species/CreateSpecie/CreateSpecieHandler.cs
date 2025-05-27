@@ -10,17 +10,27 @@ using PetFamily.Domain.SpecieManagement.Value_Objects;
 
 namespace PetFamily.Application.Features.Species.CreateSpecie;
 
-public class CreateSpecieHandler(
-    ISpeciesRepository specieRepository,
-    IValidator<CreateSpecieCommand> validator,
-    ILogger<CreateSpecieHandler> logger)
-    : ICommandHandler<Guid, CreateSpecieCommand>
+public class CreateSpecieHandler : ICommandHandler<Guid, CreateSpecieCommand>
 {
+    private readonly ISpeciesRepository _specieRepository;
+    private readonly IValidator<CreateSpecieCommand> _validator;
+    private readonly ILogger<CreateSpecieHandler> _logger;
+
+    public CreateSpecieHandler(
+        ISpeciesRepository specieRepository,
+        IValidator<CreateSpecieCommand> validator,
+        ILogger<CreateSpecieHandler> logger)
+    {
+        _specieRepository = specieRepository;
+        _validator = validator;
+        _logger = logger;
+    }
+
     public async Task<Result<Guid, ErrorList>> HandleAsync(
         CreateSpecieCommand command,
         CancellationToken cancellationToken = default)
     {
-        var validationResult = await validator.ValidateAsync(command, cancellationToken);
+        var validationResult = await _validator.ValidateAsync(command, cancellationToken);
         if (!validationResult.IsValid)
             return validationResult.ToErrorList();
 
@@ -30,9 +40,9 @@ public class CreateSpecieHandler(
 
         var specieToCreate = Specie.Create(specieId, nameResult.Value);
 
-        await specieRepository.Add(specieToCreate.Value, cancellationToken);
+        await _specieRepository.Add(specieToCreate.Value, cancellationToken);
 
-        logger.LogInformation("Create specie with id: {SpecieId}", specieToCreate.Value.Id);
+        _logger.LogInformation("Create specie with id: {SpecieId}", specieToCreate.Value.Id);
 
         return (Guid)specieToCreate.Value.Id;
     }

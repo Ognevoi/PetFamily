@@ -6,17 +6,27 @@ using PetFamily.Domain.Shared;
 
 namespace PetFamily.Application.Features.Volunteers.HardDeletePet;
 
-public class HardDeletePetHandler(
-    IVolunteersRepository volunteersRepository,
-    IValidator<DeletePetCommand> validator,
-    ILogger<HardDeletePetHandler> logger)
-    : ICommandHandler<Guid, DeletePetCommand>
+public class HardDeletePetHandler : ICommandHandler<Guid, DeletePetCommand>
 {
+    private readonly IVolunteersRepository _volunteersRepository;
+    private readonly IValidator<DeletePetCommand> _validator;
+    private readonly ILogger<HardDeletePetHandler> _logger;
+
+    public HardDeletePetHandler(
+        IVolunteersRepository volunteersRepository,
+        IValidator<DeletePetCommand> validator,
+        ILogger<HardDeletePetHandler> logger)
+    {
+        _volunteersRepository = volunteersRepository;
+        _validator = validator;
+        _logger = logger;
+    }
+
     public async Task<Result<Guid, ErrorList>> HandleAsync(
         DeletePetCommand command,
         CancellationToken cancellationToken = default)
     {
-        var volunteerResult = await volunteersRepository.GetById(command.VolunteerId, cancellationToken);
+        var volunteerResult = await _volunteersRepository.GetById(command.VolunteerId, cancellationToken);
         if (volunteerResult.IsFailure)
             return volunteerResult.Error.ToErrorList();
         
@@ -28,9 +38,9 @@ public class HardDeletePetHandler(
         if (volunteerResult.IsFailure)
             return volunteerResult.Error.ToErrorList();
         
-        await volunteersRepository.Save(volunteerResult.Value, cancellationToken);
+        await _volunteersRepository.Save(volunteerResult.Value, cancellationToken);
         
-        logger.LogInformation(
+        _logger.LogInformation(
             "Pet with id: {PetId} was HARD deleted from volunteer with id: {VolunteerId}",
             command.PetId, volunteerResult.Value.Id);
 

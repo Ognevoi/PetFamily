@@ -6,25 +6,35 @@ using PetFamily.Domain.Shared;
 
 namespace PetFamily.Application.Features.Volunteers.Restore;
 
-public class RestoreVolunteerHandler(
-    IVolunteersRepository volunteersRepository,
-    IValidator<RestoreVolunteerCommand> validator,
-    ILogger<RestoreVolunteerHandler> logger)
-    : ICommandHandler<Guid, RestoreVolunteerCommand>
+public class RestoreVolunteerHandler : ICommandHandler<Guid, RestoreVolunteerCommand>
 {
+    private readonly IVolunteersRepository _volunteersRepository;
+    private readonly IValidator<RestoreVolunteerCommand> _validator;
+    private readonly ILogger<RestoreVolunteerHandler> _logger;
+
+    public RestoreVolunteerHandler(
+        IVolunteersRepository volunteersRepository,
+        IValidator<RestoreVolunteerCommand> validator,
+        ILogger<RestoreVolunteerHandler> logger)
+    {
+        _volunteersRepository = volunteersRepository;
+        _validator = validator;
+        _logger = logger;
+    }
+
     public async Task<Result<Guid, ErrorList>> HandleAsync(
         RestoreVolunteerCommand command,
         CancellationToken cancellationToken = default)
     {
-        var volunteerResult = await volunteersRepository.GetById(command.VolunteerId, cancellationToken);
+        var volunteerResult = await _volunteersRepository.GetById(command.VolunteerId, cancellationToken);
         if (volunteerResult.IsFailure)
             return volunteerResult.Error.ToErrorList();
-        
+
         volunteerResult.Value.Restore();
 
-        await volunteersRepository.Save(volunteerResult.Value, cancellationToken);
-        
-        logger.LogInformation("Restore volunteer with id: {VolunteerId}", volunteerResult.Value.Id);
+        await _volunteersRepository.Save(volunteerResult.Value, cancellationToken);
+
+        _logger.LogInformation("Restore volunteer with id: {VolunteerId}", volunteerResult.Value.Id);
 
         return volunteerResult.Value.Id.Value;
     }

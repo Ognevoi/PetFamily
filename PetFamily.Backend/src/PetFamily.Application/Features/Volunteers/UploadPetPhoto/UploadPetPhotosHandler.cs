@@ -13,24 +13,40 @@ using PetFamily.Domain.Shared;
 
 namespace PetFamily.Application.Features.Volunteers.UploadPetPhoto;
 
-public class UploadPetPhotosHandler(
-    IVolunteersRepository volunteersRepository,
-    IUnitOfWork unitOfWork,
-    IFilesProvider filesProvider,
-    IFileCleanerQueue fileCleanerQueue,
-    IValidator<UploadPetPhotosCommand> validator,
-    ILogger<UploadPetPhotosHandler> logger)
-    : ICommandHandler<IEnumerable<string>, UploadPetPhotosCommand>
+public class UploadPetPhotosHandler : ICommandHandler<IEnumerable<string>, UploadPetPhotosCommand>
 {
+    private readonly IVolunteersRepository _volunteersRepository;
+    private readonly IUnitOfWork _unitOfWork;
+    private readonly IFilesProvider _filesProvider;
+    private readonly IFileCleanerQueue _fileCleanerQueue;
+    private readonly IValidator<UploadPetPhotosCommand> _validator;
+    private readonly ILogger<UploadPetPhotosHandler> _logger;
+
+    public UploadPetPhotosHandler(
+        IVolunteersRepository volunteersRepository,
+        IUnitOfWork unitOfWork,
+        IFilesProvider filesProvider,
+        IFileCleanerQueue fileCleanerQueue,
+        IValidator<UploadPetPhotosCommand> validator,
+        ILogger<UploadPetPhotosHandler> logger)
+    {
+        _volunteersRepository = volunteersRepository;
+        _unitOfWork = unitOfWork;
+        _filesProvider = filesProvider;
+        _fileCleanerQueue = fileCleanerQueue;
+        _validator = validator;
+        _logger = logger;
+    }
+
     public async Task<Result<IEnumerable<string>, ErrorList>> HandleAsync(
         UploadPetPhotosCommand command,
         CancellationToken cancellationToken = default)
     {
-        var validationResult = await validator.ValidateAsync(command, cancellationToken);
+        var validationResult = await _validator.ValidateAsync(command, cancellationToken);
         if (!validationResult.IsValid)
             return validationResult.ToErrorList();
         
-        var volunteerResult = await volunteersRepository.GetById(command.VolunteerId, cancellationToken);
+        var volunteerResult = await _volunteersRepository.GetById(command.VolunteerId, cancellationToken);
         if (volunteerResult.IsFailure)
             return Errors.General.NotFound(command.VolunteerId).ToErrorList();
         
@@ -51,18 +67,18 @@ public class UploadPetPhotosHandler(
             photos.Add(photo.Value);
         }
         
-        var uploadResult = await filesProvider.UploadFiles(photosToUpload, Constants.BUCKET_NAME, cancellationToken);
+        var uploadResult = await _filesProvider.UploadFiles(photosToUpload, Constants.BUCKET_NAME, cancellationToken);
         if (uploadResult.IsFailure)
         {
-            await fileCleanerQueue.PublishAsync(photosToUpload.Select(p => p.ObjectName), cancellationToken);
+            await _fileCleanerQueue.PublishAsync(photosToUpload.Select(p => p.ObjectName), cancellationToken);
             return Errors.General.UploadFailure(uploadResult.Error.ToString()).ToErrorList();
         }
 
         petResult.Value.AddPhotos(photos);
 
-        await unitOfWork.SaveChangesAsync(cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
         
-        logger.LogInformation("Photos uploaded for pet with id {PetId}", petResult.Value.Id);
+        _logger.LogInformation("Photos uploaded for pet with id {PetId}", petResult.Value.Id);
 
         return uploadResult.Value.ToList();
     }

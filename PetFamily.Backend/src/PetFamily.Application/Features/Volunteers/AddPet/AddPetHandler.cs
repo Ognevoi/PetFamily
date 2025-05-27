@@ -11,28 +11,40 @@ using PetFamily.Domain.Shared;
 
 namespace PetFamily.Application.Features.Volunteers.AddPet;
 
-public class AddPetHandler(
-    IVolunteersRepository volunteersRepository,
-    IValidator<AddPetCommand> validator,
-    ISpeciesRepository speciesRepository,
-    ILogger<UpdateVolunteerHandler> logger)
-    : ICommandHandler<string, AddPetCommand>
+public class AddPetHandler : ICommandHandler<string, AddPetCommand>
 {
+    private readonly IVolunteersRepository _volunteersRepository;
+    private readonly IValidator<AddPetCommand> _validator;
+    private readonly ISpeciesRepository _speciesRepository;
+    private readonly ILogger<UpdateVolunteerHandler> _logger;
+
+    public AddPetHandler(
+        IVolunteersRepository volunteersRepository,
+        IValidator<AddPetCommand> validator,
+        ISpeciesRepository speciesRepository,
+        ILogger<UpdateVolunteerHandler> logger)
+    {
+        _volunteersRepository = volunteersRepository;
+        _validator = validator;
+        _speciesRepository = speciesRepository;
+        _logger = logger;
+    }
+
     public async Task<Result<string, ErrorList>> HandleAsync(
         AddPetCommand command,
         CancellationToken cancellationToken = default)
     {
-        var validationResult = await validator.ValidateAsync(command, cancellationToken);
+        var validationResult = await _validator.ValidateAsync(command, cancellationToken);
         if (!validationResult.IsValid)
             return validationResult.ToErrorList();
-        
-        var volunteerResult = await volunteersRepository.GetById(VolunteerId.Create(command.VolunteerId));
+
+        var volunteerResult = await _volunteersRepository.GetById(VolunteerId.Create(command.VolunteerId));
         if (volunteerResult.IsFailure)
             return Errors.General.NotFound(command.VolunteerId).ToErrorList();
 
         var petId = PetId.NewPetId().Value;
-        
-        var specieResult = await speciesRepository.GetById(command.SpecieId, cancellationToken);
+
+        var specieResult = await _speciesRepository.GetById(command.SpecieId, cancellationToken);
         if (specieResult.IsFailure)
             return Errors.General.NotFound(command.SpecieId).ToErrorList();
 
@@ -57,10 +69,10 @@ public class AddPetHandler(
         var petIsSterilizedResult = IsSterilized.Create(command.IsSterilized).Value;
 
         var petIsVaccinatedResult = IsVaccinated.Create(command.IsVaccinated).Value;
-        
+
         var petAddressResult = Address.Create(
             command.Address.Street, command.Address.City, command.Address.State, command.Address.ZipCode).Value;
-        
+
         var pet = new Pet(
             petId,
             petNameResult,
@@ -80,12 +92,11 @@ public class AddPetHandler(
 
         volunteerResult.Value.AddPet(pet);
 
-        var result = await volunteersRepository.Save(volunteerResult.Value, cancellationToken);
+        var result = await _volunteersRepository.Save(volunteerResult.Value, cancellationToken);
 
-        logger.LogInformation("Pet with id {PetId} added to volunteer with id {VolunteerId}", pet.Id.Value,
+        _logger.LogInformation("Pet with id {PetId} added to volunteer with id {VolunteerId}", pet.Id.Value,
             volunteerResult.Value.Id);
 
         return result.ToString();
     }
-    
 };

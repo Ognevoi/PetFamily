@@ -8,17 +8,27 @@ using PetFamily.Domain.Shared;
 
 namespace PetFamily.Application.Features.Volunteers.UpdateVolunteerAssistanceDetails;
 
-public class UpdateVolunteerAssistanceDetailsHandler(
-    IVolunteersRepository volunteersRepository,
-    IValidator<UpdateVolunteerAssistanceDetailsCommand> validator,
-    ILogger<UpdateVolunteerHandler> logger)
-    : ICommandHandler<Guid, UpdateVolunteerAssistanceDetailsCommand>
+public class UpdateVolunteerAssistanceDetailsHandler : ICommandHandler<Guid, UpdateVolunteerAssistanceDetailsCommand>
 {
+    private readonly IVolunteersRepository _volunteersRepository;
+    private readonly IValidator<UpdateVolunteerAssistanceDetailsCommand> _validator;
+    private readonly ILogger<UpdateVolunteerHandler> _logger;
+
+    public UpdateVolunteerAssistanceDetailsHandler(
+        IVolunteersRepository volunteersRepository,
+        IValidator<UpdateVolunteerAssistanceDetailsCommand> validator,
+        ILogger<UpdateVolunteerHandler> logger)
+    {
+        _volunteersRepository = volunteersRepository;
+        _validator = validator;
+        _logger = logger;
+    }
+
     public async Task<Result<Guid, ErrorList>> HandleAsync(
         UpdateVolunteerAssistanceDetailsCommand command,
         CancellationToken cancellationToken = default)
     {
-        var volunteerResult = await volunteersRepository.GetById(command.VolunteerId, cancellationToken);
+        var volunteerResult = await _volunteersRepository.GetById(command.VolunteerId, cancellationToken);
         if (volunteerResult.IsFailure)
             return volunteerResult.Error.ToErrorList();
 
@@ -27,9 +37,9 @@ public class UpdateVolunteerAssistanceDetailsHandler(
 
         volunteerResult.Value.UpdateAssistanceDetails(assistanceDetailsResult);
 
-        var result = await volunteersRepository.Save(volunteerResult.Value, cancellationToken);
+        var result = await _volunteersRepository.Save(volunteerResult.Value, cancellationToken);
 
-        logger.LogInformation(
+        _logger.LogInformation(
             "Update volunteer assistance details: " +
             "volunteer id: {VolunteerId}, " +
             "assistance details: {AssistanceDetails}",

@@ -9,21 +9,31 @@ using PetFamily.Domain.Shared;
 
 namespace PetFamily.Application.Features.Volunteers.UpdateVolunteerSocialNetworks;
 
-public class UpdateVolunteerSocialNetworksHandler(
-    IVolunteersRepository volunteersRepository,
-    IValidator<UpdateVolunteerSocialNetworksCommand> validator,
-    ILogger<UpdateVolunteerHandler> logger)
-    : ICommandHandler<Guid, UpdateVolunteerSocialNetworksCommand>
+public class UpdateVolunteerSocialNetworksHandler : ICommandHandler<Guid, UpdateVolunteerSocialNetworksCommand>
 {
+    private readonly IVolunteersRepository _volunteersRepository;
+    private readonly IValidator<UpdateVolunteerSocialNetworksCommand> _validator;
+    private readonly ILogger<UpdateVolunteerHandler> _logger;
+
+    public UpdateVolunteerSocialNetworksHandler(
+        IVolunteersRepository volunteersRepository,
+        IValidator<UpdateVolunteerSocialNetworksCommand> validator,
+        ILogger<UpdateVolunteerHandler> logger)
+    {
+        _volunteersRepository = volunteersRepository;
+        _validator = validator;
+        _logger = logger;
+    }
+
     public async Task<Result<Guid, ErrorList>> HandleAsync(
         UpdateVolunteerSocialNetworksCommand command,
         CancellationToken cancellationToken = default)
     {
-        var validationResult = await validator.ValidateAsync(command, cancellationToken);
+        var validationResult = await _validator.ValidateAsync(command, cancellationToken);
         if (!validationResult.IsValid)
             return validationResult.ToErrorList();
         
-        var volunteerResult = await volunteersRepository.GetById(command.VolunteerId, cancellationToken);
+        var volunteerResult = await _volunteersRepository.GetById(command.VolunteerId, cancellationToken);
         if (volunteerResult.IsFailure)
             return volunteerResult.Error.ToErrorList();
 
@@ -31,9 +41,9 @@ public class UpdateVolunteerSocialNetworksHandler(
 
         volunteerResult.Value.UpdateSocialNetworks(socialNetworksResult);
 
-        var result = await volunteersRepository.Save(volunteerResult.Value, cancellationToken);
+        var result = await _volunteersRepository.Save(volunteerResult.Value, cancellationToken);
 
-        logger.LogInformation(
+        _logger.LogInformation(
             "Update volunteer social networks: " +
             "volunteer id: {VolunteerId}, " +
             "social networks: {SocialNetworks}",
