@@ -14,11 +14,13 @@
       <PackageReference Include="CSharpFunctionalExtensions" Version="3.4.3" />
       <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
       <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.0" />
+      <PackageReference Include="Scrutor" Version="6.0.1" />
     </ItemGroup>
 
     <ItemGroup>
       <Compile Remove="Volunteers\CreateVolunteer\CreateVolunteerHandler.cs" />
       <Compile Remove="Volunteers\CreateVolunteer\CreateVolunteerRequest.cs" />
+      <Compile Remove="Features\Volunteers\Create\CreateVolunteerRequest.cs" />
     </ItemGroup>
 
     <ItemGroup>

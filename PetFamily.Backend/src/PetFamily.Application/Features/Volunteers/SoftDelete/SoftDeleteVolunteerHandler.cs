@@ -1,39 +1,46 @@
 using CSharpFunctionalExtensions;
 using Microsoft.Extensions.Logging;
+using PetFamily.Application.Extentions;
 using PetFamily.Application.Features.Volunteers.HardDelete;
+using PetFamily.Application.Interfaces;
 using PetFamily.Domain.Shared;
 
 namespace PetFamily.Application.Features.Volunteers.SoftDelete;
 
-public class SoftDeleteVolunteerHandler
+public class SoftDeleteVolunteerHandler : ICommandHandler<Guid, DeleteVolunteerCommand>
 {
     private readonly IVolunteersRepository _volunteersRepository;
+    private readonly DeleteVolunteerCommandValidator _validator;
     private readonly ILogger<SoftDeleteVolunteerHandler> _logger;
 
     public SoftDeleteVolunteerHandler(
         IVolunteersRepository volunteersRepository,
-        ILogger<SoftDeleteVolunteerHandler> logger
-        )
+        DeleteVolunteerCommandValidator validator,
+        ILogger<SoftDeleteVolunteerHandler> logger)
     {
         _volunteersRepository = volunteersRepository;
+        _validator = validator;
         _logger = logger;
     }
-    
-    public async Task<Result<Guid, Error>> Handle(
-        DeleteVolunteerRequest request,
+
+    public async Task<Result<Guid, ErrorList>> HandleAsync(
+        DeleteVolunteerCommand command,
         CancellationToken cancellationToken = default)
     {
-        var volunteerResult = await _volunteersRepository.GetById(request.VolunteerId, cancellationToken);
+        var validationResult = await _validator.ValidateAsync(command, cancellationToken);
+        if (!validationResult.IsValid)
+            return validationResult.ToErrorList();
+
+        var volunteerResult = await _volunteersRepository.GetById(command.VolunteerId, cancellationToken);
         if (volunteerResult.IsFailure)
-            return volunteerResult.Error;
-        
+            return volunteerResult.Error.ToErrorList();
+
         volunteerResult.Value.SoftDelete();
-        
+
         await _volunteersRepository.Save(volunteerResult.Value, cancellationToken);
-        
+
         _logger.LogInformation("Volunteer with id: {VolunteerId} was SOFT deleted", volunteerResult.Value.Id);
 
         return volunteerResult.Value.Id.Value;
     }
-    
 }
