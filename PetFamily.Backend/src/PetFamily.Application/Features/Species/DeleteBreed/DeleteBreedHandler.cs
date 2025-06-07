@@ -1,7 +1,7 @@
 using CSharpFunctionalExtensions;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
-using PetFamily.Application.Extentions;
+using PetFamily.Application.Extensions;
 using PetFamily.Application.Features.Species.CreateSpecie;
 using PetFamily.Application.Interfaces;
 using PetFamily.Domain.Shared;
