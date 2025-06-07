@@ -1,5 +1,5 @@
-using PetFamily.Application.Features.Volunteers.AddPet;
-using PetFamily.Application.Features.Volunteers.DTO;
+using PetFamily.Application.Features.Volunteers.Commands.AddPet;
+using PetFamily.Application.Features.Volunteers.Commands.DTO;
 using PetFamily.Domain.PetManagement.Enums;
 
 namespace PetFamily.API.DTO.Requests.Volunteer;

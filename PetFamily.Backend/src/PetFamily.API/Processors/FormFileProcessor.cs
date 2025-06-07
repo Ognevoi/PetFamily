@@ -1,4 +1,4 @@
-using PetFamily.Application.Features.Volunteers.DTO;
+using PetFamily.Application.Features.Volunteers.Commands.DTO;
 
 namespace PetFamily.API.Processors;
 

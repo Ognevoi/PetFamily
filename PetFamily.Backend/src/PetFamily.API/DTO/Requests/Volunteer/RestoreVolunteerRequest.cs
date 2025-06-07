@@ -1,4 +1,4 @@
-using PetFamily.Application.Features.Volunteers.Restore;
+using PetFamily.Application.Features.Volunteers.Commands.Restore;
 
 namespace PetFamily.API.DTO.Requests.Volunteer;
 

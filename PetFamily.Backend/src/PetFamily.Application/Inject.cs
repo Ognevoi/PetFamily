@@ -10,7 +10,8 @@ public static class Inject
     {
         services
             .AddValidatorsFromAssembly(typeof(Inject).Assembly)
-            .AddCommands();
+            .AddCommands()
+            .AddQueries();
         
         return services;
     }
@@ -20,6 +21,15 @@ public static class Inject
         return services.Scan(scan => scan.FromAssemblies(typeof(Inject).Assembly)
             .AddClasses(classes => classes
                 .AssignableToAny(typeof(ICommandHandler<,>), typeof(ICommandHandler<>)))
+            .AsSelfWithInterfaces()
+            .WithScopedLifetime());
+    }
+    
+    private static IServiceCollection AddQueries(this IServiceCollection services)
+    {
+        return services.Scan(scan => scan.FromAssemblies(typeof(Inject).Assembly)
+            .AddClasses(classes => classes
+                .AssignableToAny(typeof(IQueryHandler<,>), typeof(IQueryHandler<>)))
             .AsSelfWithInterfaces()
             .WithScopedLifetime());
     }

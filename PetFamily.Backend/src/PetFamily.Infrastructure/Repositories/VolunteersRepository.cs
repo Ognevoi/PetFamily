@@ -4,14 +4,15 @@ using PetFamily.Application.Features.Volunteers;
 using PetFamily.Domain.PetManagement.AggregateRoot;
 using PetFamily.Domain.PetManagement.ValueObjects;
 using PetFamily.Domain.Shared;
+using PetFamily.Infrastructure.DbContexts;
 
 namespace PetFamily.Infrastructure.Repositories;
 
 public class VolunteersRepository : IVolunteersRepository
 {
-    private readonly ApplicationDbContext _dbContext;
+    private readonly WriteDbContext _dbContext;
 
-    public VolunteersRepository(ApplicationDbContext dbContext)
+    public VolunteersRepository(WriteDbContext dbContext)
     {
         _dbContext = dbContext;
     }   

@@ -4,28 +4,81 @@ using PetFamily.API.DTO.Requests.Volunteer;
 using PetFamily.API.Extensions;
 using PetFamily.API.Processors;
 using PetFamily.Application.Features.Volunteers;
-using PetFamily.Application.Features.Volunteers.AddPet;
-using PetFamily.Application.Features.Volunteers.Create;
-using PetFamily.Application.Features.Volunteers.DeletePetPhoto;
-using PetFamily.Application.Features.Volunteers.GetPetPhoto;
-using PetFamily.Application.Features.Volunteers.HardDelete;
-using PetFamily.Application.Features.Volunteers.HardDeletePet;
-using PetFamily.Application.Features.Volunteers.Restore;
-using PetFamily.Application.Features.Volunteers.SoftDelete;
-using PetFamily.Application.Features.Volunteers.Update;
-using PetFamily.Application.Features.Volunteers.UpdatePetPosition;
-using PetFamily.Application.Features.Volunteers.UpdateVolunteerAssistanceDetails;
-using PetFamily.Application.Features.Volunteers.UpdateVolunteerSocialNetworks;
-using PetFamily.Application.Features.Volunteers.UploadPetPhoto;
+using PetFamily.Application.Features.Volunteers.Commands.AddPet;
+using PetFamily.Application.Features.Volunteers.Commands.Create;
+using PetFamily.Application.Features.Volunteers.Commands.DeletePetPhoto;
+using PetFamily.Application.Features.Volunteers.Commands.GetPetPhoto;
+using PetFamily.Application.Features.Volunteers.Commands.HardDelete;
+using PetFamily.Application.Features.Volunteers.Commands.HardDeletePet;
+using PetFamily.Application.Features.Volunteers.Commands.Restore;
+using PetFamily.Application.Features.Volunteers.Commands.SoftDelete;
+using PetFamily.Application.Features.Volunteers.Commands.Update;
+using PetFamily.Application.Features.Volunteers.Commands.UpdatePetPosition;
+using PetFamily.Application.Features.Volunteers.Commands.UpdateVolunteerAssistanceDetails;
+using PetFamily.Application.Features.Volunteers.Commands.UpdateVolunteerSocialNetworks;
+using PetFamily.Application.Features.Volunteers.Commands.UploadPetPhoto;
+using PetFamily.Application.Features.Volunteers.Queries.GetPetById;
+using PetFamily.Application.Features.Volunteers.Queries.GetVolunteerById;
+using PetFamily.Application.Features.Volunteers.Queries.GetVolunteers;
 using PetFamily.Domain.Shared;
+using GetPetByIdHandler = PetFamily.Application.Features.Volunteers.Queries.GetPetById.GetPetByIdHandler;
+using GetPetsHandler = PetFamily.Application.Features.Volunteers.Queries.GetPets.GetPetsHandler;
 
 
 namespace PetFamily.API.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class VolunteerController : ControllerBase
+public class VolunteerController : ApplicationController
 {
+    [HttpGet]
+    public async Task<ActionResult> GetAll(
+        [FromQuery] GetVolunteerWithPaginationRequest request,
+        [FromServices] GetVolunteersHandler handler, 
+        CancellationToken cancellationToken)
+    {
+        var query = request.ToQuery();
+        var response = await handler.HandleAsync(query, cancellationToken);
+        
+        return response.IsFailure ? BadRequest(response.Error) : Ok(response.Value);  
+    }
+    
+    [HttpGet("{volunteerId:guid}")]
+    public async Task<ActionResult> GetById(
+        [FromRoute] Guid volunteerId,
+        [FromServices] GetVolunteerByIdHandler handler, 
+        CancellationToken cancellationToken)
+    {
+        var query = new GetVolunteerByIdQuery(volunteerId);
+        var response = await handler.HandleAsync(query, cancellationToken);
+        
+        return response.IsFailure ? BadRequest(response.Error) : Ok(response.Value);  
+    }
+    
+    [HttpGet("pets")]
+    public async Task<ActionResult> GetAllPets(
+        [FromQuery] GetPetWithPaginationRequest request,
+        [FromServices] GetPetsHandler handler, 
+        CancellationToken cancellationToken)
+    {
+        var query = request.ToQuery();
+        var response = await handler.HandleAsync(query, cancellationToken);
+        
+        return response.IsFailure ? BadRequest(response.Error) : Ok(response.Value);  
+    }
+    
+    [HttpGet("pets/{petId:guid}")]
+    public async Task<ActionResult> GetPetById(
+        [FromRoute] Guid petId,
+        [FromServices] GetPetByIdHandler handler, 
+        CancellationToken cancellationToken)
+    {
+        var query = new GetPetByIdQuery(petId);
+        var response = await handler.HandleAsync(query, cancellationToken);
+        
+        return response.IsFailure ? BadRequest(response.Error) : Ok(response.Value);  
+    }
+    
     [HttpPost]
     public async Task<ActionResult> Create(
         [FromServices] CreateVolunteerHandler handler,

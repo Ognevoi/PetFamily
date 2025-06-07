@@ -1,4 +1,4 @@
-using PetFamily.Application.Features.Volunteers.GetPetPhoto;
+using PetFamily.Application.Features.Volunteers.Commands.GetPetPhoto;
 
 namespace PetFamily.API.DTO.Requests.Volunteer;
 

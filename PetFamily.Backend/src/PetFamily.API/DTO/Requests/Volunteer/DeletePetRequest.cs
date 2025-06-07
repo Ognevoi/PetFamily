@@ -1,6 +1,4 @@
-using PetFamily.Application.Features.Species.CreateSpecie;
-using PetFamily.Application.Features.Volunteers.HardDeletePet;
-using PetFamily.Application.Interfaces;
+using PetFamily.Application.Features.Volunteers.Commands.HardDeletePet;
 
 namespace PetFamily.API.DTO.Requests.Volunteer;
 
