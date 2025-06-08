@@ -1,6 +1,5 @@
-using PetFamily.Application.Features.Volunteers.DTO;
-using PetFamily.Application.Features.Volunteers.UploadPetPhoto;
-using PetFamily.Application.Interfaces;
+using PetFamily.Application.Features.Volunteers.Commands.DTO;
+using PetFamily.Application.Features.Volunteers.Commands.UploadPetPhoto;
 
 namespace PetFamily.API.DTO.Requests.Volunteer;
 

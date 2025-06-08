@@ -1,5 +1,4 @@
-using PetFamily.Application.Features.Volunteers.HardDelete;
-using PetFamily.Application.Interfaces;
+using PetFamily.Application.Features.Volunteers.Commands.HardDelete;
 
 namespace PetFamily.API.DTO.Requests.Volunteer;
 

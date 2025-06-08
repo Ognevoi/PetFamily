@@ -4,6 +4,7 @@
         <TargetFramework>net9.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <UserSecretsId>2e6e5426-8dcb-4f95-9f97-53f54f883374</UserSecretsId>
     </PropertyGroup>
 
     <ItemGroup>
@@ -13,6 +14,7 @@
     <ItemGroup>
       <PackageReference Include="CSharpFunctionalExtensions" Version="3.4.3" />
       <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.0" />
       <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.0" />
       <PackageReference Include="Scrutor" Version="6.0.1" />
     </ItemGroup>
@@ -21,6 +23,17 @@
       <Compile Remove="Volunteers\CreateVolunteer\CreateVolunteerHandler.cs" />
       <Compile Remove="Volunteers\CreateVolunteer\CreateVolunteerRequest.cs" />
       <Compile Remove="Features\Volunteers\Create\CreateVolunteerRequest.cs" />
+      <Compile Remove="Features\Volunteers\AddPet\AddPetHandler.cs" />
+      <Compile Remove="Features\Volunteers\DeletePetPhoto\DeletePetPhotosCommand.cs" />
+      <Compile Remove="Features\Volunteers\HardDelete\DeleteVolunteerRequestValidator.cs" />
+      <Compile Remove="Features\Volunteers\HardDeletePet\DeletePetCommandValidator.cs" />
+      <Compile Remove="Features\Volunteers\UpdatePetPosition\UpdatePetPositionCommand.cs" />
+      <Compile Remove="Features\Volunteers\UpdatePetPosition\UpdatePetPositionCommandValidator.cs" />
+      <Compile Remove="Features\Volunteers\UpdateVolunteerAssistanceDetails\UpdateVolunteerAssistanceDetailsCommand.cs" />
+      <Compile Remove="Features\Volunteers\UpdateVolunteerSocialNetworks\UpdateVolunteerSocialNetworksCommand.cs" />
+      <Compile Remove="Features\Volunteers\UpdateVolunteerSocialNetworks\UpdateVolunteerSocialNetworksCommandValidator.cs" />
+      <Compile Remove="Features\Volunteers\UploadPetPhoto\UploadPetPhotosCommand.cs" />
+      <Compile Remove="Features\Volunteers\UploadPetPhoto\UploadPetPhotosCommandValidator.cs" />
     </ItemGroup>
 
     <ItemGroup>
@@ -33,6 +46,7 @@
 
     <ItemGroup>
       <Folder Include="Features\" />
+      <Folder Include="Features\Volunteers\Commands\" />
     </ItemGroup>
 
 </Project>
