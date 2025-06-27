@@ -25,6 +25,7 @@ public class GetVolunteersHandler : IQueryHandler<PagedList<VolunteerDto>, GetVo
             .AsQueryable();
         
         volunteersQuery = volunteersQuery
+            .WhereIfNotNullOrEmpty(query.VolunteerId, v => v.Id)
             .WhereIfNotNullOrEmpty(query.Name, v => v.FirstName);
         
         return await volunteersQuery

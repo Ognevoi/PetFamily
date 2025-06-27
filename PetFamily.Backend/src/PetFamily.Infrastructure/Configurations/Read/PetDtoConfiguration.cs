@@ -28,6 +28,10 @@ public class PetDtoConfiguration : IEntityTypeConfiguration<PetDto>
             .HasMaxLength(Constants.MAX_MEDIUM_TEXT_LENGTH)
             .HasColumnName("description");
         
+        builder.Property(p => p.Position)
+            .HasColumnName("serial_number")
+            .IsRequired();
+        
         builder.Property(p => p.Photos)
             .HasMaxLength(Constants.MAX_VERY_LOW_TEXT_LENGTH)
             .HasConversion(

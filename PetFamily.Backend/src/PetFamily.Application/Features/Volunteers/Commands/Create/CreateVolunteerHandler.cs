@@ -46,7 +46,6 @@ public class CreateVolunteerHandler : ICommandHandler<Guid, CreateVolunteerComma
         var volunteer = await _volunteersRepository.GetByEmail(emailResult, cancellationToken);
         if (volunteer.IsSuccess)
             return Errors.General.ValueAlreadyExists(nameof(Email)).ToErrorList();
-        // return volunteer.Error.ToErrorList();
 
         var volunteerId = VolunteerId.NewVolunteerId();
 

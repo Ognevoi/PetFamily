@@ -152,7 +152,7 @@ public class VolunteerController : ApplicationController
         [FromServices] SoftDeleteVolunteerHandler handler,
         CancellationToken cancellationToken)
     {
-        var command = new DeleteVolunteerRequest().ToCommand(id);
+        var command = new SoftDeleteVolunteerRequest().ToCommand(id);
 
         var result = await handler.HandleAsync(command, cancellationToken);
 
