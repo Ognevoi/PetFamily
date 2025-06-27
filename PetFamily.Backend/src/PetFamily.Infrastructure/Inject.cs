@@ -8,6 +8,7 @@ using PetFamily.Application.Messaging;
 using PetFamily.Application.Providers;
 using PetFamily.Infrastructure.BackgroundServices;
 using PetFamily.Infrastructure.DbContexts;
+using PetFamily.Infrastructure.InfrastructureConstants;
 using PetFamily.Infrastructure.MessageQueues;
 using PetFamily.Infrastructure.Options;
 using PetFamily.Infrastructure.Providers;
@@ -20,7 +21,7 @@ public static class Inject
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
         services
-            .AddDbContexts()
+            .AddDbContexts(configuration)
             .AddMinio(configuration)
             .AddRepositories()
             .AddDatabase()
@@ -50,7 +51,6 @@ public static class Inject
         
         return services;
     }
-
     
     private static IServiceCollection AddRepositories(this IServiceCollection services)
     {
@@ -60,10 +60,15 @@ public static class Inject
         return services;
     }
     
-    private static IServiceCollection AddDbContexts(this IServiceCollection services)
+    private static IServiceCollection AddDbContexts(
+        this IServiceCollection services,
+        IConfiguration configuration)
     {
-        services.AddScoped<WriteDbContext>();
-        services.AddScoped<IReadDbContext, ReadDbContext>();
+        services.AddScoped<WriteDbContext>(provider => 
+            new WriteDbContext(configuration.GetConnectionString(Constants.DATABASE)!));
+        
+        services.AddScoped<IReadDbContext, ReadDbContext>(provider => 
+            new ReadDbContext(configuration.GetConnectionString(Constants.DATABASE)!));
         
         return services;
     }

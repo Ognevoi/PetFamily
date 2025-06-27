@@ -12,6 +12,7 @@ public class PetDto
     public string Name { get; init; } = string.Empty;
     public DateTime BirthDate { get; init; }
     public string Description { get; init; } = string.Empty;
+    public int Position { get; init; }
     public IReadOnlyList<PhotoDto> Photos { get; init; } = new List<PhotoDto>();
 }
 

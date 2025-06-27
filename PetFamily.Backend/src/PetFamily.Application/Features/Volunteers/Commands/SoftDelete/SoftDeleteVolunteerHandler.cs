@@ -1,21 +1,20 @@
 using CSharpFunctionalExtensions;
 using Microsoft.Extensions.Logging;
 using PetFamily.Application.Extensions;
-using PetFamily.Application.Features.Volunteers.Commands.HardDelete;
 using PetFamily.Application.Interfaces;
 using PetFamily.Domain.Shared;
 
 namespace PetFamily.Application.Features.Volunteers.Commands.SoftDelete;
 
-public class SoftDeleteVolunteerHandler : ICommandHandler<Guid, DeleteVolunteerCommand>
+public class SoftDeleteVolunteerHandler : ICommandHandler<Guid, SoftDeleteVolunteerCommand>
 {
     private readonly IVolunteersRepository _volunteersRepository;
-    private readonly DeleteVolunteerCommandValidator _validator;
+    private readonly SoftDeleteVolunteerCommandValidator _validator;
     private readonly ILogger<SoftDeleteVolunteerHandler> _logger;
 
     public SoftDeleteVolunteerHandler(
         IVolunteersRepository volunteersRepository,
-        DeleteVolunteerCommandValidator validator,
+        SoftDeleteVolunteerCommandValidator validator,
         ILogger<SoftDeleteVolunteerHandler> logger)
     {
         _volunteersRepository = volunteersRepository;
@@ -24,7 +23,7 @@ public class SoftDeleteVolunteerHandler : ICommandHandler<Guid, DeleteVolunteerC
     }
 
     public async Task<Result<Guid, ErrorList>> HandleAsync(
-        DeleteVolunteerCommand command,
+        SoftDeleteVolunteerCommand command,
         CancellationToken cancellationToken = default)
     {
         var validationResult = await _validator.ValidateAsync(command, cancellationToken);

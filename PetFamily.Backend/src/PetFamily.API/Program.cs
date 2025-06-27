@@ -55,3 +55,12 @@ app.Use(async (context, next) =>
 }); 
 
 app.Run();
+
+namespace PetFamily.API
+{
+    public partial class Program
+    {
+        // This partial class is used to allow the Program class to be extended in tests.
+        // It is necessary for the WebApplicationFactory to work correctly in integration tests.
+    }
+}

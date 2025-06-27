@@ -12,12 +12,12 @@ public class DeleteBreedHandler : ICommandHandler<Guid, DeleteBreedCommand>
 {
     private readonly ISpeciesRepository _specieRepository;
     private readonly IValidator<DeleteBreedCommand> _validator;
-    private readonly ILogger<CreateSpecieHandler> _logger;
+    private readonly ILogger<DeleteBreedHandler> _logger;
 
     public DeleteBreedHandler(
         ISpeciesRepository specieRepository,
         IValidator<DeleteBreedCommand> validator,
-        ILogger<CreateSpecieHandler> logger)
+        ILogger<DeleteBreedHandler> logger)
     {
         _specieRepository = specieRepository;
         _validator = validator;
