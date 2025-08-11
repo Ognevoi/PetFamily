@@ -3,7 +3,6 @@ namespace PetFamily.Domain.Shared;
 public record Error
 {
     public const string SEPARATOR = "||";
-    
     public string Code { get; }
     public string Message { get; }
     public ErrorType Type { get; }
