@@ -1,5 +1,7 @@
 using CSharpFunctionalExtensions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Distributed;
+using PetFamily.Application.Caching;
 using PetFamily.Application.Database;
 using PetFamily.Application.Features.Volunteers.DTOs;
 using PetFamily.Application.Interfaces;
@@ -10,21 +12,37 @@ namespace PetFamily.Application.Features.Volunteers.Queries.GetPetById;
 public class GetPetByIdHandler : IQueryHandler<PetDto, GetPetByIdQuery>
 {
     private readonly IReadDbContext _readDbContext;
-
-    public GetPetByIdHandler(IReadDbContext readDbContext)
+    private readonly ICacheService _cache;
+    private readonly DistributedCacheEntryOptions _cacheOptions = new()
+    {
+        AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(CacheConstants.DEFAULT_EXPIRATION_MINUTES)
+    };
+    public GetPetByIdHandler(IReadDbContext readDbContext, ICacheService cache)
     {
         _readDbContext = readDbContext;
+        _cache = cache;
     }
 
     public async Task<Result<PetDto, ErrorList>> HandleAsync(GetPetByIdQuery query,
         CancellationToken cancellationToken)
     {
-        var pet = await _readDbContext.Pets
-            .FirstOrDefaultAsync(p => p.Id == query.Id, cancellationToken);
+        string key = CacheConstants.PET_PREFIX + query.Id;
 
-        if (pet == null)
+        var result = await _cache.GetOrSetAsync(
+            key,
+            _cacheOptions,
+            async () => await GetPetById(query, cancellationToken),
+            cancellationToken);
+
+        if (result == null)
             return Errors.General.NotFound(query.Id).ToErrorList();
 
-        return pet;
+        return result;
+    }
+    
+    private async Task<PetDto?> GetPetById(GetPetByIdQuery query, CancellationToken cancellationToken)
+    {
+        return await _readDbContext.Pets
+            .FirstOrDefaultAsync(v => v.Id == query.Id, cancellationToken);
     }
 }

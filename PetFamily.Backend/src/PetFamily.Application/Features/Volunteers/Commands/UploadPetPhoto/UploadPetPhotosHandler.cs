@@ -55,7 +55,7 @@ public class UploadPetPhotosHandler : ICommandHandler<IEnumerable<string>, Uploa
             return Errors.General.NotFound(command.PetId).ToErrorList();
         
         var photosToUpload = command.Photos.Select(
-            x => new FileData(x.Content, FileNameHelpers.GetRandomizedFileName(x.FileName))).ToList();;
+            x => new FileData(x.Content, FileNameHelpers.GetRandomizedFileName(x.FileName))).ToList();
         
         List<Photo> photos = [];
         foreach (var uploadPhoto in photosToUpload) 
@@ -73,10 +73,27 @@ public class UploadPetPhotosHandler : ICommandHandler<IEnumerable<string>, Uploa
             await _fileCleanerQueue.PublishAsync(photosToUpload.Select(p => p.ObjectName), cancellationToken);
             return Errors.General.UploadFailure(uploadResult.Error.ToString()).ToErrorList();
         }
+        
+        System.Data.IDbTransaction transaction = await _unitOfWork.BeginTransactionAsync(cancellationToken);
 
-        petResult.Value.AddPhotos(photos);
-
-        await _unitOfWork.SaveChangesAsync(cancellationToken);
+        try
+        {
+            petResult.Value.AddPhotos(photos);
+            
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
+            
+            transaction.Commit();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(
+                ex, "Error while uploading photos for pet with id {PetId}. Transaction Rollback", petResult.Value.Id);
+            
+            transaction.Rollback();
+            
+            await _fileCleanerQueue.PublishAsync(photosToUpload.Select(p => p.ObjectName), cancellationToken);
+            return Errors.General.UploadFailure(uploadResult.Error.ToString()).ToErrorList();
+        }
         
         _logger.LogInformation("Photos uploaded for pet with id {PetId}", petResult.Value.Id);
 
