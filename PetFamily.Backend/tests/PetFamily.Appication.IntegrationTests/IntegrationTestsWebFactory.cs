@@ -26,7 +26,6 @@ public class IntegrationTestsWebFactory : WebApplicationFactory<Program>, IAsync
     private readonly IFilesProvider _fileProviderMock;
     private Respawner _respawner = default!;
     private DbConnection _dbConnection = default!;
-    // private RedisContainer _redisContainer = default!;
     
     public IntegrationTestsWebFactory()
     {
@@ -43,7 +42,7 @@ public class IntegrationTestsWebFactory : WebApplicationFactory<Program>, IAsync
     
     private readonly RedisContainer _redisContainer = new RedisBuilder()
         .WithImage("redis:latest")
-        .WithPortBinding(6380, 6379) // Used for debugging
+        // .WithPortBinding(6380, 6379) // Used for debugging
         .Build();
     
     protected override void ConfigureWebHost(IWebHostBuilder builder)
