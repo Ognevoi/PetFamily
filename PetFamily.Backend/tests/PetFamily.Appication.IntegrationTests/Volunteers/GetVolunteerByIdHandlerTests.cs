@@ -1,12 +1,9 @@
-using Bogus;
 using FluentAssertions;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.DependencyInjection;
 using PetFamily.Application.Features.Volunteers.DTOs;
 using PetFamily.Application.Features.Volunteers.Queries.GetVolunteerById;
 using PetFamily.Application.Interfaces;
-using PetFamily.Domain.PetManagement.AggregateRoot;
-using PetFamily.Domain.PetManagement.ValueObjects;
 using PetFamily.Domain.Shared;
 using PetFamily.TestUtils.Seeding;
 
