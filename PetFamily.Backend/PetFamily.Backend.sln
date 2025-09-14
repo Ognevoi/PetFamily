@@ -21,7 +21,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PetFamily.TestUtils", "test
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PetFamily.AcceptanceTests", "tests\PetFamily.AcceptanceTests\PetFamily.AcceptanceTests.csproj", "{2772F046-791A-4A5C-A876-4A927474E11D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PetFamily.Appication.IntegrationTests", "tests\PetFamily.Appication.IntegrationTests\PetFamily.Appication.IntegrationTests.csproj", "{D5668E54-5BAD-4A98-A4F0-E56B111FE18A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PetFamily.Application.IntegrationTests", "tests\PetFamily.Application.IntegrationTests\PetFamily.Application.IntegrationTests.csproj", "{D5668E54-5BAD-4A98-A4F0-E56B111FE18A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
