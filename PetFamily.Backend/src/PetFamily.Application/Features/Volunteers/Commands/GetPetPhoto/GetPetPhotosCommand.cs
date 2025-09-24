@@ -4,4 +4,4 @@ namespace PetFamily.Application.Features.Volunteers.Commands.GetPetPhoto;
 
 public record GetPetPhotosCommand(
     Guid VolunteerId,
-    Guid PetId) : ICommand;
+    Guid PetId) : ICommand<IEnumerable<string>>;

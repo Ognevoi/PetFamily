@@ -15,7 +15,7 @@ public class VolunteersRepository : IVolunteersRepository
     public VolunteersRepository(WriteDbContext dbContext)
     {
         _dbContext = dbContext;
-    }   
+    }
 
     public async Task<Guid> Add(Volunteer volunteer, CancellationToken cancellationToken = default)
     {
@@ -24,19 +24,19 @@ public class VolunteersRepository : IVolunteersRepository
 
         return volunteer.Id;
     }
-    
+
     public async Task<Guid> Save(Volunteer volunteer, CancellationToken cancellationToken = default)
     {
-        _dbContext.Volunteers.Attach(volunteer);    
+        _dbContext.Volunteers.Attach(volunteer);
         await _dbContext.SaveChangesAsync(cancellationToken);
 
         return volunteer.Id;
     }
-    
+
     public async Task<Guid> Delete(Volunteer volunteer, CancellationToken cancellationToken = default)
     {
         _dbContext.Volunteers.Remove(volunteer);
-        
+
         await _dbContext.SaveChangesAsync(cancellationToken);
 
         return volunteer.Id;
@@ -45,7 +45,7 @@ public class VolunteersRepository : IVolunteersRepository
     public async Task<Result<Volunteer, Error>> GetById(
         VolunteerId volunteerId,
         CancellationToken cancellationToken = default
-        )
+    )
     {
         var volunteer = await _dbContext.Volunteers
             .Include(v => v.Pets)
@@ -53,7 +53,7 @@ public class VolunteersRepository : IVolunteersRepository
 
         if (volunteer == null)
             return Errors.General.NotFound(volunteerId);
-            
+
         return volunteer;
     }
 
@@ -65,7 +65,7 @@ public class VolunteersRepository : IVolunteersRepository
 
         if (volunteer == null)
             return Errors.General.NotFound();
-            
+
         return volunteer;
     }
 }

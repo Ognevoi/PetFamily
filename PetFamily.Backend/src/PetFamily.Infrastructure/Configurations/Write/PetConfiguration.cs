@@ -20,7 +20,7 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
             .HasConversion(
                 id => id.Value,
                 value => PetId.Create(value));
-        
+
         builder.HasOne(p => p.Volunteer)
             .WithMany(v => v.Pets)
             .HasForeignKey("volunteer_id")
@@ -94,8 +94,8 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
                 status => status.ToString(),
                 value => Enum.Parse<PetStatus>(value))
             .IsRequired();
-        
-        builder.OwnsOne(p => p.AssistanceDetails, ab => 
+
+        builder.OwnsOne(p => p.AssistanceDetails, ab =>
         {
             ab.ToJson();
 
@@ -112,7 +112,7 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
                 }
             );
         });
-        
+
         builder.ComplexProperty(p => p.Address, a =>
         {
             a.Property(ad => ad.Street)
@@ -132,7 +132,7 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
                 .HasMaxLength(Constants.MAX_VERY_LOW_TEXT_LENGTH)
                 .HasColumnName("zip_code");
         });
-        
+
         builder.OwnsOne(p => p.PhoneNumber, pnb =>
         {
             pnb.Property(pn => pn.Value)
@@ -144,17 +144,17 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
         builder.Property(p => p.CreatedAt)
             .HasDefaultValueSql("CURRENT_TIMESTAMP")
             .IsRequired();
-        
+
         builder.Property(p => p.Photos)
             .JsonValueObjectCollectionConversion()
             .IsRequired()
             .HasColumnName("photos");
-        
+
         builder.ComplexProperty(p => p.Position, sb =>
         {
             sb.Property(s => s.Value)
                 .IsRequired()
                 .HasColumnName("serial_number");
-        }); 
+        });
     }
 }

@@ -9,7 +9,7 @@ using PetFamily.Domain.Shared;
 
 namespace PetFamily.Application.Features.Volunteers.Queries.GetPets;
 
-public class GetPetsHandler : IQueryHandler<PagedList<PetDto>, GetPetWithPaginationQuery>
+public class GetPetsHandler : IQueryHandler<GetPetWithPaginationQuery, PagedList<PetDto>>
 {
     private readonly IReadDbContext _readDbContext;
 
@@ -18,9 +18,9 @@ public class GetPetsHandler : IQueryHandler<PagedList<PetDto>, GetPetWithPaginat
         _readDbContext = readDbContext;
     }
 
-    public async Task<Result<PagedList<PetDto>, ErrorList>> HandleAsync(GetPetWithPaginationQuery query,
+    public async Task<Result<PagedList<PetDto>, ErrorList>> Handle(GetPetWithPaginationQuery query,
         CancellationToken cancellationToken)
-    {   
+    {
         var petsQuery = _readDbContext.Pets
             .AsQueryable();
 
@@ -34,10 +34,10 @@ public class GetPetsHandler : IQueryHandler<PagedList<PetDto>, GetPetWithPaginat
             _ => p => p.Name
         };
 
-        petsQuery = query.SortDirection?.ToLower() == "desc" 
-            ? petsQuery.OrderByDescending(keySelector) 
-            : petsQuery.OrderBy(keySelector); 
-        
+        petsQuery = query.SortDirection?.ToLower() == "desc"
+            ? petsQuery.OrderByDescending(keySelector)
+            : petsQuery.OrderBy(keySelector);
+
         petsQuery.OrderBy(keySelector);
 
         petsQuery = petsQuery

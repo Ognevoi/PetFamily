@@ -17,14 +17,14 @@ public class WriteDbContext(string connectionString) : DbContext
         optionsBuilder.EnableSensitiveDataLogging();
         optionsBuilder.UseLoggerFactory(CreateLoggerFactory());
     }
-    
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(
             typeof(WriteDbContext).Assembly,
             type => type.FullName?.Contains("Configurations.Write") ?? false);
     }
-    
+
     private ILoggerFactory CreateLoggerFactory() =>
         LoggerFactory.Create(builder => builder.AddConsole());
 }

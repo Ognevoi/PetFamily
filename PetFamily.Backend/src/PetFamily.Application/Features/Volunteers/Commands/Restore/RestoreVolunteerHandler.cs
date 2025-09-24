@@ -1,28 +1,24 @@
 using CSharpFunctionalExtensions;
-using FluentValidation;
 using Microsoft.Extensions.Logging;
 using PetFamily.Application.Interfaces;
 using PetFamily.Domain.Shared;
 
 namespace PetFamily.Application.Features.Volunteers.Commands.Restore;
 
-public class RestoreVolunteerHandler : ICommandHandler<Guid, RestoreVolunteerCommand>
+public class RestoreVolunteerHandler : ICommandHandler<RestoreVolunteerCommand, Guid>
 {
     private readonly IVolunteersRepository _volunteersRepository;
-    private readonly IValidator<RestoreVolunteerCommand> _validator;
     private readonly ILogger<RestoreVolunteerHandler> _logger;
 
     public RestoreVolunteerHandler(
         IVolunteersRepository volunteersRepository,
-        IValidator<RestoreVolunteerCommand> validator,
         ILogger<RestoreVolunteerHandler> logger)
     {
         _volunteersRepository = volunteersRepository;
-        _validator = validator;
         _logger = logger;
     }
 
-    public async Task<Result<Guid, ErrorList>> HandleAsync(
+    public async Task<Result<Guid, ErrorList>> Handle(
         RestoreVolunteerCommand command,
         CancellationToken cancellationToken = default)
     {

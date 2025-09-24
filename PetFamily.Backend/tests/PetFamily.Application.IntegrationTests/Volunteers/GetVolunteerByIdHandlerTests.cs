@@ -1,19 +1,18 @@
 using FluentAssertions;
+using MediatR;
 using Microsoft.Extensions.DependencyInjection;
-using PetFamily.Application.Features.Volunteers.DTOs;
 using PetFamily.Application.Features.Volunteers.Queries.GetVolunteerById;
-using PetFamily.Application.Interfaces;
 using PetFamily.TestUtils.Seeding;
 
 namespace IntegrationTests.Volunteers;
 
 public class GetVolunteerByIdHandlerTests : VolunteerTestBase
 {
-    private readonly IQueryHandler<VolunteerDto, GetVolunteerByIdQuery> _sut;
+    private readonly ISender _sender;
 
     public GetVolunteerByIdHandlerTests(IntegrationTestsWebFactory factory) : base(factory)
     {
-        _sut = Scope.ServiceProvider.GetRequiredService<IQueryHandler<VolunteerDto, GetVolunteerByIdQuery>>();
+        _sender = Scope.ServiceProvider.GetRequiredService<ISender>();
     }
 
     [Fact]
@@ -25,7 +24,7 @@ public class GetVolunteerByIdHandlerTests : VolunteerTestBase
         var query = new GetVolunteerByIdQuery(volunteer.Id);
 
         // Act
-        var result = await _sut.HandleAsync(query, CancellationToken.None);
+        var result = await _sender.Send(query, CancellationToken.None);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -42,7 +41,7 @@ public class GetVolunteerByIdHandlerTests : VolunteerTestBase
         var query = new GetVolunteerByIdQuery(Guid.NewGuid());
 
         // Act
-        var result = await _sut.HandleAsync(query, CancellationToken.None);
+        var result = await _sender.Send(query, CancellationToken.None);
 
         // Assert
         result.IsFailure.Should().BeTrue();

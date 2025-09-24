@@ -1,6 +1,5 @@
 using Serilog;
 using Serilog.Events;
-
 using PetFamily.API;
 using PetFamily.API.Extensions;
 using PetFamily.API.Middlewares;
@@ -13,7 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 Log.Logger = new LoggerConfiguration()
     .ReadFrom.Configuration(builder.Configuration)
     .WriteTo.Console()
-    .WriteTo.Seq(builder.Configuration.GetConnectionString("Seq") 
+    .WriteTo.Seq(builder.Configuration.GetConnectionString("Seq")
                  ?? throw new ArgumentNullException("Seq"))
     .Enrich.WithThreadId()
     .Enrich.WithEnvironmentName()

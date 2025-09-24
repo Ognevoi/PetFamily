@@ -1,18 +1,18 @@
 using FluentAssertions;
+using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using PetFamily.Application.Features.Volunteers.Commands.GetPetPhoto;
-using PetFamily.Application.Interfaces;
 using PetFamily.TestUtils.Seeding;
 
 namespace IntegrationTests.Volunteers;
 
 public class GetPetPhotosHandlerTests : VolunteerTestBase
 {
-    private readonly ICommandHandler<IEnumerable<string>, GetPetPhotosCommand> _sut;
+    private readonly ISender _sender;
 
     public GetPetPhotosHandlerTests(IntegrationTestsWebFactory factory) : base(factory)
     {
-        _sut = Scope.ServiceProvider.GetRequiredService<ICommandHandler<IEnumerable<string>, GetPetPhotosCommand>>();
+        _sender = Scope.ServiceProvider.GetRequiredService<ISender>();
     }
 
     [Fact]
@@ -30,7 +30,7 @@ public class GetPetPhotosHandlerTests : VolunteerTestBase
         Factory.SetupFileProviderSuccessGetMock();
 
         // Act
-        var result = await _sut.HandleAsync(command);
+        var result = await _sender.Send(command);
 
         // Assert
         result.IsSuccess.Should().BeTrue();

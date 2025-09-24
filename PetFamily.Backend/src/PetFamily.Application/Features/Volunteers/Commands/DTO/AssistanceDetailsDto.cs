@@ -8,7 +8,7 @@ public record AssistanceDetailsDto
 {
     public string Name { get; }
     public string Description { get; }
-    
+
     public AssistanceDetailsDto(string name, string description)
     {
         Name = name;
@@ -16,7 +16,7 @@ public record AssistanceDetailsDto
     }
 }
 
-public class AssistanceDetailsDtoValidator: AbstractValidator<AssistanceDetailsDto>
+public class AssistanceDetailsDtoValidator : AbstractValidator<AssistanceDetailsDto>
 {
     public AssistanceDetailsDtoValidator()
     {

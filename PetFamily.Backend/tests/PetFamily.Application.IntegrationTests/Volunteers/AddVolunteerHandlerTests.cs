@@ -1,20 +1,19 @@
 using FluentAssertions;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using PetFamily.Application.Features.Volunteers.Commands.Create;
 using PetFamily.Application.Features.Volunteers.Commands.DTO;
-using PetFamily.Application.Interfaces;
 using PetFamily.Domain.PetManagement.ValueObjects;
 
 namespace IntegrationTests.Volunteers;
 
 public class AddVolunteerHandlerTests : VolunteerTestBase
 {
-    private readonly ICommandHandler<Guid, CreateVolunteerCommand> _sut;
+    private readonly ISender _sender;
 
     public AddVolunteerHandlerTests(IntegrationTestsWebFactory factory) : base(factory)
     {
-        _sut = Scope.ServiceProvider.GetRequiredService<ICommandHandler<Guid, CreateVolunteerCommand>>();
+        _sender = Scope.ServiceProvider.GetRequiredService<ISender>();
     }
 
     [Fact]
@@ -24,7 +23,7 @@ public class AddVolunteerHandlerTests : VolunteerTestBase
         var command = Fixture.BuildCreateVolunteerCommand();
 
         // Act
-        var result = await _sut.HandleAsync(command, CancellationToken.None);
+        var result = await _sender.Send(command, CancellationToken.None);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -40,8 +39,8 @@ public class AddVolunteerHandlerTests : VolunteerTestBase
         var command = Fixture.BuildCreateVolunteerCommand(email: "t@test.com");
 
         // Act
-        var firstResult = await _sut.HandleAsync(command, CancellationToken.None);
-        var secondResult = await _sut.HandleAsync(command, CancellationToken.None);
+        var firstResult = await _sender.Send(command, CancellationToken.None);
+        var secondResult = await _sender.Send(command, CancellationToken.None);
 
         // Assert
         firstResult.IsSuccess.Should().BeTrue();
@@ -59,8 +58,8 @@ public class AddVolunteerHandlerTests : VolunteerTestBase
         var command = Fixture.BuildCreateVolunteerCommand(volunteerId);
 
         // Act
-        var firstResult = await _sut.HandleAsync(command, CancellationToken.None);
-        var secondResult = await _sut.HandleAsync(command, CancellationToken.None);
+        var firstResult = await _sender.Send(command, CancellationToken.None);
+        var secondResult = await _sender.Send(command, CancellationToken.None);
 
         // Assert
         firstResult.IsSuccess.Should().BeTrue();
@@ -107,7 +106,7 @@ public class AddVolunteerHandlerTests : VolunteerTestBase
             socialNetworks,
             assistanceDetails);
 
-        var result = await _sut.HandleAsync(command, CancellationToken.None);
+        var result = await _sender.Send(command, CancellationToken.None);
 
         result.IsSuccess.Should().BeFalse();
         result.Error.Should().NotBeNullOrEmpty();

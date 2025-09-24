@@ -10,6 +10,7 @@ public abstract class SoftDeletableEntity<TId> : CSharpFunctionalExtensions.Enti
         DeletedAt = DateTime.UtcNow;
         IsDeleted = true;
     }
+
     public virtual void Restore()
     {
         DeletedAt = default;

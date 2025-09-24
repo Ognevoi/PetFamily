@@ -11,6 +11,7 @@ public class FileCleanerQueue : IFileCleanerQueue
     {
         await _channel.Writer.WriteAsync(files, cancellationToken);
     }
+
     public async Task<IEnumerable<string>> ConsumeAsync(CancellationToken cancellationToken = default)
     {
         return await _channel.Reader.ReadAsync(cancellationToken);

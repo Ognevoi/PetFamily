@@ -6,7 +6,6 @@ using PetFamily.Domain.Shared;
 
 namespace PetFamily.Application.Features.Volunteers.Commands.AddPet;
 
-
 public class AddPetCommandValidator : AbstractValidator<AddPetCommand>
 {
     public AddPetCommandValidator()

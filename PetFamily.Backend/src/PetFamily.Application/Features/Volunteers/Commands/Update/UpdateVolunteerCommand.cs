@@ -10,4 +10,4 @@ public record UpdateVolunteerCommand(
     string Description,
     int ExperienceYears,
     string PhoneNumber)
-    : ICommand;
+    : ICommand<Guid>;

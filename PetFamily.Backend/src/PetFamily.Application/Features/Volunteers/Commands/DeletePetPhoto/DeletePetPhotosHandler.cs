@@ -2,7 +2,6 @@ using CSharpFunctionalExtensions;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
 using PetFamily.Application.Database;
-using PetFamily.Application.Extensions;
 using PetFamily.Application.Features.Volunteers.Commands.UploadPetPhoto;
 using PetFamily.Application.Interfaces;
 using PetFamily.Application.Providers;
@@ -11,12 +10,11 @@ using PetFamily.Domain.Shared;
 
 namespace PetFamily.Application.Features.Volunteers.Commands.DeletePetPhoto;
 
-public class DeletePetPhotosHandler : ICommandHandler<IEnumerable<string>, DeletePetPhotosCommand>
+public class DeletePetPhotosHandler : ICommandHandler<DeletePetPhotosCommand, IEnumerable<string>>
 {
     private readonly IVolunteersRepository _volunteersRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IFilesProvider _filesProvider;
-    private readonly IValidator<DeletePetPhotosCommand> _validator;
     private readonly ILogger<UploadPetPhotosHandler> _logger;
 
     public DeletePetPhotosHandler(
@@ -29,18 +27,13 @@ public class DeletePetPhotosHandler : ICommandHandler<IEnumerable<string>, Delet
         _volunteersRepository = volunteersRepository;
         _unitOfWork = unitOfWork;
         _filesProvider = filesProvider;
-        _validator = validator;
         _logger = logger;
     }
 
-    public async Task<Result<IEnumerable<string>, ErrorList>> HandleAsync(
+    public async Task<Result<IEnumerable<string>, ErrorList>> Handle(
         DeletePetPhotosCommand command,
         CancellationToken cancellationToken = default)
     {
-        var validationResult = await _validator.ValidateAsync(command, cancellationToken);
-        if (!validationResult.IsValid)
-            return validationResult.ToErrorList();
-
         var volunteerResult = await _volunteersRepository.GetById(command.VolunteerId, cancellationToken);
         if (volunteerResult.IsFailure)
             return Errors.General.NotFound(command.VolunteerId).ToErrorList();

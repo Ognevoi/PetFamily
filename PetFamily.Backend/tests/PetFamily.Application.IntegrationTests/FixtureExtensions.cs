@@ -114,7 +114,7 @@ public static class FixtureExtensions
         string name = default)
     {
         Faker faker = new();
-        
+
         // Create default values if not provided
         name ??= "Dog";
 
@@ -122,14 +122,14 @@ public static class FixtureExtensions
             .With(c => c.Name, name)
             .Create();
     }
-    
+
     public static AddBreedCommand BuildAddBreedCommand(
         this IFixture fixture,
         Guid specieId = default,
         string name = default)
     {
         Faker faker = new();
-        
+
         // Create default values if not provided
         specieId = specieId == default ? Guid.NewGuid() : specieId;
         name ??= "Labrador";
@@ -139,7 +139,7 @@ public static class FixtureExtensions
             .With(c => c.Name, name)
             .Create();
     }
-    
+
     public static UpdateVolunteerAssistanceDetailsCommand BuildUpdateVolunteerAssistanceDetailsCommand(
         this IFixture fixture,
         Guid volunteerId = default,
@@ -159,7 +159,7 @@ public static class FixtureExtensions
             .With(c => c.AssistanceDetails, assistanceDetails)
             .Create();
     }
-    
+
     public static UpdateVolunteerSocialNetworksCommand BuildUpdateVolunteerSocialNetworksCommand(
         this IFixture fixture,
         Guid volunteerId = default,
@@ -179,6 +179,4 @@ public static class FixtureExtensions
             .With(c => c.SocialNetworks, socialNetworks)
             .Create();
     }
-
-
 }

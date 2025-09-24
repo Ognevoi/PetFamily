@@ -7,19 +7,18 @@ using PetFamily.Domain.Shared;
 
 namespace PetFamily.Application.Features.Volunteers.Queries.GetPetById;
 
-public class GetPetByIdHandler : IQueryHandler<PetDto, GetPetByIdQuery>
+public sealed class GetPetByIdHandler : IQueryHandler<GetPetByIdQuery, PetDto>
 {
     private readonly IReadDbContext _readDbContext;
 
     public GetPetByIdHandler(IReadDbContext readDbContext)
-    {
-        _readDbContext = readDbContext;
-    }
+        => _readDbContext = readDbContext;
 
-    public async Task<Result<PetDto, ErrorList>> HandleAsync(GetPetByIdQuery query,
+    public async Task<Result<PetDto, ErrorList>> Handle(GetPetByIdQuery query,
         CancellationToken cancellationToken)
     {
         var pet = await _readDbContext.Pets
+            .AsNoTracking()
             .FirstOrDefaultAsync(p => p.Id == query.Id, cancellationToken);
 
         if (pet == null)

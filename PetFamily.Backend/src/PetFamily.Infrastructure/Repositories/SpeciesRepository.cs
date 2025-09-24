@@ -24,19 +24,19 @@ public class SpeciesRepository : ISpeciesRepository
 
         return specie.Id;
     }
-    
+
     public async Task<Guid> Save(Specie specie, CancellationToken cancellationToken = default)
     {
-        _dbContext.Species.Attach(specie);    
+        _dbContext.Species.Attach(specie);
         await _dbContext.SaveChangesAsync(cancellationToken);
 
         return specie.Id;
     }
-    
+
     public async Task<Guid> Delete(Specie specie, CancellationToken cancellationToken = default)
     {
         _dbContext.Species.Remove(specie);
-        
+
         await _dbContext.SaveChangesAsync(cancellationToken);
 
         return specie.Id;
@@ -47,10 +47,10 @@ public class SpeciesRepository : ISpeciesRepository
         var specie = await _dbContext.Species
             .Include(s => s.Breed)
             .FirstOrDefaultAsync(s => s.Id == specieId, cancellationToken);
-    
+
         if (specie == null)
             return Errors.General.NotFound(specieId);
-    
+
         return specie;
     }
 }

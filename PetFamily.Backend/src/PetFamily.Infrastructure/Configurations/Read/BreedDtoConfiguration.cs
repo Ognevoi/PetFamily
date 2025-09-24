@@ -12,11 +12,11 @@ public class BreedDtoConfiguration : IEntityTypeConfiguration<BreedDto>
         builder.ToTable("breeds");
 
         builder.HasKey(b => b.Id);
-        
+
         builder.Property(b => b.Name)
             .HasMaxLength(Constants.MAX_VERY_LOW_TEXT_LENGTH)
             .HasColumnName("name");
-        
+
         builder.HasOne(b => b.Specie)
             .WithMany()
             .HasForeignKey(b => b.SpecieId)

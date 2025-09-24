@@ -10,7 +10,7 @@ public record AddressDto
     public string City { get; }
     public string State { get; }
     public string ZipCode { get; }
-    
+
     public AddressDto(string street, string city, string state, string zipCode)
     {
         Street = street;
@@ -20,7 +20,7 @@ public record AddressDto
     }
 }
 
-public class AddressDtoValidator: AbstractValidator<AddressDto>
+public class AddressDtoValidator : AbstractValidator<AddressDto>
 {
     public AddressDtoValidator()
     {
@@ -30,4 +30,3 @@ public class AddressDtoValidator: AbstractValidator<AddressDto>
         RuleFor(x => x.ZipCode).NotEmpty().WithError(Errors.General.ValueIsRequired());
     }
 }
-

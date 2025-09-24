@@ -1,7 +1,7 @@
 using FluentAssertions;
+using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using PetFamily.Application.Features.Species.DeleteBreed;
-using PetFamily.Application.Interfaces;
 using PetFamily.Domain.SpecieManagement.Value_Objects;
 using PetFamily.TestUtils.Seeding;
 
@@ -9,11 +9,11 @@ namespace IntegrationTests.Species;
 
 public class DeleteBreedHandlerTests : SpecieTestBase
 {
-    private readonly ICommandHandler<Guid, DeleteBreedCommand> _sut;
+    private readonly ISender _sender;
 
     public DeleteBreedHandlerTests(IntegrationTestsWebFactory factory) : base(factory)
     {
-        _sut = Scope.ServiceProvider.GetRequiredService<ICommandHandler<Guid, DeleteBreedCommand>>();
+        _sender = Scope.ServiceProvider.GetRequiredService<ISender>();
     }
 
     [Fact]
@@ -25,15 +25,15 @@ public class DeleteBreedHandlerTests : SpecieTestBase
         var command = new DeleteBreedCommand(specie.Id, breed.Id);
 
         // Act
-        var result = await _sut.HandleAsync(command);
+        var result = await _sender.Send(command);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
         result.Value.Should().Be(breed.Id.Value);
-        
+
         ReadDbContext.Breeds.FirstOrDefault().Should().BeNull();
     }
-    
+
     [Fact]
     public async Task HandleAsync_ShouldReturnError_WhenBreedDoesNotExist()
     {
@@ -42,13 +42,12 @@ public class DeleteBreedHandlerTests : SpecieTestBase
         var command = new DeleteBreedCommand(specie.Id, BreedId.NewBreedId());
 
         // Act
-        var result = await _sut.HandleAsync(command);
+        var result = await _sender.Send(command);
 
         // Assert
         result.IsSuccess.Should().BeFalse();
         result.Error.Should().NotBeNull();
-        
+
         ReadDbContext.Breeds.FirstOrDefault().Should().BeNull();
     }
-
 }

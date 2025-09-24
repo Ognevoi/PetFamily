@@ -17,7 +17,7 @@ public class Email : ValueObject
     {
         if (string.IsNullOrWhiteSpace(email))
             return Errors.General.ValueIsRequired(nameof(Email));
-        
+
         if (!IsValidEmail(email))
             return Errors.General.ValueIsInvalid(nameof(Email));
 

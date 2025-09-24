@@ -9,7 +9,9 @@ public class Volunteer : SoftDeletableEntity<VolunteerId>
 {
     private readonly List<Pet> _pets = [];
 
-    private Volunteer() { } // required by EF Core
+    private Volunteer()
+    {
+    } // required by EF Core
 
     private Volunteer(
         VolunteerId volunteerId,
@@ -118,7 +120,7 @@ public class Volunteer : SoftDeletableEntity<VolunteerId>
         _pets.Add(pet);
         return Result.Success<Error>();
     }
-    
+
     public UnitResult<Error> RemovePet(Pet pet)
     {
         var petToRemove = _pets.FirstOrDefault(p => p.Id == pet.Id);
@@ -159,10 +161,10 @@ public class Volunteer : SoftDeletableEntity<VolunteerId>
         newPosition = adjustedPositionResult.Value;
 
         var moveResult = MovePetBetweenPositions(newPosition, currentPosition);
-        
+
         return moveResult.IsFailure ? moveResult.Error : UnitResult.Success<Error>();
     }
-    
+
     private UnitResult<Error> MovePetBetweenPositions(Position newPosition, Position currentPosition)
     {
         // Find the pet that needs to be moved
@@ -205,7 +207,7 @@ public class Volunteer : SoftDeletableEntity<VolunteerId>
 
         // Set the new position for the pet being moved
         petToMove.SetPosition(newPosition);
-        
+
         return Result.Success<Error>();
     }
 

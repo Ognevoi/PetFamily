@@ -1,18 +1,16 @@
 using CSharpFunctionalExtensions;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
-using PetFamily.Application.Extensions;
 using PetFamily.Application.Interfaces;
 using PetFamily.Domain.PetManagement.ValueObjects;
 using PetFamily.Domain.Shared;
 
 namespace PetFamily.Application.Features.Volunteers.Commands.Update;
 
-public class UpdateVolunteerHandler : ICommandHandler<Guid, UpdateVolunteerCommand>
+public class UpdateVolunteerHandler : ICommandHandler<UpdateVolunteerCommand, Guid>
 {
     private readonly IVolunteersRepository _volunteersRepository;
     private readonly ILogger<UpdateVolunteerHandler> _logger;
-    private readonly IValidator<UpdateVolunteerCommand> _validator;
 
     public UpdateVolunteerHandler(
         IVolunteersRepository volunteersRepository,
@@ -21,17 +19,12 @@ public class UpdateVolunteerHandler : ICommandHandler<Guid, UpdateVolunteerComma
     {
         _volunteersRepository = volunteersRepository;
         _logger = logger;
-        _validator = validator;
     }
 
-    public async Task<Result<Guid, ErrorList>> HandleAsync(
+    public async Task<Result<Guid, ErrorList>> Handle(
         UpdateVolunteerCommand command,
         CancellationToken cancellationToken = default)
     {
-        var validationResult = await _validator.ValidateAsync(command, cancellationToken);
-        if (!validationResult.IsValid)
-            return validationResult.ToErrorList();
-
         var volunteerResult = await _volunteersRepository.GetById(command.VolunteerId, cancellationToken);
         if (volunteerResult.IsFailure)
             return volunteerResult.Error.ToErrorList();

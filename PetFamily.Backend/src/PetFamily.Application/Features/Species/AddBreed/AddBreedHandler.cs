@@ -9,7 +9,7 @@ using PetFamily.Domain.SpecieManagement.Value_Objects;
 
 namespace PetFamily.Application.Features.Species.AddBreed;
 
-public class AddBreedHandler : ICommandHandler<Guid, AddBreedCommand>
+public class AddBreedHandler : ICommandHandler<AddBreedCommand, Guid>
 {
     private readonly ILogger<CreateSpecieHandler> _logger;
     private readonly ISpeciesRepository _specieRepository;
@@ -22,7 +22,7 @@ public class AddBreedHandler : ICommandHandler<Guid, AddBreedCommand>
         _logger = logger;
     }
 
-    public async Task<Result<Guid, ErrorList>> HandleAsync(
+    public async Task<Result<Guid, ErrorList>> Handle(
         AddBreedCommand command,
         CancellationToken cancellationToken = default)
     {

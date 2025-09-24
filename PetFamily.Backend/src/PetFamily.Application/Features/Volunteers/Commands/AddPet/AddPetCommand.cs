@@ -18,5 +18,5 @@ public record AddPetCommand(
     bool IsVaccinated,
     AddressDto Address,
     DateTime BirthDate,
-    PetStatus PetStatus) : ICommand;
-    
+    PetStatus PetStatus)
+    : ICommand<string>;

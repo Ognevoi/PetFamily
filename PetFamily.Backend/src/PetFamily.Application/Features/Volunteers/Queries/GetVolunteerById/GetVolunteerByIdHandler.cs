@@ -7,7 +7,7 @@ using PetFamily.Domain.Shared;
 
 namespace PetFamily.Application.Features.Volunteers.Queries.GetVolunteerById;
 
-public class GetVolunteerByIdHandler : IQueryHandler<VolunteerDto, GetVolunteerByIdQuery>
+public class GetVolunteerByIdHandler : IQueryHandler<GetVolunteerByIdQuery, VolunteerDto>
 {
     private readonly IReadDbContext _readDbContext;
 
@@ -16,7 +16,7 @@ public class GetVolunteerByIdHandler : IQueryHandler<VolunteerDto, GetVolunteerB
         _readDbContext = readDbContext;
     }
 
-    public async Task<Result<VolunteerDto, ErrorList>> HandleAsync(GetVolunteerByIdQuery query,
+    public async Task<Result<VolunteerDto, ErrorList>> Handle(GetVolunteerByIdQuery query,
         CancellationToken cancellationToken)
     {
         var volunteer = await _readDbContext.Volunteers

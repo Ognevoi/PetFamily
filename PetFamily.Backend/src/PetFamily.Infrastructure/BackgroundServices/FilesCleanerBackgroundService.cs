@@ -22,6 +22,7 @@ public class FilesCleanerBackgroundService : BackgroundService
         _fileCleanerQueue = fileCleanerQueue;
         _serviceScopeFactory = serviceScopeFactory;
     }
+
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         _logger.LogInformation("FilesCleanerBackgroundService is starting.");
@@ -34,10 +35,10 @@ public class FilesCleanerBackgroundService : BackgroundService
             var filesToDelete = await _fileCleanerQueue.ConsumeAsync(stoppingToken);
 
             _logger.LogInformation("Deleting {FileCount} files", filesToDelete.Count());
-            
+
             await filesProvider.DeleteFiles(filesToDelete, Constants.BUCKET_NAME, stoppingToken);
         }
 
-        _logger.LogInformation("FilesCleanerBackgroundService is stopping."); 
+        _logger.LogInformation("FilesCleanerBackgroundService is stopping.");
     }
 }

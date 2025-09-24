@@ -13,8 +13,8 @@ public class SpecieTestBase : IClassFixture<IntegrationTestsWebFactory>, IAsyncL
     protected readonly IServiceScope Scope;
     protected readonly IReadDbContext ReadDbContext;
     protected readonly ISpeciesRepository SpecieRepository;
-    
-    
+
+
     protected SpecieTestBase(IntegrationTestsWebFactory factory)
     {
         _factory = factory;
@@ -22,7 +22,6 @@ public class SpecieTestBase : IClassFixture<IntegrationTestsWebFactory>, IAsyncL
         Scope = factory.Services.CreateScope();
         ReadDbContext = Scope.ServiceProvider.GetRequiredService<IReadDbContext>();
         SpecieRepository = Scope.ServiceProvider.GetRequiredService<ISpeciesRepository>();
-
     }
 
     public Task InitializeAsync() => Task.CompletedTask;
@@ -32,5 +31,4 @@ public class SpecieTestBase : IClassFixture<IntegrationTestsWebFactory>, IAsyncL
         Scope.Dispose();
         await _factory.ResetDataBaseAsync();
     }
-    
 }

@@ -22,7 +22,7 @@ public class SpecieConfiguration : IEntityTypeConfiguration<Specie>
         builder.Property(s => s.Name)
             .IsRequired()
             .HasMaxLength(Constants.MAX_VERY_LOW_TEXT_LENGTH);
-        
+
         builder.HasMany(s => s.Breed)
             .WithOne()
             .HasForeignKey("specie_id")

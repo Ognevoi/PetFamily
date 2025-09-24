@@ -13,22 +13,22 @@ public record Error
         Message = message;
         Type = type;
     }
-    
+
     public static Error Validation(string code, string message) => new(code, message, ErrorType.Validation);
-    
+
     public static Error NotFound(string code, string message) => new(code, message, ErrorType.NotFound);
-    
+
     public static Error Failure(string code, string message) => new(code, message, ErrorType.Failure);
-    
+
     public static Error Conflict(string code, string message) => new(code, message, ErrorType.Conflict);
-    
+
     public static Error Unexpected(string code, string message) => new(code, message, ErrorType.Unexpected);
 
     public string Serialize()
     {
         return string.Join(SEPARATOR, Code, Message, Type);
     }
-    
+
     public static Error Deserialize(string serialized)
     {
         var parts = serialized?.Split(SEPARATOR);
@@ -39,7 +39,7 @@ public record Error
             ? new Error(parts[0], parts[1], type)
             : Failure("Deserialization", "Unrecognized error type");
     }
-    
+
     public ErrorList ToErrorList() => new([this]);
 }
 

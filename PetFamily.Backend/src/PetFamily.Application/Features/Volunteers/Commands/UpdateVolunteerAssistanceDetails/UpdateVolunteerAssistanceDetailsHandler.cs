@@ -1,5 +1,4 @@
 using CSharpFunctionalExtensions;
-using FluentValidation;
 using Microsoft.Extensions.Logging;
 using PetFamily.Application.Features.Volunteers.Commands.Update;
 using PetFamily.Application.Interfaces;
@@ -8,23 +7,20 @@ using PetFamily.Domain.Shared;
 
 namespace PetFamily.Application.Features.Volunteers.Commands.UpdateVolunteerAssistanceDetails;
 
-public class UpdateVolunteerAssistanceDetailsHandler : ICommandHandler<Guid, UpdateVolunteerAssistanceDetailsCommand>
+public class UpdateVolunteerAssistanceDetailsHandler : ICommandHandler<UpdateVolunteerAssistanceDetailsCommand, Guid>
 {
     private readonly IVolunteersRepository _volunteersRepository;
-    private readonly IValidator<UpdateVolunteerAssistanceDetailsCommand> _validator;
     private readonly ILogger<UpdateVolunteerHandler> _logger;
 
     public UpdateVolunteerAssistanceDetailsHandler(
         IVolunteersRepository volunteersRepository,
-        IValidator<UpdateVolunteerAssistanceDetailsCommand> validator,
         ILogger<UpdateVolunteerHandler> logger)
     {
         _volunteersRepository = volunteersRepository;
-        _validator = validator;
         _logger = logger;
     }
 
-    public async Task<Result<Guid, ErrorList>> HandleAsync(
+    public async Task<Result<Guid, ErrorList>> Handle(
         UpdateVolunteerAssistanceDetailsCommand command,
         CancellationToken cancellationToken = default)
     {

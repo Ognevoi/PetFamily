@@ -1,18 +1,18 @@
 using FluentAssertions;
+using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using PetFamily.Application.Features.Species.DeleteSpecie;
-using PetFamily.Application.Interfaces;
 using PetFamily.TestUtils.Seeding;
 
 namespace IntegrationTests.Species;
 
 public class DeleteSpecieHandlerTests : SpecieTestBase
 {
-    private readonly ICommandHandler<Guid, DeleteSpecieCommand> _sut;
+    private readonly ISender _sender;
 
     public DeleteSpecieHandlerTests(IntegrationTestsWebFactory factory) : base(factory)
     {
-        _sut = Scope.ServiceProvider.GetRequiredService<ICommandHandler<Guid, DeleteSpecieCommand>>();
+        _sender = Scope.ServiceProvider.GetRequiredService<ISender>();
     }
 
     [Fact]
@@ -23,7 +23,7 @@ public class DeleteSpecieHandlerTests : SpecieTestBase
         var command = new DeleteSpecieCommand(specie.Id.Value);
 
         // Act
-        var result = await _sut.HandleAsync(command);
+        var result = await _sender.Send(command);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -31,7 +31,7 @@ public class DeleteSpecieHandlerTests : SpecieTestBase
 
         ReadDbContext.Species.FirstOrDefault().Should().BeNull();
     }
-    
+
     [Fact]
     public async Task HandleAsync_ShouldReturnError_WhenSpecieDoesNotExist()
     {
@@ -40,13 +40,12 @@ public class DeleteSpecieHandlerTests : SpecieTestBase
         var command = new DeleteSpecieCommand(nonExistentSpecieId);
 
         // Act
-        var result = await _sut.HandleAsync(command);
+        var result = await _sender.Send(command);
 
         // Assert
         result.IsFailure.Should().BeTrue();
         result.Error.Should().NotBeNull();
-        
+
         ReadDbContext.Species.FirstOrDefault().Should().BeNull();
     }
-
 }

@@ -6,7 +6,7 @@ using PetFamily.Domain.Shared;
 
 namespace PetFamily.Application.Features.Species.DeleteSpecie;
 
-public class DeleteSpecieHandler : ICommandHandler<Guid, DeleteSpecieCommand>
+public class DeleteSpecieHandler : ICommandHandler<DeleteSpecieCommand, Guid>
 {
     private readonly ISpeciesRepository _specieRepository;
     private readonly ILogger<CreateSpecieHandler> _logger;
@@ -19,7 +19,7 @@ public class DeleteSpecieHandler : ICommandHandler<Guid, DeleteSpecieCommand>
         _logger = logger;
     }
 
-    public async Task<Result<Guid, ErrorList>> HandleAsync(
+    public async Task<Result<Guid, ErrorList>> Handle(
         DeleteSpecieCommand command,
         CancellationToken cancellationToken = default)
     {

@@ -1,7 +1,6 @@
 using CSharpFunctionalExtensions;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
-using PetFamily.Application.Extensions;
 using PetFamily.Application.Interfaces;
 using PetFamily.Domain.PetManagement.AggregateRoot;
 using PetFamily.Domain.PetManagement.ValueObjects;
@@ -9,10 +8,9 @@ using PetFamily.Domain.Shared;
 
 namespace PetFamily.Application.Features.Volunteers.Commands.Create;
 
-public class CreateVolunteerHandler : ICommandHandler<Guid, CreateVolunteerCommand>
+public class CreateVolunteerHandler : ICommandHandler<CreateVolunteerCommand, Guid>
 {
     private readonly IVolunteersRepository _volunteersRepository;
-    private readonly IValidator<CreateVolunteerCommand> _validator;
     private readonly ILogger<CreateVolunteerHandler> _logger;
 
     public CreateVolunteerHandler(
@@ -21,21 +19,16 @@ public class CreateVolunteerHandler : ICommandHandler<Guid, CreateVolunteerComma
         ILogger<CreateVolunteerHandler> logger)
     {
         _volunteersRepository = volunteersRepository;
-        _validator = validator;
         _logger = logger;
     }
 
-    public async Task<Result<Guid, ErrorList>> HandleAsync(
+    public async Task<Result<Guid, ErrorList>> Handle(
         CreateVolunteerCommand command,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken)
     {
-        var validationResult = await _validator.ValidateAsync(command, cancellationToken);
-        if (!validationResult.IsValid)
-            return validationResult.ToErrorList();
-
         var fullNameResult = FullName.Create(command.FullName.FirstName, command.FullName.LastName).Value;
 
-        var emailResult = Email.Create(command.Email).Value;
+        var emailResult = Email.Create(command.Email);
 
         var descriptionResult = Description.Create(command.Description).Value;
 
@@ -43,7 +36,7 @@ public class CreateVolunteerHandler : ICommandHandler<Guid, CreateVolunteerComma
 
         var experienceYearsResult = ExperienceYears.Create(command.ExperienceYears).Value;
 
-        var volunteer = await _volunteersRepository.GetByEmail(emailResult, cancellationToken);
+        var volunteer = await _volunteersRepository.GetByEmail(emailResult.Value, cancellationToken);
         if (volunteer.IsSuccess)
             return Errors.General.ValueAlreadyExists(nameof(Email)).ToErrorList();
 
@@ -52,7 +45,7 @@ public class CreateVolunteerHandler : ICommandHandler<Guid, CreateVolunteerComma
         var volunteerToCreate = Volunteer.Create(
             volunteerId,
             fullNameResult,
-            emailResult,
+            emailResult.Value,
             descriptionResult,
             experienceYearsResult,
             phoneNumberResult

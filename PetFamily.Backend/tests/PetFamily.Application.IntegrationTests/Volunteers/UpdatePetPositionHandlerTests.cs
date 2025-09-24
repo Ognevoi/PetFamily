@@ -1,18 +1,18 @@
 using FluentAssertions;
+using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using PetFamily.Application.Features.Volunteers.Commands.UpdatePetPosition;
-using PetFamily.Application.Interfaces;
 using PetFamily.TestUtils.Seeding;
 
 namespace IntegrationTests.Volunteers;
 
 public class UpdatePetPositionHandlerTests : VolunteerTestBase
 {
-    private readonly ICommandHandler<Guid, UpdatePetPositionCommand> _sut;
+    private readonly ISender _sender;
 
     public UpdatePetPositionHandlerTests(IntegrationTestsWebFactory factory) : base(factory)
     {
-        _sut = Scope.ServiceProvider.GetRequiredService<ICommandHandler<Guid, UpdatePetPositionCommand>>();
+        _sender = Scope.ServiceProvider.GetRequiredService<ISender>();
     }
 
     [Fact]
@@ -30,7 +30,7 @@ public class UpdatePetPositionHandlerTests : VolunteerTestBase
         var command = new UpdatePetPositionCommand(volunteer.Id.Value, pet2.Id.Value, 1); // Move pet2 to position 1
 
         // Act
-        var result = await _sut.HandleAsync(command);
+        var result = await _sender.Send(command);
 
         // Assert
         result.IsSuccess.Should().BeTrue();

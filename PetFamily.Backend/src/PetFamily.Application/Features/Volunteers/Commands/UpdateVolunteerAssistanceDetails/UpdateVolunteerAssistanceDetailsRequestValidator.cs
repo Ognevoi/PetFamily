@@ -4,7 +4,8 @@ using PetFamily.Domain.Shared;
 
 namespace PetFamily.Application.Features.Volunteers.Commands.UpdateVolunteerAssistanceDetails;
 
-public class UpdateVolunteerAssistanceDetailsCommandValidator : AbstractValidator<UpdateVolunteerAssistanceDetailsCommand>
+public class
+    UpdateVolunteerAssistanceDetailsCommandValidator : AbstractValidator<UpdateVolunteerAssistanceDetailsCommand>
 {
     public UpdateVolunteerAssistanceDetailsCommandValidator()
     {

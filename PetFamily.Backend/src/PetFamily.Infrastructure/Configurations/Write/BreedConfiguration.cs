@@ -6,7 +6,6 @@ using PetFamily.Domain.SpecieManagement.Value_Objects;
 
 namespace PetFamily.Infrastructure.Configurations.Write;
 
-
 public class BreedConfiguration : IEntityTypeConfiguration<Breed>
 {
     public void Configure(EntityTypeBuilder<Breed> builder)
@@ -19,8 +18,8 @@ public class BreedConfiguration : IEntityTypeConfiguration<Breed>
             .HasConversion(
                 id => id.Value,
                 value => BreedId.Create(value));
-        
-        builder.Property(p => p.Name)    
+
+        builder.Property(p => p.Name)
             .IsRequired()
             .HasMaxLength(Constants.MAX_VERY_LOW_TEXT_LENGTH);
     }

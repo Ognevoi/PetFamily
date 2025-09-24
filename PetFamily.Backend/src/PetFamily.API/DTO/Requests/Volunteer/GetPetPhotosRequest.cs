@@ -3,7 +3,7 @@ using PetFamily.Application.Features.Volunteers.Commands.GetPetPhoto;
 namespace PetFamily.API.DTO.Requests.Volunteer;
 
 public record GetPetPhotosRequest;
-    
+
 public static class GetPetPhotosRequestExtensions
 {
     public static GetPetPhotosCommand ToCommand(

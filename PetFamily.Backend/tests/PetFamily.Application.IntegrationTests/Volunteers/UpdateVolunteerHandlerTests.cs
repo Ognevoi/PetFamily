@@ -1,20 +1,20 @@
 using FluentAssertions;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using PetFamily.Application.Features.Volunteers.Commands.DTO;
 using PetFamily.Application.Features.Volunteers.Commands.Update;
-using PetFamily.Application.Interfaces;
 using PetFamily.TestUtils.Seeding;
 
 namespace IntegrationTests.Volunteers;
 
 public class UpdateVolunteerHandlerTests : VolunteerTestBase
 {
-    private readonly ICommandHandler<Guid, UpdateVolunteerCommand> _sut;
+    private readonly ISender _sender;
 
     public UpdateVolunteerHandlerTests(IntegrationTestsWebFactory factory) : base(factory)
     {
-        _sut = Scope.ServiceProvider.GetRequiredService<ICommandHandler<Guid, UpdateVolunteerCommand>>();
+        _sender = Scope.ServiceProvider.GetRequiredService<ISender>();
     }
 
     [Fact]
@@ -32,7 +32,7 @@ public class UpdateVolunteerHandlerTests : VolunteerTestBase
         );
 
         // Act
-        var result = await _sut.HandleAsync(command);
+        var result = await _sender.Send(command);
 
         // Assert
         result.IsSuccess.Should().BeTrue();

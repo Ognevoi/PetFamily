@@ -22,7 +22,7 @@ public class Name : ValueObject
     }
 
     protected override IEnumerable<object> GetEqualityComponents()
-    { 
+    {
         yield return Value;
     }
 }

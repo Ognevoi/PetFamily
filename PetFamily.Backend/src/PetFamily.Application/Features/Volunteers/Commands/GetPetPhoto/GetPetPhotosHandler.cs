@@ -1,18 +1,16 @@
 using CSharpFunctionalExtensions;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
-using PetFamily.Application.Extensions;
 using PetFamily.Application.Interfaces;
 using PetFamily.Application.Providers;
 using PetFamily.Domain.Shared;
 
 namespace PetFamily.Application.Features.Volunteers.Commands.GetPetPhoto;
 
-public class GetPetPhotosHandler : ICommandHandler<IEnumerable<string>, GetPetPhotosCommand>
+public class GetPetPhotosHandler : ICommandHandler<GetPetPhotosCommand, IEnumerable<string>>
 {
     private readonly IVolunteersRepository _volunteersRepository;
     private readonly IFilesProvider _filesProvider;
-    private readonly IValidator<GetPetPhotosCommand> _validator;
     private readonly ILogger<GetPetPhotosHandler> _logger;
 
     public GetPetPhotosHandler(
@@ -23,18 +21,13 @@ public class GetPetPhotosHandler : ICommandHandler<IEnumerable<string>, GetPetPh
     {
         _volunteersRepository = volunteersRepository;
         _filesProvider = filesProvider;
-        _validator = validator;
         _logger = logger;
     }
 
-    public async Task<Result<IEnumerable<string>, ErrorList>> HandleAsync(
+    public async Task<Result<IEnumerable<string>, ErrorList>> Handle(
         GetPetPhotosCommand command,
         CancellationToken cancellationToken = default)
     {
-        var validationResult = await _validator.ValidateAsync(command, cancellationToken);
-        if (!validationResult.IsValid)
-            return validationResult.ToErrorList();
-
         var volunteerResult = await _volunteersRepository.GetById(command.VolunteerId, cancellationToken);
         if (volunteerResult.IsFailure)
             return Errors.General.NotFound(command.VolunteerId).ToErrorList();

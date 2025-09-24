@@ -6,4 +6,4 @@ public record DeletePetPhotosCommand(
     Guid VolunteerId,
     Guid PetId,
     IEnumerable<string> PhotoNames)
-    : ICommand;
+    : ICommand<IEnumerable<string>>;

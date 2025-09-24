@@ -1,6 +1,6 @@
 using PetFamily.Application.Features.Species.DeleteSpecie;
 
-namespace PetFamily.API.DTO.Requests.Specie;
+namespace PetFamily.API.DTO.Requests.Species;
 
 public record DeleteSpecieRequest(Guid SpecieId);
 

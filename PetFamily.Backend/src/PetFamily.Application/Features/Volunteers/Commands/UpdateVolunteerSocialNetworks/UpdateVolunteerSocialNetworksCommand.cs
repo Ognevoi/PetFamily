@@ -6,5 +6,5 @@ namespace PetFamily.Application.Features.Volunteers.Commands.UpdateVolunteerSoci
     public record UpdateVolunteerSocialNetworksCommand(
         Guid VolunteerId,
         IEnumerable<SocialNetworkDto> SocialNetworks
-    ) : ICommand;
+    ) : ICommand<Guid>;
 }

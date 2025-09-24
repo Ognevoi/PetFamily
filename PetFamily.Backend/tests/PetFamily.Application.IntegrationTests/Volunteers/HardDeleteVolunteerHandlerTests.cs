@@ -1,18 +1,18 @@
 using FluentAssertions;
+using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using PetFamily.Application.Features.Volunteers.Commands.HardDelete;
-using PetFamily.Application.Interfaces;
 using PetFamily.TestUtils.Seeding;
 
 namespace IntegrationTests.Volunteers;
 
 public class HardDeleteVolunteerHandlerTests : VolunteerTestBase
 {
-    private readonly ICommandHandler<Guid, DeleteVolunteerCommand> _sut;
+    private readonly ISender _sender;
 
     public HardDeleteVolunteerHandlerTests(IntegrationTestsWebFactory factory) : base(factory)
     {
-        _sut = Scope.ServiceProvider.GetRequiredService<ICommandHandler<Guid, DeleteVolunteerCommand>>();
+        _sender = Scope.ServiceProvider.GetRequiredService<ISender>();
     }
 
     [Fact]
@@ -23,7 +23,7 @@ public class HardDeleteVolunteerHandlerTests : VolunteerTestBase
         var command = new DeleteVolunteerCommand(volunteer.Id.Value);
 
         // Act
-        var result = await _sut.HandleAsync(command);
+        var result = await _sender.Send(command);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -40,7 +40,7 @@ public class HardDeleteVolunteerHandlerTests : VolunteerTestBase
         var command = new DeleteVolunteerCommand(nonExistentVolunteerId);
 
         // Act
-        var result = await _sut.HandleAsync(command);
+        var result = await _sender.Send(command);
 
         // Assert
         result.IsFailure.Should().BeTrue();

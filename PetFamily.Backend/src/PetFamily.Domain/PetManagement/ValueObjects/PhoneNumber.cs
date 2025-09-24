@@ -17,8 +17,8 @@ public class PhoneNumber : ValueObject
     {
         if (string.IsNullOrWhiteSpace(phoneNumber))
             return Errors.General.ValueIsRequired("Phone number");
-        
-        
+
+
         if (!Regex.IsMatch(phoneNumber, @"^\+?(\d[\d-. ]+)?(\([\d-. ]+\))?[\d-. ]+\d$"))
         {
             return Errors.General.ValueIsInvalid("Phone number");

@@ -16,5 +16,4 @@ public class AssistanceDetailsList
     {
         AssistanceDetails = assistanceDetails ?? new List<AssistanceDetails>();
     }
-
 }

@@ -16,7 +16,7 @@ public class PetName : ValueObject
     {
         if (string.IsNullOrWhiteSpace(petName))
             return Errors.General.ValueIsRequired("Pet name");
-        
+
         if (petName.Length > Constants.MAX_VERY_LOW_TEXT_LENGTH)
             return Errors.General.ValueIsTooLong("Pet name", Constants.MAX_VERY_LOW_TEXT_LENGTH);
 

@@ -13,9 +13,11 @@
 
     <ItemGroup>
       <PackageReference Include="CSharpFunctionalExtensions" Version="3.4.3" />
-      <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
+      <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.1" />
+      <PackageReference Include="MediatR" Version="13.0.0" />
       <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.0" />
       <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.0" />
+      <PackageReference Include="Reqnroll" Version="2.4.1" />
       <PackageReference Include="Scrutor" Version="6.0.1" />
     </ItemGroup>
 
@@ -47,6 +49,7 @@
     <ItemGroup>
       <Folder Include="Features\" />
       <Folder Include="Features\Volunteers\Commands\" />
+      <Folder Include="Interfaces\" />
     </ItemGroup>
 
 </Project>

@@ -7,5 +7,5 @@ public record DeletePetRequest;
 public static class DeletePetRequestExtensions
 {
     public static DeletePetCommand ToCommand(this DeletePetRequest request, Guid volunteerId, Guid petId)
-    => new DeletePetCommand(volunteerId, petId);
+        => new DeletePetCommand(volunteerId, petId);
 }

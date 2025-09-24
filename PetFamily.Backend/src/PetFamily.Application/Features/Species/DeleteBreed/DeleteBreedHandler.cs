@@ -1,37 +1,27 @@
 using CSharpFunctionalExtensions;
-using FluentValidation;
 using Microsoft.Extensions.Logging;
-using PetFamily.Application.Extensions;
-using PetFamily.Application.Features.Species.CreateSpecie;
 using PetFamily.Application.Interfaces;
 using PetFamily.Domain.Shared;
 
 namespace PetFamily.Application.Features.Species.DeleteBreed;
 
-public class DeleteBreedHandler : ICommandHandler<Guid, DeleteBreedCommand>
+public class DeleteBreedHandler : ICommandHandler<DeleteBreedCommand, Guid>
 {
     private readonly ISpeciesRepository _specieRepository;
-    private readonly IValidator<DeleteBreedCommand> _validator;
     private readonly ILogger<DeleteBreedHandler> _logger;
 
     public DeleteBreedHandler(
         ISpeciesRepository specieRepository,
-        IValidator<DeleteBreedCommand> validator,
         ILogger<DeleteBreedHandler> logger)
     {
         _specieRepository = specieRepository;
-        _validator = validator;
         _logger = logger;
     }
 
-    public async Task<Result<Guid, ErrorList>> HandleAsync(
+    public async Task<Result<Guid, ErrorList>> Handle(
         DeleteBreedCommand command,
         CancellationToken cancellationToken = default)
     {
-        var validationResult = await _validator.ValidateAsync(command, cancellationToken);
-        if (!validationResult.IsValid)
-            return validationResult.ToErrorList();
-
         var specieResult = await _specieRepository.GetById(command.SpecieId, cancellationToken);
         if (specieResult.IsFailure)
             return specieResult.Error.ToErrorList();

@@ -1,5 +1,4 @@
 using CSharpFunctionalExtensions;
-using Microsoft.EntityFrameworkCore;
 using PetFamily.Application.Database;
 using PetFamily.Application.Extensions;
 using PetFamily.Application.Features.Volunteers.DTOs;
@@ -9,7 +8,7 @@ using PetFamily.Domain.Shared;
 
 namespace PetFamily.Application.Features.Volunteers.Queries.GetVolunteers;
 
-public class GetVolunteersHandler : IQueryHandler<PagedList<VolunteerDto>, GetVolunteerWithPaginationQuery>
+public class GetVolunteersHandler : IQueryHandler<GetVolunteerWithPaginationQuery, PagedList<VolunteerDto>>
 {
     private readonly IReadDbContext _readDbContext;
 
@@ -18,16 +17,16 @@ public class GetVolunteersHandler : IQueryHandler<PagedList<VolunteerDto>, GetVo
         _readDbContext = readDbContext;
     }
 
-    public async Task<Result<PagedList<VolunteerDto>, ErrorList>> HandleAsync(GetVolunteerWithPaginationQuery query,
+    public async Task<Result<PagedList<VolunteerDto>, ErrorList>> Handle(GetVolunteerWithPaginationQuery query,
         CancellationToken cancellationToken)
     {
         var volunteersQuery = _readDbContext.Volunteers
             .AsQueryable();
-        
+
         volunteersQuery = volunteersQuery
             .WhereIfNotNullOrEmpty(query.VolunteerId, v => v.Id)
             .WhereIfNotNullOrEmpty(query.Name, v => v.FirstName);
-        
+
         return await volunteersQuery
             .OrderBy(v => v.FirstName)
             .ToPagedList(query.Page, query.Size, cancellationToken);

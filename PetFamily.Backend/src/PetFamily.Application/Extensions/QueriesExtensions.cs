@@ -24,7 +24,7 @@ public static class QueriesExtensions
             TotalCount = count,
         };
     }
-    
+
     public static IQueryable<T> WhereIfNotNullOrEmpty<T, TProperty>(
         this IQueryable<T> source,
         TProperty? value,
@@ -47,5 +47,4 @@ public static class QueriesExtensions
 
         return source.Where(lambda);
     }
-
 }

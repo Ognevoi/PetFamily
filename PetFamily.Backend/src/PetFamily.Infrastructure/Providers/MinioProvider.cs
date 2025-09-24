@@ -20,7 +20,7 @@ public class MinioProvider : IFilesProvider
         _minioClient = minioClient;
         _logger = logger;
     }
-    
+
     public async Task<Result<IEnumerable<string>, ErrorList>> UploadFiles(
         IEnumerable<FileData> filesData,
         string bucketName,
@@ -62,10 +62,10 @@ public class MinioProvider : IFilesProvider
             return new ErrorList(uploadErrors);
 
         _logger.LogInformation("Successfully uploaded {Count} files.", uploadFiles.Count);
-        
+
         return uploadFiles;
     }
-    
+
     public async Task<UnitResult<ErrorList>> DeleteFiles(
         IEnumerable<string> objectsName,
         string bucketName,
@@ -81,6 +81,7 @@ public class MinioProvider : IFilesProvider
                 deleteErrors.Add(fileExistsResult.Error);
                 continue;
             }
+
             if (!fileExistsResult.Value)
             {
                 continue;
@@ -100,12 +101,12 @@ public class MinioProvider : IFilesProvider
                     $"Failed to delete file '{objectName}' from bucket '{bucketName}'."));
             }
         }
-        
+
         _logger.LogInformation("Successfully deleted {Count} files.", deleteErrors.Count);
 
         return UnitResult.Success<ErrorList>();
     }
-    
+
     public async Task<Result<IEnumerable<string>, ErrorList>> GetFileLink(
         IEnumerable<string> objectNames,
         string bucketName,
@@ -113,7 +114,7 @@ public class MinioProvider : IFilesProvider
     {
         List<string> links = new();
         List<Error> getLinkErrors = new();
-        
+
         foreach (var objectName in objectNames)
         {
             var fileExistsResult = await IsFileExists(objectName, bucketName, cancellationToken);
@@ -132,7 +133,8 @@ public class MinioProvider : IFilesProvider
             {
                 var preSignedUrl = await _minioClient.PresignedGetObjectAsync(preSignedGetObjectArgs);
 
-                _logger.LogInformation("Successfully generated link for file '{ObjectName}' from bucket '{BucketName}'", objectName, bucketName);
+                _logger.LogInformation("Successfully generated link for file '{ObjectName}' from bucket '{BucketName}'",
+                    objectName, bucketName);
 
                 links.Add(preSignedUrl);
             }
@@ -148,7 +150,7 @@ public class MinioProvider : IFilesProvider
 
         return Result.Success<IEnumerable<string>, ErrorList>(links);
     }
-        
+
     private async Task<Result<bool, Error>> IsFileExists(
         string objectName,
         string bucketName,
@@ -178,7 +180,7 @@ public class MinioProvider : IFilesProvider
                 $"Failed to check if object '{objectName}' exists in bucket '{bucketName}'");
         }
     }
-    
+
     private async Task<Result<bool, Error>> IsBucketExists(
         string bucketName,
         CancellationToken cancellationToken = default)
@@ -195,7 +197,7 @@ public class MinioProvider : IFilesProvider
             return Errors.General.UploadFailure($"Failed to check if bucket '{bucketName}' exists");
         }
     }
-    
+
     private async Task<UnitResult<Error>> EnsureMakeBucket(
         string bucketName,
         CancellationToken cancellationToken = default)
@@ -221,10 +223,7 @@ public class MinioProvider : IFilesProvider
         }
 
         _logger.LogInformation("Successfully created bucket '{bucketName}'", bucketName);
-        
+
         return UnitResult.Success<Error>();
     }
-    
-    
-    
 }

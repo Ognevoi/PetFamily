@@ -1,6 +1,6 @@
 using PetFamily.Application.Features.Species.DeleteBreed;
 
-namespace PetFamily.API.DTO.Requests.Specie;
+namespace PetFamily.API.DTO.Requests.Species;
 
 public sealed record DeleteBreedRequest
 {

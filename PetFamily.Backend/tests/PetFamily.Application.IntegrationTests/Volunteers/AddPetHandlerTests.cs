@@ -1,20 +1,19 @@
 using FluentAssertions;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using PetFamily.Application.Features.Volunteers.Commands.AddPet;
 using PetFamily.Application.Features.Volunteers.Commands.DTO;
-using PetFamily.Application.Interfaces;
 using PetFamily.TestUtils.Seeding;
 
 namespace IntegrationTests.Volunteers;
 
 public class AddPetHandlerTests : VolunteerTestBase
 {
-    private readonly ICommandHandler<string, AddPetCommand> _sut;
+    private readonly ISender _sender;
 
     public AddPetHandlerTests(IntegrationTestsWebFactory factory) : base(factory)
     {
-        _sut = Scope.ServiceProvider.GetRequiredService<ICommandHandler<string, AddPetCommand>>();
+        _sender = Scope.ServiceProvider.GetRequiredService<ISender>();
     }
 
     [Fact]
@@ -31,7 +30,7 @@ public class AddPetHandlerTests : VolunteerTestBase
             breedId: breed.Id);
 
         // Act
-        var result = await _sut.HandleAsync(command, CancellationToken.None);
+        var result = await _sender.Send(command, CancellationToken.None);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -59,7 +58,7 @@ public class AddPetHandlerTests : VolunteerTestBase
             breedId: useValidBreedId ? breed.Id : Guid.NewGuid());
 
         // Act
-        var result = await _sut.HandleAsync(command, CancellationToken.None);
+        var result = await _sender.Send(command, CancellationToken.None);
 
         // Assert
         result.IsSuccess.Should().BeFalse();
@@ -111,7 +110,7 @@ public class AddPetHandlerTests : VolunteerTestBase
             address: address);
 
         // Act
-        var result = await _sut.HandleAsync(command, CancellationToken.None);
+        var result = await _sender.Send(command, CancellationToken.None);
 
         // Assert
         result.IsSuccess.Should().BeFalse();

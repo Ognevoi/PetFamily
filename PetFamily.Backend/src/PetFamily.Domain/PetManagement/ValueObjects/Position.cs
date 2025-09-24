@@ -20,14 +20,13 @@ public class Position : ComparableValueObject
 
     public static Result<Position, Error> Create(int number)
     {
-        
         if (number.GetType() != typeof(int))
             return Errors.General.InvalidType(nameof(Position), number.GetType().Name);
 
-        
+
         if (number < 1)
             return Errors.General.ValueIsInvalid("Serial number");
-        
+
 
         return new Position(number);
     }
@@ -36,6 +35,6 @@ public class Position : ComparableValueObject
     {
         yield return Value;
     }
-    
+
     public static implicit operator int(Position position) => position.Value;
 }

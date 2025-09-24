@@ -23,20 +23,20 @@ public class IntegrationTestsWebFactory : WebApplicationFactory<Program>, IAsync
     private readonly IFilesProvider _fileProviderMock;
     private Respawner _respawner = default!;
     private DbConnection _dbConnection = default!;
-    
+
     public IntegrationTestsWebFactory()
     {
         _fileProviderMock = Substitute.For<IFilesProvider>();
     }
-    
+
     private readonly PostgreSqlContainer _dbContainer = new PostgreSqlBuilder()
         .WithImage("postgres")
         .WithDatabase("pet_family")
         .WithUsername("postgres")
         .WithPassword("postgres")
-        .WithPortBinding(53860, 5432)
+        // .WithPortBinding(53860, 5432) // Uncomment for local debugging
         .Build();
-    
+
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder.ConfigureTestServices(ConfigureDefaultServices);
@@ -46,7 +46,7 @@ public class IntegrationTestsWebFactory : WebApplicationFactory<Program>, IAsync
     {
         services.RemoveAll(typeof(IFilesProvider));
         services.AddScoped(_ => _fileProviderMock);
-        
+
         services.RemoveAll<WriteDbContext>();
         services.RemoveAll<ReadDbContext>();
 
@@ -59,15 +59,15 @@ public class IntegrationTestsWebFactory : WebApplicationFactory<Program>, IAsync
     public async Task InitializeAsync()
     {
         await _dbContainer.StartAsync();
-        
+
         using var scope = Services.CreateScope();
         var writeDbContext = scope.ServiceProvider.GetRequiredService<WriteDbContext>();
         await writeDbContext.Database.EnsureCreatedAsync();
-        
+
         _dbConnection = new NpgsqlConnection(_dbContainer.GetConnectionString());
         await InitializeRespawner();
     }
-    
+
     private async Task InitializeRespawner()
     {
         await _dbConnection.OpenAsync();
@@ -77,7 +77,7 @@ public class IntegrationTestsWebFactory : WebApplicationFactory<Program>, IAsync
             SchemasToInclude = ["public"],
         });
     }
-    
+
     public async Task ResetDataBaseAsync()
     {
         if (_respawner == null || _dbConnection == null)
@@ -87,33 +87,33 @@ public class IntegrationTestsWebFactory : WebApplicationFactory<Program>, IAsync
 
         await _respawner.ResetAsync(_dbConnection);
     }
-    
+
     public new async Task DisposeAsync()
     {
         await _dbContainer.StopAsync();
         await _dbContainer.DisposeAsync();
     }
-    
+
     public void SetupFileProviderSuccessUploadMock()
     {
         _fileProviderMock
             .UploadFiles(Arg.Any<IEnumerable<FileData>>(), Arg.Any<string>())
             .Returns(Result.Success<IEnumerable<string>, ErrorList>(["photo1.png"]));
     }
+
     public void SetupFileProviderFailedUploadMock()
     {
         var errorList = new ErrorList([Errors.General.UploadFailure("test")]);
-    
+
         _fileProviderMock
             .UploadFiles(Arg.Any<IEnumerable<FileData>>(), Arg.Any<string>())
             .Returns(Result.Failure<IEnumerable<string>, ErrorList>(errorList));
     }
-    
+
     public void SetupFileProviderSuccessGetMock()
     {
         _fileProviderMock
             .GetFileLink(Arg.Any<IEnumerable<string>>(), Arg.Any<string>(), Arg.Any<CancellationToken>())
             .Returns(Result.Success<IEnumerable<string>, ErrorList>(["photo1.png"]));
     }
-
 }

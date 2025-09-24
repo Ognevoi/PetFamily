@@ -5,7 +5,7 @@ namespace PetFamily.Domain.PetManagement.ValueObjects;
 public class SocialNetworkList
 {
     public List<SocialNetwork> SocialNetworks { get; private set; }
-    
+
     private SocialNetworkList()
     {
         SocialNetworks = new List<SocialNetwork>();
@@ -16,5 +16,4 @@ public class SocialNetworkList
     {
         SocialNetworks = socialNetworks ?? new List<SocialNetwork>();
     }
-    
 }

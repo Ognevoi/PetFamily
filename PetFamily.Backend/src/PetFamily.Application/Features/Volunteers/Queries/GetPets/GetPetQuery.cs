@@ -1,4 +1,7 @@
+using PetFamily.Application.Features.Volunteers.DTOs;
 using PetFamily.Application.Interfaces;
+using PetFamily.Application.Models;
+
 
 namespace PetFamily.Application.Features.Volunteers.Queries.GetPets;
 
@@ -12,4 +15,4 @@ public record GetPetWithPaginationQuery(
     int? Age,
     string? SortBy,
     string? SortDirection
-) : IQuery;
+) : IQuery<PagedList<PetDto>>;

@@ -11,10 +11,10 @@ using PetFamily.Domain.Shared;
 
 namespace PetFamily.Application.Features.Volunteers.Commands.AddPet;
 
-public class AddPetHandler : ICommandHandler<string, AddPetCommand>
+public class AddPetHandler : ICommandHandler<AddPetCommand, string>
 {
     private readonly IVolunteersRepository _volunteersRepository;
-    private readonly IValidator<AddPetCommand> _validator;
+
     private readonly ISpeciesRepository _speciesRepository;
     private readonly ILogger<UpdateVolunteerHandler> _logger;
 
@@ -25,19 +25,14 @@ public class AddPetHandler : ICommandHandler<string, AddPetCommand>
         ILogger<UpdateVolunteerHandler> logger)
     {
         _volunteersRepository = volunteersRepository;
-        _validator = validator;
         _speciesRepository = speciesRepository;
         _logger = logger;
     }
 
-    public async Task<Result<string, ErrorList>> HandleAsync(
+    public async Task<Result<string, ErrorList>> Handle(
         AddPetCommand command,
         CancellationToken cancellationToken = default)
     {
-        var validationResult = await _validator.ValidateAsync(command, cancellationToken);
-        if (!validationResult.IsValid)
-            return validationResult.ToErrorList();
-
         var volunteerResult = await _volunteersRepository.GetById(VolunteerId.Create(command.VolunteerId));
         if (volunteerResult.IsFailure)
             return Errors.General.NotFound(command.VolunteerId).ToErrorList();

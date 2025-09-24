@@ -6,7 +6,6 @@ using PetFamily.Domain.Shared;
 
 namespace PetFamily.Infrastructure.Configurations.Write;
 
-
 public class VolunteerConfiguration : IEntityTypeConfiguration<Volunteer>
 {
     public void Configure(EntityTypeBuilder<Volunteer> builder)
@@ -31,7 +30,7 @@ public class VolunteerConfiguration : IEntityTypeConfiguration<Volunteer>
                 .HasMaxLength(Constants.MAX_VERY_LOW_TEXT_LENGTH)
                 .HasColumnName("last_name");
         });
-        
+
         builder.ComplexProperty(
             v => v.Email,
             pb =>
@@ -41,7 +40,7 @@ public class VolunteerConfiguration : IEntityTypeConfiguration<Volunteer>
                     .HasMaxLength(Constants.MAX_VERY_LOW_TEXT_LENGTH)
                     .HasColumnName("email");
             });
-        
+
         builder.ComplexProperty(v => v.Description, d =>
         {
             d.Property(de => de.Value)
@@ -49,14 +48,14 @@ public class VolunteerConfiguration : IEntityTypeConfiguration<Volunteer>
                 .HasMaxLength(Constants.MAX_MEDIUM_TEXT_LENGTH)
                 .HasColumnName("description");
         });
-        
+
         builder.ComplexProperty(v => v.ExperienceYears, ey =>
         {
             ey.Property(e => e.Value)
                 .IsRequired()
                 .HasColumnName("experience_years");
         });
-        
+
         builder.ComplexProperty(v => v.PhoneNumber, pn =>
         {
             pn.Property(p => p.Value)
@@ -64,7 +63,7 @@ public class VolunteerConfiguration : IEntityTypeConfiguration<Volunteer>
                 .HasMaxLength(Constants.MAX_VERY_LOW_TEXT_LENGTH)
                 .HasColumnName("phone_number");
         });
-        
+
         builder.OwnsOne(v => v.SocialNetworksList, sb =>
         {
             sb.ToJson("social_networks");
@@ -79,7 +78,7 @@ public class VolunteerConfiguration : IEntityTypeConfiguration<Volunteer>
                     .HasMaxLength(Constants.MAX_VERY_LOW_TEXT_LENGTH);
             });
         });
-            
+
         builder.OwnsOne(v => v.AssistanceDetailsList, ab =>
         {
             ab.ToJson("assistance_details");
@@ -95,11 +94,11 @@ public class VolunteerConfiguration : IEntityTypeConfiguration<Volunteer>
                 }
             );
         });
-        
+
         builder.Property(p => p.CreatedAt)
             .HasDefaultValueSql("CURRENT_TIMESTAMP")
             .IsRequired();
-        
+
         builder.Property(v => v.IsDeleted)
             .IsRequired()
             .HasColumnName("is_deleted");

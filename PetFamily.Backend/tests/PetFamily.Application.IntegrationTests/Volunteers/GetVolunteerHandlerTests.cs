@@ -1,21 +1,18 @@
 using FluentAssertions;
+using MediatR;
 using Microsoft.Extensions.DependencyInjection;
-using PetFamily.Application.Features.Volunteers.DTOs;
 using PetFamily.Application.Features.Volunteers.Queries.GetVolunteers;
-using PetFamily.Application.Interfaces;
-using PetFamily.Application.Models;
 using PetFamily.TestUtils.Seeding;
 
 namespace IntegrationTests.Volunteers;
 
 public class GetVolunteersHandlerTests : VolunteerTestBase
 {
-    private readonly IQueryHandler<PagedList<VolunteerDto>, GetVolunteerWithPaginationQuery> _sut;
+    private readonly ISender _sender;
 
     public GetVolunteersHandlerTests(IntegrationTestsWebFactory factory) : base(factory)
     {
-        _sut = Scope.ServiceProvider
-            .GetRequiredService<IQueryHandler<PagedList<VolunteerDto>, GetVolunteerWithPaginationQuery>>();
+        _sender = Scope.ServiceProvider.GetRequiredService<ISender>();
     }
 
     [Theory]
@@ -39,7 +36,7 @@ public class GetVolunteersHandlerTests : VolunteerTestBase
         var query = new GetVolunteerWithPaginationQuery(1, 1, volunteerId, name);
 
         // Act
-        var result = await _sut.HandleAsync(query, CancellationToken.None);
+        var result = await _sender.Send(query, CancellationToken.None);
 
         // Assert
         result.IsSuccess.Should().BeTrue();

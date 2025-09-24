@@ -4,7 +4,7 @@ using PetFamily.Domain.PetManagement.ValueObjects;
 
 namespace PetFamily.Application.Features.Volunteers.Commands.Create;
 
-public class CreateVolunteerCommandValidator: AbstractValidator<CreateVolunteerCommand>
+public class CreateVolunteerCommandValidator : AbstractValidator<CreateVolunteerCommand>
 {
     public CreateVolunteerCommandValidator()
     {

@@ -268,7 +268,7 @@ public class VolunteerTests
         pet1.Position.Value.Should().Be(2);
         pet2.Position.Value.Should().Be(1);
     }
-    
+
     [Fact]
     public void RemovePet_WithExistingPet_ShouldRemovePetAndReorderPositions()
     {
@@ -291,7 +291,7 @@ public class VolunteerTests
         pet1.Position.Value.Should().Be(1);
         pet3.Position.Value.Should().Be(2);
     }
-    
+
     [Fact]
     public void RemovePet_InLastPosition_ShouldRemovePetAndNotReorderPositions()
     {

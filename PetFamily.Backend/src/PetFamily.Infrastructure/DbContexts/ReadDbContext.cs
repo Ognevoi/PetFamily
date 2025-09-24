@@ -9,7 +9,6 @@ namespace PetFamily.Infrastructure.DbContexts;
 
 public class ReadDbContext(string connectionString) : DbContext, IReadDbContext
 {
-    
     public IQueryable<VolunteerDto> Volunteers => Set<VolunteerDto>();
     public IQueryable<PetDto> Pets => Set<PetDto>();
     public IQueryable<SpecieDto> Species => Set<SpecieDto>();
@@ -23,14 +22,14 @@ public class ReadDbContext(string connectionString) : DbContext, IReadDbContext
         optionsBuilder.UseLoggerFactory(CreateLoggerFactory());
         optionsBuilder.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
     }
-    
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(
             typeof(ReadDbContext).Assembly,
             type => type.FullName?.Contains("Configurations.Read") ?? false);
     }
-    
+
     private ILoggerFactory CreateLoggerFactory() =>
         LoggerFactory.Create(builder => builder.AddConsole());
 }

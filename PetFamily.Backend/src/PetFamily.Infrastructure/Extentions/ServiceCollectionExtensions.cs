@@ -1,8 +1,8 @@
 using System.Text.Json;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-namespace PetFamily.Infrastructure.Extentions;
 
+namespace PetFamily.Infrastructure.Extentions;
 
 public static class ServiceCollectionExtensions
 {
@@ -14,7 +14,7 @@ public static class ServiceCollectionExtensions
             v => JsonSerializer.Deserialize<IReadOnlyList<T>>(v, JsonSerializerOptions.Default)!,
             new ValueComparer<IReadOnlyList<T>>(
                 (c1, c2) => c1!.SequenceEqual(c2!),
-                c => c.Aggregate(0, (a,v) => HashCode.Combine(a, v!.GetHashCode())),
+                c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v!.GetHashCode())),
                 c => c.ToList()));
     }
 }

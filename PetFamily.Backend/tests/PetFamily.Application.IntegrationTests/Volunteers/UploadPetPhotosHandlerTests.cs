@@ -1,19 +1,19 @@
 using FluentAssertions;
+using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using PetFamily.Application.Features.Volunteers.Commands.DTO;
 using PetFamily.Application.Features.Volunteers.Commands.UploadPetPhoto;
-using PetFamily.Application.Interfaces;
 using PetFamily.TestUtils.Seeding;
 
 namespace IntegrationTests.Volunteers;
 
 public class UploadPetPhotosHandlerTests : VolunteerTestBase
 {
-    private readonly ICommandHandler<IEnumerable<string>, UploadPetPhotosCommand> _sut;
+    private readonly ISender _sender;
 
     public UploadPetPhotosHandlerTests(IntegrationTestsWebFactory factory) : base(factory)
     {
-        _sut = Scope.ServiceProvider.GetRequiredService<ICommandHandler<IEnumerable<string>, UploadPetPhotosCommand>>();
+        _sender = Scope.ServiceProvider.GetRequiredService<ISender>();
     }
 
     [Fact]
@@ -32,7 +32,7 @@ public class UploadPetPhotosHandlerTests : VolunteerTestBase
         Factory.SetupFileProviderSuccessUploadMock();
 
         // Act
-        var result = await _sut.HandleAsync(command);
+        var result = await _sender.Send(command);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -56,7 +56,7 @@ public class UploadPetPhotosHandlerTests : VolunteerTestBase
         Factory.SetupFileProviderFailedUploadMock();
 
         // Act
-        var result = await _sut.HandleAsync(command);
+        var result = await _sender.Send(command);
 
         // Assert
         result.IsSuccess.Should().BeFalse();

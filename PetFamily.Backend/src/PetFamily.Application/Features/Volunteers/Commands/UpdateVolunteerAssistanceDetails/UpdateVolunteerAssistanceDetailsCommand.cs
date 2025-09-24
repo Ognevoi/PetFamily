@@ -6,4 +6,4 @@ namespace PetFamily.Application.Features.Volunteers.Commands.UpdateVolunteerAssi
 public sealed record UpdateVolunteerAssistanceDetailsCommand(
     Guid VolunteerId,
     IEnumerable<AssistanceDetailsDto> AssistanceDetails)
-    : ICommand;
+    : ICommand<Guid>;

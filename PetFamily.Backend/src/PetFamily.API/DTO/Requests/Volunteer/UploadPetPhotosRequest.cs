@@ -12,7 +12,5 @@ public static class UploadPetPhotosRequestExtensions
         IEnumerable<UploadFileDto> photos,
         Guid volunteerId,
         Guid petId)
-    => new UploadPetPhotosCommand(volunteerId, petId, photos);
-    
+        => new UploadPetPhotosCommand(volunteerId, petId, photos);
 }
-    

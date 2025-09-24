@@ -1,18 +1,16 @@
 using FluentAssertions;
-using Microsoft.EntityFrameworkCore;
+using MediatR;
 using Microsoft.Extensions.DependencyInjection;
-using PetFamily.Application.Features.Species.CreateSpecie;
-using PetFamily.Application.Interfaces;
 
 namespace IntegrationTests.Species;
 
 public class CreateSpecieHandlerTests : SpecieTestBase
 {
-    private readonly ICommandHandler<Guid, CreateSpecieCommand> _sut;
+    private readonly ISender _sender;
 
     public CreateSpecieHandlerTests(IntegrationTestsWebFactory factory) : base(factory)
     {
-        _sut = Scope.ServiceProvider.GetRequiredService<ICommandHandler<Guid, CreateSpecieCommand>>();
+        _sender = Scope.ServiceProvider.GetRequiredService<ISender>();
     }
 
     [Fact]
@@ -22,7 +20,7 @@ public class CreateSpecieHandlerTests : SpecieTestBase
         var command = Fixture.BuildCreateSpecieCommand();
 
         // Act
-        var result = await _sut.HandleAsync(command);
+        var result = await _sender.Send(command);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -30,5 +28,4 @@ public class CreateSpecieHandlerTests : SpecieTestBase
 
         ReadDbContext.Species.FirstOrDefault().Should().NotBeNull();
     }
-
 }

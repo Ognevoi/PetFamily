@@ -69,7 +69,7 @@ public class Pet : SoftDeletableEntity<PetId>
     public DateTime CreatedAt { get; private set; }
     public IReadOnlyList<Photo> Photos => _photos;
     public Position Position { get; private set; }
-    
+
     public void AddPhotos(List<Photo> photos)
     {
         _photos.AddRange(photos);
@@ -82,31 +82,31 @@ public class Pet : SoftDeletableEntity<PetId>
             _photos.Remove(photo);
         }
     }
-    
+
     public void SetPosition(Position position)
     {
         Position = position;
     }
-    
+
     public UnitResult<Error> MoveForward()
     {
         var newPosition = Position.Forward();
         if (newPosition.IsFailure)
             return newPosition.Error;
-        
+
         Position = newPosition.Value;
-        
+
         return UnitResult.Success<Error>();
     }
-    
+
     public UnitResult<Error> MoveBack()
     {
         var newPosition = Position.Back();
         if (newPosition.IsFailure)
             return newPosition.Error;
-        
+
         Position = newPosition.Value;
-        
+
         return UnitResult.Success<Error>();
     }
 }

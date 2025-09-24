@@ -7,4 +7,4 @@ public record UploadPetPhotosCommand(
     Guid VolunteerId,
     Guid PetId,
     IEnumerable<UploadFileDto> Photos)
-    : ICommand;
+    : ICommand<IEnumerable<string>>;
