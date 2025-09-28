@@ -1,4 +1,5 @@
 using FluentValidation;
+using PetFamily.Application.Features.Volunteers.Commands.DTO;
 using PetFamily.Application.Validation;
 using PetFamily.Domain.Shared;
 
@@ -10,7 +11,9 @@ public class
     public UpdateVolunteerAssistanceDetailsCommandValidator()
     {
         RuleFor(x => x.VolunteerId).NotEmpty().WithError(Errors.General.ValueIsRequired());
-        // TODO: Fix "Serialized error is invalid" when AssistanceDetails values are empty
-        // RuleForEach(x => x.Dto.AssistanceDetails).SetValidator(new AssistanceDetailDtoValidator());
+        
+        RuleForEach(x => x.AssistanceDetails)
+            .SetValidator(new AssistanceDetailsDtoValidator())
+            .When(x => x.AssistanceDetails != null && x.AssistanceDetails.Any());
     }
 }

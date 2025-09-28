@@ -10,7 +10,9 @@ public class UpdateVolunteerSocialNetworksCommandValidator : AbstractValidator<U
     public UpdateVolunteerSocialNetworksCommandValidator()
     {
         RuleFor(x => x.VolunteerId).NotEmpty().WithError(Errors.General.ValueIsRequired());
-        // TODO: Fix "Serialized error is invalid" when SocialNetworks values are empty
-        RuleForEach(x => x.SocialNetworks).SetValidator(new SocialNetworkDtoValidator());
+        
+        RuleForEach(x => x.SocialNetworks)
+            .SetValidator(new SocialNetworkDtoValidator())
+            .When(x => x.SocialNetworks != null && x.SocialNetworks.Any());
     }
 }

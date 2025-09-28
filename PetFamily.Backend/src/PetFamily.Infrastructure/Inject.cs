@@ -13,6 +13,7 @@ using PetFamily.Infrastructure.MessageQueues;
 using PetFamily.Infrastructure.Options;
 using PetFamily.Infrastructure.Providers;
 using PetFamily.Infrastructure.Repositories;
+using PetFamily.Infrastructure.Seeding;
 
 namespace PetFamily.Infrastructure;
 
@@ -25,6 +26,7 @@ public static class Inject
             .AddMinio(configuration)
             .AddRepositories()
             .AddDatabase()
+            .AddSeeder()
             .AddHostedServices()
             .AddMessageQueues();
 
@@ -51,7 +53,13 @@ public static class Inject
 
         return services;
     }
+    
+    private static IServiceCollection AddSeeder(this IServiceCollection services)
+    {
+        services.AddScoped<ISeeder, DataSeeder>();
 
+        return services;
+    }
     private static IServiceCollection AddRepositories(this IServiceCollection services)
     {
         services.AddScoped<IVolunteersRepository, VolunteersRepository>();

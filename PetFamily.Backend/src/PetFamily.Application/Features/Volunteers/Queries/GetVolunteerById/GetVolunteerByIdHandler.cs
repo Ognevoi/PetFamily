@@ -20,6 +20,7 @@ public class GetVolunteerByIdHandler : IQueryHandler<GetVolunteerByIdQuery, Volu
         CancellationToken cancellationToken)
     {
         var volunteer = await _readDbContext.Volunteers
+            .Include(v => v.Pets)
             .FirstOrDefaultAsync(p => p.Id == query.Id, cancellationToken);
 
         if (volunteer == null)

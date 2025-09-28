@@ -1,4 +1,5 @@
 using CSharpFunctionalExtensions;
+using Microsoft.EntityFrameworkCore;
 using PetFamily.Application.Database;
 using PetFamily.Application.Extensions;
 using PetFamily.Application.Features.Volunteers.DTOs;
@@ -21,6 +22,7 @@ public class GetVolunteersHandler : IQueryHandler<GetVolunteerWithPaginationQuer
         CancellationToken cancellationToken)
     {
         var volunteersQuery = _readDbContext.Volunteers
+            .Include(v => v.Pets)
             .AsQueryable();
 
         volunteersQuery = volunteersQuery

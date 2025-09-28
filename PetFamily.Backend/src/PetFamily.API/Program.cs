@@ -5,6 +5,7 @@ using PetFamily.API.Extensions;
 using PetFamily.API.Middlewares;
 using PetFamily.Application;
 using PetFamily.Infrastructure;
+using PetFamily.Infrastructure.Seeding;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -44,6 +45,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 
     await app.ApplyMigrations();
+
+    if (args.Contains("--seeding"))
+    {
+        app.Services.RunSeeding();
+    }
+    
 }
 
 app.UseSerilogRequestLogging();
