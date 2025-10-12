@@ -179,4 +179,5 @@ public static class FixtureExtensions
             .With(c => c.SocialNetworks, socialNetworks)
             .Create();
     }
+
 }

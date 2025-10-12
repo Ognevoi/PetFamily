@@ -27,7 +27,6 @@ public class Position : ComparableValueObject
         if (number < 1)
             return Errors.General.ValueIsInvalid("Serial number");
 
-
         return new Position(number);
     }
 

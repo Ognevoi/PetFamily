@@ -3,11 +3,13 @@ using CSharpFunctionalExtensions;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Npgsql;
 using NSubstitute;
 using PetFamily.API;
+using PetFamily.Application.Caching;
 using PetFamily.Application.Database;
 using PetFamily.Application.FileProvider;
 using PetFamily.Application.Providers;
@@ -15,6 +17,7 @@ using PetFamily.Domain.Shared;
 using PetFamily.Infrastructure.DbContexts;
 using Respawn;
 using Testcontainers.PostgreSql;
+using Testcontainers.Redis;
 
 namespace IntegrationTests;
 
@@ -34,7 +37,12 @@ public class IntegrationTestsWebFactory : WebApplicationFactory<Program>, IAsync
         .WithDatabase("pet_family")
         .WithUsername("postgres")
         .WithPassword("postgres")
-        // .WithPortBinding(53860, 5432) // Uncomment for local debugging
+        // .WithPortBinding(53860, 5432) // Used for debugging
+        .Build();
+    
+    private readonly RedisContainer _redisContainer = new RedisBuilder()
+        .WithImage("redis:latest")
+        // .WithPortBinding(6380, 6379) // Used for debugging
         .Build();
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
@@ -44,6 +52,7 @@ public class IntegrationTestsWebFactory : WebApplicationFactory<Program>, IAsync
 
     protected virtual void ConfigureDefaultServices(IServiceCollection services)
     {
+        // Configure PostgreSQL database
         services.RemoveAll(typeof(IFilesProvider));
         services.AddScoped(_ => _fileProviderMock);
 
@@ -54,12 +63,25 @@ public class IntegrationTestsWebFactory : WebApplicationFactory<Program>, IAsync
 
         services.AddScoped<WriteDbContext>(_ => new WriteDbContext(connectionString));
         services.AddScoped<IReadDbContext>(_ => new ReadDbContext(connectionString));
+        
+        // Configure Redis
+        services.RemoveAll<ICacheService>();
+        services.RemoveAll<IDistributedCache>();
+
+        services.AddStackExchangeRedisCache(
+            options =>
+            {
+                options.Configuration = _redisContainer.GetConnectionString();
+            });
+
+        services.AddSingleton<ICacheService, DistributedCacheService>();
     }
 
     public async Task InitializeAsync()
     {
         await _dbContainer.StartAsync();
-
+        await _redisContainer.StartAsync();
+        
         using var scope = Services.CreateScope();
         var writeDbContext = scope.ServiceProvider.GetRequiredService<WriteDbContext>();
         await writeDbContext.Database.EnsureCreatedAsync();
@@ -92,6 +114,8 @@ public class IntegrationTestsWebFactory : WebApplicationFactory<Program>, IAsync
     {
         await _dbContainer.StopAsync();
         await _dbContainer.DisposeAsync();
+        await _redisContainer.StopAsync();
+        await _redisContainer.DisposeAsync();
     }
 
     public void SetupFileProviderSuccessUploadMock()

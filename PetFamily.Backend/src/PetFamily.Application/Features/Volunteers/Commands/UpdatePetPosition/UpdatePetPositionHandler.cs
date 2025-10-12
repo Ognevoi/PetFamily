@@ -31,7 +31,7 @@ public class UpdatePetPositionHandler : ICommandHandler<UpdatePetPositionCommand
         var pet = volunteerResult.Value.Pets.FirstOrDefault(p => p.Id == command.PetId);
         if (pet == null)
             return Errors.General.NotFound(command.PetId).ToErrorList();
-
+        
         var newPositionResult = Position.Create(command.NewPosition);
         if (newPositionResult.IsFailure)
             return newPositionResult.Error.ToErrorList();

@@ -17,11 +17,12 @@
 ### Technical Features
 - 🏗️ **Clean Architecture**: Separation of concerns with Domain, Application, Infrastructure, and API layers
 - 🧪 **Comprehensive Testing**: Unit tests, integration tests, and acceptance tests
-- 🐳 **Docker Support**: Containerized application with PostgreSQL, Seq logging, and MinIO storage
+- 🐳 **Docker Support**: Containerized application with PostgreSQL, Seq logging, MinIO storage, and Redis
 - 📝 **Structured Logging**: Advanced logging with Serilog and Seq integration
 - ✅ **Data Seeding**: Automated database population with realistic test data
 - 🔄 **CQRS Pattern**: Command Query Responsibility Segregation with MediatR
 - 🛡️ **Validation**: FluentValidation for robust input validation
+- ⚡ **Distributed Caching**: Redis caching for improved performance and scalability
 
 ---
 
@@ -39,6 +40,7 @@
 ### Database & Storage
 - **PostgreSQL** - Primary database
 - **MinIO** - Object storage for pet photos
+- **Redis** - Distributed caching layer
 - **Seq** - Log aggregation and analysis
 
 ### Testing
@@ -57,7 +59,7 @@
 
 ```
 PetFamily/
-├── PetFamily.Backend/                                    # Main backend solution
+├── PetFamily.Backend/                                   # Main backend solution
 │   ├── src/
 │   │   ├── PetFamily.API/                               # Web API layer
 │   │   │   ├── Controllers/                             # API endpoints
@@ -93,7 +95,7 @@ PetFamily/
 │       ├── PetFamily.AcceptanceTests/                   # BDD acceptance tests
 │       └── PetFamily.TestUtils/                         # Test utilities
 ├── docker-compose.yml                                   # Multi-container setup
-└── README.md                                           # Project documentation
+└── README.md                                            # Project documentation
 ```
 
 ---
@@ -119,6 +121,7 @@ PetFamily/
    ```
    This will start:
    - PostgreSQL database (port 5432)
+   - Redis cache (port 6379)
    - Seq logging server (port 5346)
    - MinIO object storage (port 9001)
 
@@ -142,6 +145,7 @@ PetFamily/
    {
      "ConnectionStrings": {
        "DefaultConnection": "Server=localhost;Port=5432;Database=pet_family;User Id=postgres;Password=postgres;",
+       "Redis": "localhost:6379",
        "Seq": "http://localhost:5341"
      }
    }
@@ -298,14 +302,6 @@ docker run -p 8080:8080 petfamily-api
 
 ---
 
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
 ### Development Guidelines
 - Follow Clean Architecture principles
 - Write comprehensive tests for new features
@@ -317,25 +313,3 @@ docker run -p 8080:8080 petfamily-api
 ## 📝 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
-
-## 🙏 Acknowledgments
-
-- Built with [.NET 9](https://dotnet.microsoft.com/)
-- Inspired by Clean Architecture principles
-- Uses [Entity Framework Core](https://docs.microsoft.com/en-us/ef/core/) for data access
-- Logging powered by [Serilog](https://serilog.net/)
-
----
-
-## 📞 Support
-
-For support and questions:
-- Create an issue in the GitHub repository
-- Check the [API documentation](https://localhost:7000/swagger) when running locally
-- Review the test cases for usage examples
-
----
-
-**Happy coding! 🐾✨**
