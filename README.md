@@ -132,8 +132,8 @@ PetFamily/
    ```
 
 4. **Access the application**
-   - API: `https://localhost:7000` or `http://localhost:5000`
-   - Swagger UI: `https://localhost:7000/swagger`
+   - API: `https://localhost:7115` or `http://localhost:5217`
+   - Swagger UI: `https://localhost:7115/swagger`
    - Seq Logs: `http://localhost:5346`
    - MinIO Console: `http://localhost:9001`
 
@@ -146,7 +146,7 @@ PetFamily/
      "ConnectionStrings": {
        "DefaultConnection": "Server=localhost;Port=5432;Database=pet_family;User Id=postgres;Password=postgres;",
        "Redis": "localhost:6379",
-       "Seq": "http://localhost:5341"
+       "Seq": "http://localhost:5345"
      }
    }
    ```
@@ -264,8 +264,11 @@ The application includes a comprehensive data seeding system that populates the 
 # Database
 ConnectionStrings__DefaultConnection="Server=localhost;Port=5432;Database=pet_family;User Id=postgres;Password=postgres;"
 
+# Redis
+ConnectionStrings__Redis="localhost:6379"
+
 # Logging
-ConnectionStrings__Seq="http://localhost:5341"
+ConnectionStrings__Seq="http://localhost:5345"
 
 # MinIO Storage
 Minio__Endpoint="localhost:9000"
