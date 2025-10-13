@@ -35,7 +35,6 @@
 - **MediatR** - CQRS implementation
 - **FluentValidation** - Input validation
 - **Serilog** - Structured logging
-- **CSharpFunctionalExtensions** - Functional programming utilities
 
 ### Database & Storage
 - **PostgreSQL** - Primary database
@@ -45,8 +44,13 @@
 
 ### Testing
 - **xUnit** - Unit testing framework
+- **FluentAssertions** - Expressive assertion library
 - **Reqnroll** - BDD testing with Gherkin
 - **WebApplicationFactory** - Integration testing
+- **Testcontainers** - Docker containers for integration tests (PostgreSQL, Redis)
+- **Respawn** - Database cleanup between tests
+- **AutoFixture** - Test data generation
+- **Bogus** - Fake data generation
 
 ### DevOps & Tools
 - **Docker & Docker Compose** - Containerization
