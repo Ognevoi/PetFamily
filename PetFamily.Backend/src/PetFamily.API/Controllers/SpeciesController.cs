@@ -7,9 +7,7 @@ using DeleteSpecieRequest = PetFamily.API.DTO.Requests.Species.DeleteSpecieReque
 
 namespace PetFamily.API.Controllers;
 
-[ApiController]
-[Route("[controller]")]
-public class SpecieController : ControllerBase
+public class SpecieController : ApplicationController
 {
     private readonly ISender _sender;
 

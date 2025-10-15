@@ -12,8 +12,6 @@ using PetFamily.Domain.Shared;
 
 namespace PetFamily.API.Controllers;
 
-[ApiController]
-[Route("[controller]")]
 public class VolunteerController : ApplicationController
 {
     private readonly ISender _sender;
