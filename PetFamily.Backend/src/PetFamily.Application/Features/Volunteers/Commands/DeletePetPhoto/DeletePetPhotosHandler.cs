@@ -42,28 +42,43 @@ public class DeletePetPhotosHandler : ICommandHandler<DeletePetPhotosCommand, IE
         if (petResult.IsFailure)
             return Errors.General.NotFound(command.PetId).ToErrorList();
 
-        var deleteResult = await _filesProvider.DeleteFiles(
-            command.PhotoNames,
-            Constants.BUCKET_NAME,
-            cancellationToken);
-
-        if (deleteResult.IsFailure)
-            return Errors.General.DeleteFileFailure(deleteResult.Error.ToString()).ToErrorList();
-
         List<Photo> photos = [];
         foreach (var photoName in command.PhotoNames)
         {
             var photo = Photo.Create(photoName);
-
             photos.Add(photo.Value);
         }
 
-        petResult.Value.RemovePhotos(photos);
+        using var transaction = await _unitOfWork.BeginTransactionAsync(cancellationToken);
 
-        await _unitOfWork.SaveChangesAsync(cancellationToken);
+        try
+        {
+            petResult.Value.RemovePhotos(photos);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        _logger.LogInformation("Photos deleted for pet with id {PetId}", petResult.Value.Id);
+            var deleteResult = await _filesProvider.DeleteFiles(
+                command.PhotoNames,
+                Constants.BUCKET_NAME,
+                cancellationToken);
 
-        return command.PhotoNames.ToList();
+            if (deleteResult.IsFailure)
+            {
+                transaction.Rollback();
+                _logger.LogError("Failed to delete files for pet with id {PetId}. Transaction rolled back.", petResult.Value.Id);
+                return Errors.General.DeleteFileFailure(deleteResult.Error.ToString()).ToErrorList();
+            }
+
+            transaction.Commit();
+
+            _logger.LogInformation("Photos deleted for pet with id {PetId}", petResult.Value.Id);
+
+            return command.PhotoNames.ToList();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error while deleting photos for pet with id {PetId}. Transaction rolled back.", petResult.Value.Id);
+            transaction.Rollback();
+            throw;
+        }
     }
 }

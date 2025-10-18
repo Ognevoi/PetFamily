@@ -67,7 +67,7 @@ public class UploadPetPhotosHandler : ICommandHandler<UploadPetPhotosCommand, IE
             return Errors.General.UploadFailure(uploadResult.Error.ToString()).ToErrorList();
         }
         
-        System.Data.IDbTransaction transaction = await _unitOfWork.BeginTransactionAsync(cancellationToken);
+        using var transaction = await _unitOfWork.BeginTransactionAsync(cancellationToken);
 
         try
         {
@@ -76,6 +76,10 @@ public class UploadPetPhotosHandler : ICommandHandler<UploadPetPhotosCommand, IE
             await _unitOfWork.SaveChangesAsync(cancellationToken);
             
             transaction.Commit();
+
+            _logger.LogInformation("Photos uploaded for pet with id {PetId}", petResult.Value.Id);
+
+            return uploadResult.Value.ToList();
         }
         catch (Exception ex)
         {
@@ -85,11 +89,7 @@ public class UploadPetPhotosHandler : ICommandHandler<UploadPetPhotosCommand, IE
             transaction.Rollback();
             
             await _fileCleanerQueue.PublishAsync(photosToUpload.Select(p => p.ObjectName), cancellationToken);
-            return Errors.General.UploadFailure(uploadResult.Error.ToString()).ToErrorList();
+            return Errors.General.UploadFailure(ex.Message).ToErrorList();
         }
-        
-        _logger.LogInformation("Photos uploaded for pet with id {PetId}", petResult.Value.Id);
-
-        return uploadResult.Value.ToList();
     }
 }
