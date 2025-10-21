@@ -2,7 +2,7 @@ using System.Text.Json;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace PetFamily.Infrastructure.Extentions;
+namespace PetFamily.Infrastructure.Extensions;
 
 public static class ServiceCollectionExtensions
 {

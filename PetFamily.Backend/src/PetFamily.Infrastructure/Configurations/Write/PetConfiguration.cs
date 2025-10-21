@@ -4,7 +4,7 @@ using PetFamily.Domain.PetManagement.Entities;
 using PetFamily.Domain.PetManagement.Enums;
 using PetFamily.Domain.PetManagement.ValueObjects;
 using PetFamily.Domain.Shared;
-using PetFamily.Infrastructure.Extentions;
+using PetFamily.Infrastructure.Extensions;
 
 namespace PetFamily.Infrastructure.Configurations.Write;
 

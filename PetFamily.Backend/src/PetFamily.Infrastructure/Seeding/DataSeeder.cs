@@ -1,16 +1,17 @@
+using CSharpFunctionalExtensions;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using PetFamily.Infrastructure.DbContexts;
-using PetFamily.Infrastructure.Seeding;
 using PetFamily.Domain.PetManagement.AggregateRoot;
 using PetFamily.Domain.PetManagement.Entities;
-using PetFamily.Domain.PetManagement.ValueObjects;
 using PetFamily.Domain.PetManagement.Enums;
+using PetFamily.Domain.PetManagement.ValueObjects;
+using PetFamily.Domain.Shared;
 using PetFamily.Domain.SpecieManagement.AggregateRoot;
 using PetFamily.Domain.SpecieManagement.Entities;
 using PetFamily.Domain.SpecieManagement.Value_Objects;
-using Microsoft.EntityFrameworkCore;
-using CSharpFunctionalExtensions;
-using PetFamily.Domain.Shared;
+using PetFamily.Infrastructure.DbContexts;
+
+namespace PetFamily.Infrastructure.Seeding;
 
 public class DataSeeder : ISeeder
 {

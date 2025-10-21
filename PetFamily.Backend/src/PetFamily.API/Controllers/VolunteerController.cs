@@ -25,9 +25,9 @@ public class VolunteerController : ApplicationController
         CancellationToken cancellationToken)
     {
         var query = request.ToQuery();
-        var response = await _sender.Send(query, cancellationToken);
+        var result = await _sender.Send(query, cancellationToken);
 
-        return response.IsFailure ? BadRequest(response.Error) : Ok(response.Value);
+        return result.IsFailure ? result.Error.ToResponse() : Ok(result.Value);
     }
 
     [HttpGet("{volunteerId:guid}")]
@@ -36,9 +36,9 @@ public class VolunteerController : ApplicationController
         CancellationToken cancellationToken)
     {
         var query = new GetVolunteerByIdQuery(volunteerId);
-        var response = await _sender.Send(query, cancellationToken);
+        var result = await _sender.Send(query, cancellationToken);
 
-        return response.IsFailure ? BadRequest(response.Error) : Ok(response.Value);
+        return result.IsFailure ? result.Error.ToResponse() : Ok(result.Value);
     }
 
     [HttpGet("pets")]
@@ -47,9 +47,9 @@ public class VolunteerController : ApplicationController
         CancellationToken cancellationToken)
     {
         var query = request.ToQuery();
-        var response = await _sender.Send(query, cancellationToken);
+        var result = await _sender.Send(query, cancellationToken);
 
-        return response.IsFailure ? BadRequest(response.Error) : Ok(response.Value);
+        return result.IsFailure ? result.Error.ToResponse() : Ok(result.Value);
     }
 
     [HttpGet("pets/{petId:guid}")]

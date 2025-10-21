@@ -2,7 +2,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace PetFamily.Infrastructure.Seeding;
 
-public static class SeederExtention
+public static class SeederExtension
 {
     public static async Task<IServiceProvider> RunSeeding(this IServiceProvider services)
     {
