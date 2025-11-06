@@ -1,5 +1,4 @@
 using CSharpFunctionalExtensions;
-using FluentValidation;
 using Microsoft.Extensions.Logging;
 using PetFamily.Application.Interfaces;
 using PetFamily.Domain.PetManagement.AggregateRoot;
@@ -15,7 +14,6 @@ public class CreateVolunteerHandler : ICommandHandler<CreateVolunteerCommand, Gu
 
     public CreateVolunteerHandler(
         IVolunteersRepository volunteersRepository,
-        IValidator<CreateVolunteerCommand> validator,
         ILogger<CreateVolunteerHandler> logger)
     {
         _volunteersRepository = volunteersRepository;

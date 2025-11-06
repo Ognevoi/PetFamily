@@ -1,5 +1,4 @@
 using CSharpFunctionalExtensions;
-using FluentValidation;
 using Microsoft.Extensions.Logging;
 using PetFamily.Application.Extensions;
 using PetFamily.Application.Features.Species;
@@ -20,7 +19,6 @@ public class AddPetHandler : ICommandHandler<AddPetCommand, string>
 
     public AddPetHandler(
         IVolunteersRepository volunteersRepository,
-        IValidator<AddPetCommand> validator,
         ISpeciesRepository speciesRepository,
         ILogger<UpdateVolunteerHandler> logger)
     {

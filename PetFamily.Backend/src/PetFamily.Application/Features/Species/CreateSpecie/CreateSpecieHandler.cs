@@ -1,5 +1,4 @@
 using CSharpFunctionalExtensions;
-using FluentValidation;
 using Microsoft.Extensions.Logging;
 using PetFamily.Application.Extensions;
 using PetFamily.Application.Interfaces;
@@ -17,7 +16,6 @@ public class CreateSpecieHandler : ICommandHandler<CreateSpecieCommand, Guid>
 
     public CreateSpecieHandler(
         ISpeciesRepository specieRepository,
-        IValidator<CreateSpecieCommand> validator,
         ILogger<CreateSpecieHandler> logger)
     {
         _specieRepository = specieRepository;

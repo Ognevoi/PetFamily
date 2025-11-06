@@ -1,5 +1,4 @@
 using CSharpFunctionalExtensions;
-using FluentValidation;
 using Microsoft.Extensions.Logging;
 using PetFamily.Application.Database;
 using PetFamily.Application.Features.Volunteers.Commands.UploadPetPhoto;
@@ -21,7 +20,6 @@ public class DeletePetPhotosHandler : ICommandHandler<DeletePetPhotosCommand, IE
         IVolunteersRepository volunteersRepository,
         IUnitOfWork unitOfWork,
         IFilesProvider filesProvider,
-        IValidator<DeletePetPhotosCommand> validator,
         ILogger<UploadPetPhotosHandler> logger)
     {
         _volunteersRepository = volunteersRepository;

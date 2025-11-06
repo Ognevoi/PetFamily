@@ -15,7 +15,7 @@ public class Weight : ValueObject
     public static Result<Weight, Error> Create(double weight)
     {
         if (weight <= 0)
-            return Errors.General.ValueIsInvalid("Weight");
+            return Errors.General.ValueIsInvalid(nameof(Weight));
 
         return new Weight(weight);
     }

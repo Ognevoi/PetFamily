@@ -21,14 +21,14 @@ public class Photo : ValueObject
     public static Result<Photo, Error> Create(string fileName)
     {
         if (string.IsNullOrWhiteSpace(fileName))
-            return Errors.General.ValueIsRequired("Photo");
+            return Errors.General.ValueIsRequired(nameof(Photo));
 
         if (fileName.Length > MAX_FILE_NAME_LENGTH)
-            return Errors.General.ValueIsInvalid("Photo");
+            return Errors.General.ValueIsInvalid(nameof(Photo));
 
         var fileExtension = Path.GetExtension(fileName);
         if (!ALLOWED_EXTENSIONS.Contains(fileExtension))
-            return Errors.General.ValueIsInvalid("Photo");
+            return Errors.General.ValueIsInvalid(nameof(Photo));
 
         return new Photo(fileName);
     }

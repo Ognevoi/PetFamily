@@ -1,5 +1,4 @@
 using CSharpFunctionalExtensions;
-using FluentValidation;
 using Microsoft.Extensions.Logging;
 using PetFamily.Application.Database;
 using PetFamily.Application.FileProvider;
@@ -25,7 +24,6 @@ public class UploadPetPhotosHandler : ICommandHandler<UploadPetPhotosCommand, IE
         IUnitOfWork unitOfWork,
         IFilesProvider filesProvider,
         IFileCleanerQueue fileCleanerQueue,
-        IValidator<UploadPetPhotosCommand> validator,
         ILogger<UploadPetPhotosHandler> logger)
     {
         _volunteersRepository = volunteersRepository;
@@ -53,11 +51,11 @@ public class UploadPetPhotosHandler : ICommandHandler<UploadPetPhotosCommand, IE
         List<Photo> photos = [];
         foreach (var uploadPhoto in photosToUpload)
         {
-            var photo = Photo.Create(uploadPhoto.ObjectName);
-            if (photo.IsFailure)
-                return Errors.General.UploadFailure(photo.Error.ToString()).ToErrorList();
+            var photoResult = Photo.Create(uploadPhoto.ObjectName);
+            if (photoResult.IsFailure)
+                return Errors.General.UploadFailure(photoResult.Error.ToString()).ToErrorList();
 
-            photos.Add(photo.Value);
+            photos.Add(photoResult.Value);
         }
 
         var uploadResult = await _filesProvider.UploadFiles(photosToUpload, Constants.BUCKET_NAME, cancellationToken);

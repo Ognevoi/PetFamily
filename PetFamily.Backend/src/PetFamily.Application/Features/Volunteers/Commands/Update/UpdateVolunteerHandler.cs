@@ -1,5 +1,4 @@
 using CSharpFunctionalExtensions;
-using FluentValidation;
 using Microsoft.Extensions.Logging;
 using PetFamily.Application.Interfaces;
 using PetFamily.Domain.PetManagement.ValueObjects;
@@ -14,8 +13,7 @@ public class UpdateVolunteerHandler : ICommandHandler<UpdateVolunteerCommand, Gu
 
     public UpdateVolunteerHandler(
         IVolunteersRepository volunteersRepository,
-        ILogger<UpdateVolunteerHandler> logger,
-        IValidator<UpdateVolunteerCommand> validator)
+        ILogger<UpdateVolunteerHandler> logger)
     {
         _volunteersRepository = volunteersRepository;
         _logger = logger;

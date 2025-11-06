@@ -1,5 +1,4 @@
 using CSharpFunctionalExtensions;
-using FluentValidation;
 using Microsoft.Extensions.Logging;
 using PetFamily.Application.Interfaces;
 using PetFamily.Application.Providers;
@@ -16,7 +15,6 @@ public class GetPetPhotosHandler : ICommandHandler<GetPetPhotosCommand, IEnumera
     public GetPetPhotosHandler(
         IVolunteersRepository volunteersRepository,
         IFilesProvider filesProvider,
-        IValidator<GetPetPhotosCommand> validator,
         ILogger<GetPetPhotosHandler> logger)
     {
         _volunteersRepository = volunteersRepository;
